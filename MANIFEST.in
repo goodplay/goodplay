@@ -1,0 +1,14 @@
+include .coveragerc
+include LICENSE
+include Makefile
+include MANIFEST.in
+include README.rst
+include setup.cfg
+include setup.py
+include tox.ini
+
+recursive-include docs *
+recursive-include tests *
+
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

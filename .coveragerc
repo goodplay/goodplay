@@ -1,0 +1,23 @@
+[run]
+branch = True
+data_file = artifacts/coverage/.coverage
+source = goodplay
+
+[html]
+directory = artifacts/coverage/html
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if self\.debug
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+ignore_errors = True
+precision = 2
+show_missing = True
+
+[xml]
+output = artifacts/coverage/coverage.xml
