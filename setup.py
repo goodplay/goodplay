@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 
 from setuptools import setup
@@ -6,6 +8,7 @@ from setuptools import setup
 install_requires = [
     'ansible>=1.9',
     'pytest>=2.5',
+    'sarge>=0.1.4',
 ]
 
 readme_path = os.path.join(os.path.dirname(__file__), 'README.rst')
@@ -27,7 +30,7 @@ setup(
     license='Apache License 2.0',
 
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 2 - Pre-Alpha',
         'Environment :: Plugins',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',

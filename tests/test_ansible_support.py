@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 import pytest
 
-from goodplay.ansible_support import AnsibleSupport
+from goodplay import ansible_support
 
 
 # fixtures
@@ -71,7 +73,7 @@ def test_is_test_playbook_file_with_valid_prefix(
     path = tmpdir.join('test_playbook.yml')
     path.write(valid_test_playbook)
 
-    assert AnsibleSupport.is_test_playbook_file(path)
+    assert ansible_support.is_test_playbook_file(path)
 
 
 def test_is_test_playbook_file_with_invalid_prefix(
@@ -79,7 +81,7 @@ def test_is_test_playbook_file_with_invalid_prefix(
     path = tmpdir.join('playbook.yml')
     path.write(valid_test_playbook)
 
-    assert not AnsibleSupport.is_test_playbook_file(path)
+    assert not ansible_support.is_test_playbook_file(path)
 
 
 # extension tests
@@ -89,7 +91,7 @@ def test_is_test_playbook_file_with_valid_extension(
     path = tmpdir.join('test_playbook.' + valid_playbook_extension)
     path.write(valid_test_playbook)
 
-    assert AnsibleSupport.is_test_playbook_file(path)
+    assert ansible_support.is_test_playbook_file(path)
 
 
 def test_is_test_playbook_file_with_invalid_extension(
@@ -97,7 +99,7 @@ def test_is_test_playbook_file_with_invalid_extension(
     path = tmpdir.join('test_playbook.' + invalid_playbook_extension)
     path.write(valid_test_playbook)
 
-    assert not AnsibleSupport.is_test_playbook_file(path)
+    assert not ansible_support.is_test_playbook_file(path)
 
 
 # content tests
@@ -107,7 +109,7 @@ def test_is_test_playbook_file_with_valid_content(
     path = tmpdir.join('test_playbook.yml')
     path.write(valid_test_playbook_content)
 
-    assert AnsibleSupport.is_test_playbook_file(path)
+    assert ansible_support.is_test_playbook_file(path)
 
 
 def test_is_test_playbook_file_with_invalid_content(
@@ -115,4 +117,4 @@ def test_is_test_playbook_file_with_invalid_content(
     path = tmpdir.join('test_playbook.yml')
     path.write(invalid_test_playbook_content)
 
-    assert not AnsibleSupport.is_test_playbook_file(path)
+    assert not ansible_support.is_test_playbook_file(path)
