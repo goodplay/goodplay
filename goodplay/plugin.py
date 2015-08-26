@@ -26,7 +26,7 @@ class AnsiblePlaybook(pytest.File):
         if not self.inventory_path:
             return
 
-        self.playbook = ansible_support.create_playbook(
+        self.playbook = ansible_support.Playbook(
             self.playbook_path, self.inventory_path)
 
         already_seen_test_names = set()

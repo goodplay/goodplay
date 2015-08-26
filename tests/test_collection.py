@@ -67,6 +67,21 @@ def test_pass_on_non_unique_task_names_single_one_tagged_test(testdir):
     assert items[0].name == 'task1'
 
 
+def test_pass_on_tagged_test_with_additional_tags(testdir):
+    items, _ = create_playbook_and_collect_items(testdir, '''---
+- hosts: all
+  tasks:
+    - name: task1
+      ping:
+      tags:
+        - other1
+        - test
+        - other2
+''')
+    assert len(items) == 1
+    assert items[0].name == 'task1'
+
+
 def test_single_play_no_tests(testdir):
     items, _ = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
