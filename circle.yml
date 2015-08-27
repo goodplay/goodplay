@@ -18,4 +18,4 @@ test:
     - cp artifacts/test/junit-*.xml $CIRCLE_TEST_REPORTS/junit/
 
     - tox -e codecov-prepare
-    - codecov || true
+    - codecov --file artifacts/coverage/coverage.xml || true

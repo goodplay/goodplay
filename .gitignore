@@ -6,5 +6,3 @@ __pytest__/
 artifacts/
 build/
 dist/
-
-coverage.xml
