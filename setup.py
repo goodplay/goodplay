@@ -48,7 +48,11 @@ setup(
         ]
     },
 
-    packages=['goodplay'],
+    packages=[
+        'goodplay',
+        'goodplay.ansible_support',
+        'goodplay.ansible_support.callback_plugin',
+    ],
     install_requires=install_requires,
     zip_safe=False,
 )
