@@ -134,29 +134,33 @@ class PlaybookRunner(object):
             self.failures.append('all test tasks have been skipped')
 
     def wait_for_event(self, event_name, **kwargs):
+        for event in self.receive_events():
+            if event['event_name'] == event_name:
+                if all(item in event['data'].items()
+                       for item in kwargs.items()):
+                    return event
+                else:  # pragma: no cover
+                    message = 'found unexpected data in goodplay ' \
+                        'event: {0!r}'.format(event)
+                    raise Exception(message)
+            elif event['event_name'] == 'error':
+                error_message = event['data']['message']
+                self.failures.append(error_message)
+                self.skip_wait = True
+                return
+            else:  # pragma: no cover
+                message = 'found unexpected goodplay event: {0!r}'.format(
+                    event)
+                raise Exception(message)
+
+    def receive_events(self):
         event_line_prefix = 'GOODPLAY => '
         for line in self.process.stdout:
             sys.stdout.write(line)
 
             if line.startswith(event_line_prefix):
                 event = json.loads(line[len(event_line_prefix):])
-                if event['event_name'] == event_name:
-                    if all(item in event['data'].items()
-                           for item in kwargs.items()):
-                        return event
-                    else:  # pragma: no cover
-                        message = 'found unexpected data in goodplay ' \
-                            'event: {0!r}'.format(event)
-                        raise Exception(message)
-                elif event['event_name'] == 'error':
-                    error_message = event['data']['message']
-                    self.failures.append(error_message)
-                    self.skip_wait = True
-                    return
-                else:  # pragma: no cover
-                    message = 'found unexpected goodplay event: {0!r}'.format(
-                        event)
-                    raise Exception(message)
+                yield event
 
     def wait_for_test_task(self, task):
         if self.skip_wait:
