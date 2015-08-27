@@ -125,6 +125,26 @@ def test_skipped_on_previously_failed_non_test_task(testdir):
     assert result.countoutcomes() == [0, 1, 1]
 
 
+def test_skipped_multiple_on_previously_failed_non_test_task(testdir):
+    result = create_playbook_and_run(testdir, '''---
+- hosts: 127.0.0.1
+  tasks:
+    - name: intentionally failed task
+      ping:
+      failed_when: True
+
+    - name: task1
+      ping:
+      tags: test
+
+    - name: task2
+      ping:
+      tags: test
+''')
+
+    assert result.countoutcomes() == [0, 2, 1]
+
+
 def test_failed_on_changed_task(testdir):
     result = create_playbook_and_run(testdir, '''---
 - hosts: 127.0.0.1

@@ -28,7 +28,7 @@ class CallbackModule(CallbackBase):
 
         # need to use shared dict here as ansible v1 runner callbacks
         # are called from different processes (depending on number of forks)
-        self.test_task_outcomes = multiprocessing.Manager().dict()
+        self.per_host_outcomes = multiprocessing.Manager().dict()
 
     def display(self, msg):
         if ANSIBLE_VERSION >= (2, 0):
@@ -36,25 +36,6 @@ class CallbackModule(CallbackBase):
         else:
             from ansible.callbacks import display
             display(msg)
-
-    # handle test task outcome
-
-    def reset_test_task_outcome(self):
-        self.test_task_outcomes.clear()
-
-    def add_test_task_host_outcome(self, host, outcome, res=None):
-        self.test_task_outcomes[host] = dict(outcome=outcome, res=res)
-
-    def final_test_task_outcome(self):
-        if self.test_task_outcomes:
-            outcomes = \
-                set((x['outcome'] for x in self.test_task_outcomes.values()))
-            prioritized_outcome_order = ('failed', 'skipped', 'passed')
-            for outcome in prioritized_outcome_order:
-                if outcome in outcomes:
-                    return outcome
-
-        return 'skipped'
 
     # ansible playbook-specific callback methods
 
@@ -99,7 +80,7 @@ class CallbackModule(CallbackBase):
         outcome = self.final_test_task_outcome()
 
         self.send_event('test-task-end', name=task.name, outcome=outcome)
-        self.reset_test_task_outcome()
+        self.reset_per_host_outcomes()
 
     def playbook_on_play_start(self, name):
         self.check_and_handle_playbook_on_task_end()
@@ -113,24 +94,48 @@ class CallbackModule(CallbackBase):
         if ignore_errors:
             return
 
-        if self.is_test_task(self.task):
-            self.add_test_task_host_outcome(host, 'failed', res)
-        else:
-            self.send_event('error', message=str(res))
+        self.handle_failed_result(host, res)
 
     def runner_on_ok(self, host, res):
-        if self.is_test_task(self.task):
-            if res.get('changed') or res.get('rc', 0) != 0:
-                self.add_test_task_host_outcome(host, 'failed', res)
-            else:
-                self.add_test_task_host_outcome(host, 'passed', res)
+        failed = res.get('changed') or res.get('rc', 0) != 0
+
+        if failed:
+            self.handle_failed_result(host, res)
+        else:
+            self.handle_passed_result(host, res)
 
     def runner_on_skipped(self, host, item=None):
-        if self.is_test_task(self.task):
-            self.add_test_task_host_outcome(host, 'skipped')
+        self.handle_skipped_result(host)
 
     def runner_on_unreachable(self, host, res):
+        self.handle_failed_result(host, res)
+
+    # handle results and outcome
+
+    def reset_per_host_outcomes(self):
+        self.per_host_outcomes.clear()
+
+    def final_test_task_outcome(self):
+        if self.per_host_outcomes:
+            outcomes = \
+                set((x['outcome'] for x in self.per_host_outcomes.values()))
+            outcome_priority = ('failed', 'skipped', 'passed')
+            for outcome in outcome_priority:
+                if outcome in outcomes:
+                    return outcome
+
+        return 'skipped'
+
+    def handle_passed_result(self, host, res):
         if self.is_test_task(self.task):
-            self.add_test_task_host_outcome(host, 'failed', res)
+            self.per_host_outcomes[host] = dict(outcome='passed', res=res)
+
+    def handle_skipped_result(self, host):
+        if self.is_test_task(self.task):
+            self.per_host_outcomes[host] = dict(outcome='skipped')
+
+    def handle_failed_result(self, host, res):
+        if self.is_test_task(self.task):
+            self.per_host_outcomes[host] = dict(outcome='failed', res=res)
         else:
             self.send_event('error', message=str(res))

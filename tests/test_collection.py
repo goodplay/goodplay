@@ -33,6 +33,20 @@ def test_nothing_collected_when_inventory_missing(testdir):
     assert len(items) == 0
 
 
+def test_nothing_collected_when_only_non_test_tags(testdir):
+    testdir.makefile('.yml', test_playbook='''---
+- hosts: all
+  tasks:
+    - name: task1
+      ping:
+      tags: other
+''')
+
+    items, result = testdir.inline_genitems()
+    assert result.countoutcomes() == [0, 0, 0]
+    assert len(items) == 0
+
+
 def test_fail_on_non_unique_task_names_both_tagged_test(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
