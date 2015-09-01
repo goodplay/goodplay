@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import os
 import re
 import sys
 
@@ -49,17 +50,75 @@ class Playbook(object):
         self.playbook_path = playbook_path
         self.inventory_path = inventory_path
 
+        # TODO: test for this playbook being contained in a role tests directory
+        #       and provide role path to ansible
+        self.installed_roles_path = py.path.local.mkdtemp()
+        self.install_dependencies()
+
+    @property
+    def role_path(self):
+        for ancestor_dir in self.playbook_path.parts(reverse=True)[1:]:
+            if ancestor_dir.basename == 'tests':
+                potential_role_path = ancestor_dir.dirpath()
+                potential_meta_path = potential_role_path.join('meta', 'main.yml')
+
+                if potential_meta_path.check(file=1):
+                    return potential_role_path
+                break
+
+    def install_dependencies(self):
+        self.install_role_dependencies()
+
+    def install_role_dependencies(self):
+        if not self.role_path:
+            return
+
+        role_meta_path = self.role_path.join('meta', 'main.yml')
+        role_meta_content = yaml.safe_load(role_meta_path.read())
+        role_dependencies = role_meta_content.get('dependencies', [])
+
+        if role_dependencies:
+            requirements_file = self.installed_roles_path.join('requirements')
+            requirements_file.write('\n'.join(role_dependencies))
+
+            env = dict(PYTHONUNBUFFERED='1')
+
+            cmd = sarge.shell_format(
+                'ansible-galaxy install --force --role-file {0} --roles-path {1}',
+                str(requirements_file),
+                str(self.installed_roles_path))
+
+            process = sarge.run(cmd, env=env, stdout=Capture(), stderr=Capture())
+            print '\n'.join(process.stdout.readlines())
+            if process.returncode != 0:
+                raise Exception(process.stderr.readlines())
+
+    def release(self):
+        self.installed_roles_path.remove()
+
     def create_runner(self):
         return PlaybookRunner(self)
 
     def tasks(self, with_tag):
-        env = dict(PYTHONUNBUFFERED='1')
+        roles_path = []
+        roles_path.append(str(self.installed_roles_path))
+
+        if self.role_path:
+            roles_path.append(str(self.role_path.dirpath()))
+
+        env = dict(
+            PYTHONUNBUFFERED='1',
+            ANSIBLE_ROLES_PATH=os.pathsep.join(roles_path),
+        )
+
         cmd = sarge.shell_format(
             'ansible-playbook --list-tasks --list-tags -i {0} {1}',
             str(self.inventory_path),
             str(self.playbook_path))
 
-        process = sarge.run(cmd, env=env, stdout=Capture())
+        process = sarge.run(cmd, env=env, stdout=Capture(), stderr=Capture())
+        if process.returncode != 0:
+            raise Exception(process.stderr.readlines())
 
         for line in process.stdout:
             match = self.tagged_tasks_re.match(line)
@@ -109,10 +168,18 @@ class PlaybookRunner(object):
         this_path = py.path.local(__file__)
         callback_plugin_path = this_path.dirpath('callback_plugin')
 
+        roles_path = []
+        roles_path.append(str(self.playbook.installed_roles_path))
+
+        if self.playbook.role_path:
+            roles_path.append(str(self.playbook.role_path.dirpath()))
+
         env = dict(
             PYTHONUNBUFFERED='1',
             ANSIBLE_CALLBACK_PLUGINS=str(callback_plugin_path),
-            ANSIBLE_CALLBACK_WHITELIST='goodplay')
+            ANSIBLE_CALLBACK_WHITELIST='goodplay',
+            ANSIBLE_ROLES_PATH=os.pathsep.join(roles_path),
+        )
 
         cmd = sarge.shell_format(
             'ansible-playbook --verbose -i {0} {1}',

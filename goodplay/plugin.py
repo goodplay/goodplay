@@ -29,17 +29,21 @@ class AnsiblePlaybook(pytest.File):
         self.playbook = ansible_support.Playbook(
             self.playbook_path, self.inventory_path)
 
-        already_seen_test_names = set()
-        for task in self.playbook.tasks(with_tag='test'):
-            test_name = task.name
+        try:
+            already_seen_test_names = set()
+            for task in self.playbook.tasks(with_tag='test'):
+                test_name = task.name
 
-            if test_name in already_seen_test_names:
-                raise ValueError(
-                    '{0!r} contains tests with non-unique name {1!r}'.format(
-                        self, str(test_name)))
-            already_seen_test_names.add(test_name)
+                if test_name in already_seen_test_names:
+                    raise ValueError(
+                        '{0!r} contains tests with non-unique name {1!r}'.format(
+                            self, str(test_name)))
+                already_seen_test_names.add(test_name)
 
-            yield AnsibleTestTask(task, self)
+                yield AnsibleTestTask(task, self)
+        finally:
+            if self.config.option.collectonly:
+                self.playbook.release()
 
     def setup(self):
         self.runner = self.playbook.create_runner()
@@ -47,6 +51,8 @@ class AnsiblePlaybook(pytest.File):
 
     def teardown(self):
         self.runner.wait()
+
+        self.playbook.release()
 
         if self.runner.failures:
             pytest.fail('\n'.join(self.runner.failures))
