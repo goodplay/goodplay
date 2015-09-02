@@ -53,7 +53,7 @@ class Playbook(object):
         # TODO: test for this playbook being contained in a role tests directory
         #       and provide role path to ansible
         self.installed_roles_path = py.path.local.mkdtemp()
-        self.install_dependencies()
+        self.install_all_dependencies()
 
     @property
     def role_path(self):
@@ -66,8 +66,9 @@ class Playbook(object):
                     return potential_role_path
                 break
 
-    def install_dependencies(self):
+    def install_all_dependencies(self):
         self.install_role_dependencies()
+        self.install_soft_dependencies()
 
     def install_role_dependencies(self):
         if not self.role_path:
@@ -81,6 +82,22 @@ class Playbook(object):
             requirements_file = self.installed_roles_path.join('requirements')
             requirements_file.write('\n'.join(role_dependencies))
 
+            env = dict(PYTHONUNBUFFERED='1')
+
+            cmd = sarge.shell_format(
+                'ansible-galaxy install --force --role-file {0} --roles-path {1}',
+                str(requirements_file),
+                str(self.installed_roles_path))
+
+            process = sarge.run(cmd, env=env, stdout=Capture(), stderr=Capture())
+            print ''.join(process.stdout.readlines())
+            if process.returncode != 0:
+                raise Exception(process.stderr.readlines())
+
+    def install_soft_dependencies(self):
+        requirements_file = self.playbook_path.dirpath('requirements.yml')
+
+        if requirements_file.check(file=1):
             env = dict(PYTHONUNBUFFERED='1')
 
             cmd = sarge.shell_format(
