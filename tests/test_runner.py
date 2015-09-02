@@ -24,6 +24,22 @@ def test_passed_on_non_changed_task(testdir):
     assert result.countoutcomes() == [1, 0, 0]
 
 
+def test_passed_on_previously_changed_non_test_task(testdir):
+    result = create_playbook_and_run(testdir, '''---
+- hosts: 127.0.0.1
+  tasks:
+    - name: intentionally changed task
+      ping:
+      changed_when: True
+
+    - name: task1
+      ping:
+      tags: test
+''')
+
+    assert result.countoutcomes() == [1, 0, 0]
+
+
 def test_passed_on_previously_skipped_non_test_task(testdir):
     result = create_playbook_and_run(testdir, '''---
 - hosts: 127.0.0.1

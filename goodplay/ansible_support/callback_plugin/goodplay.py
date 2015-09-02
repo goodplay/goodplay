@@ -97,12 +97,12 @@ class CallbackModule(CallbackBase):
         self.handle_failed_result(host, res)
 
     def runner_on_ok(self, host, res):
-        failed = res.get('changed') or res.get('rc', 0) != 0
+        changed = res.get('changed')
 
-        if failed:
-            self.handle_failed_result(host, res)
+        if changed:
+            self.handle_changed_result(host, res)
         else:
-            self.handle_passed_result(host, res)
+            self.handle_non_changed_result(host, res)
 
     def runner_on_skipped(self, host, item=None):
         self.handle_skipped_result(host)
@@ -126,7 +126,11 @@ class CallbackModule(CallbackBase):
 
         return 'skipped'
 
-    def handle_passed_result(self, host, res):
+    def handle_changed_result(self, host, res):
+        if self.is_test_task(self.task):
+            self.per_host_outcomes[host] = dict(outcome='failed', res=res)
+
+    def handle_non_changed_result(self, host, res):
         if self.is_test_task(self.task):
             self.per_host_outcomes[host] = dict(outcome='passed', res=res)
 
