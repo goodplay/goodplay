@@ -30,9 +30,10 @@ def create_role(
 
     # create role tasks
     role_path.join('tasks', 'main.yml').write('''---
-- ping:
-  when: False
-''', ensure=True)
+- file:
+    path: "{0!s}"
+    state: touch
+'''.format(role_path.join('.run')), ensure=True)
 
     if test_playbook:
         # create role tests
@@ -70,10 +71,12 @@ def test_passed_on_selfcontained_role(testdir):
 
 - hosts: 127.0.0.1
   tasks:
-    - name: task1
-      ping:
+    - name: assert role1 run
+      file:
+        path: "{0!s}"
+        state: file
       tags: test
-''')
+'''.format(local_role_base_path.join('role1', '.run')))
 
     result = run(testdir)
     assert result.countoutcomes() == [1, 0, 0]
@@ -91,13 +94,24 @@ def test_passed_on_role_with_dependent_role_beside(testdir):
 
 - hosts: 127.0.0.1
   tasks:
-    - name: task1
-      ping:
+    - name: assert role1 run
+      file:
+        path: "{0!s}"
+        state: file
       tags: test
-''', dependencies=[role1_url])
+
+    - name: assert role2 run
+      file:
+        path: "{1!s}"
+        state: file
+      tags: test
+'''.format(
+        local_role_base_path.join('role1', '.run'),
+        local_role_base_path.join('role2', '.run')
+    ), dependencies=[role1_url])
 
     result = run(testdir)
-    assert result.countoutcomes() == [1, 0, 0]
+    assert result.countoutcomes() == [2, 0, 0]
 
 
 def test_passed_on_role_with_multi_level_dependent_role_beside(testdir):
@@ -116,13 +130,31 @@ def test_passed_on_role_with_multi_level_dependent_role_beside(testdir):
 
 - hosts: 127.0.0.1
   tasks:
-    - name: task1
-      ping:
+    - name: assert role1 run
+      file:
+        path: "{0!s}"
+        state: file
       tags: test
-''', dependencies=[role2_url])
+
+    - name: assert role2 run
+      file:
+        path: "{1!s}"
+        state: file
+      tags: test
+
+    - name: assert role3 run
+      file:
+        path: "{2!s}"
+        state: file
+      tags: test
+'''.format(
+        local_role_base_path.join('role1', '.run'),
+        local_role_base_path.join('role2', '.run'),
+        local_role_base_path.join('role3', '.run')
+    ), dependencies=[role2_url])
 
     result = run(testdir)
-    assert result.countoutcomes() == [1, 0, 0]
+    assert result.countoutcomes() == [3, 0, 0]
 
 
 def test_passed_on_role_with_external_dependent_role(testdir):
@@ -138,13 +170,24 @@ def test_passed_on_role_with_external_dependent_role(testdir):
 
 - hosts: 127.0.0.1
   tasks:
-    - name: task1
-      ping:
+    - name: assert role1 run
+      file:
+        path: "{0!s}"
+        state: file
       tags: test
-''', dependencies=[role1_url])
+
+    - name: assert role2 run
+      file:
+        path: "{1!s}"
+        state: file
+      tags: test
+'''.format(
+        external_role_base_path.join('role1', '.run'),
+        local_role_base_path.join('role2', '.run')
+    ), dependencies=[role1_url])
 
     result = run(testdir)
-    assert result.countoutcomes() == [1, 0, 0]
+    assert result.countoutcomes() == [2, 0, 0]
 
 
 def test_passed_on_role_with_multi_level_external_dependent_role(testdir):
@@ -164,13 +207,31 @@ def test_passed_on_role_with_multi_level_external_dependent_role(testdir):
 
 - hosts: 127.0.0.1
   tasks:
-    - name: task1
-      ping:
+    - name: assert role1 run
+      file:
+        path: "{0!s}"
+        state: file
       tags: test
-''', dependencies=[role2_url])
+
+    - name: assert role2 run
+      file:
+        path: "{1!s}"
+        state: file
+      tags: test
+
+    - name: assert role3 run
+      file:
+        path: "{2!s}"
+        state: file
+      tags: test
+'''.format(
+        external_role_base_path.join('role1', '.run'),
+        external_role_base_path.join('role2', '.run'),
+        local_role_base_path.join('role3', '.run')
+    ), dependencies=[role2_url])
 
     result = run(testdir)
-    assert result.countoutcomes() == [1, 0, 0]
+    assert result.countoutcomes() == [3, 0, 0]
 
 
 def test_failed_on_unresolvable_role(testdir):

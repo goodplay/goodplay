@@ -89,7 +89,7 @@ class Playbook(object):
                 str(self.installed_roles_path))
 
             process = sarge.run(cmd, env=env, stdout=Capture(), stderr=Capture())
-            print '\n'.join(process.stdout.readlines())
+            print ''.join(process.stdout.readlines())
             if process.returncode != 0:
                 raise Exception(process.stderr.readlines())
 
