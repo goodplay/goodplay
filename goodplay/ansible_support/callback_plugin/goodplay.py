@@ -115,6 +115,9 @@ class CallbackModule(CallbackBase):
     def reset_per_host_outcomes(self):
         self.per_host_outcomes.clear()
 
+    def add_per_host_outcome(self, host, outcome, res=None):
+        self.per_host_outcomes[host] = dict(outcome=outcome, res=res)
+
     def final_test_task_outcome(self):
         if self.per_host_outcomes:
             outcomes = \
@@ -128,18 +131,18 @@ class CallbackModule(CallbackBase):
 
     def handle_changed_result(self, host, res):
         if self.is_test_task(self.task):
-            self.per_host_outcomes[host] = dict(outcome='failed', res=res)
+            self.add_per_host_outcome(host, 'failed', res)
 
     def handle_non_changed_result(self, host, res):
         if self.is_test_task(self.task):
-            self.per_host_outcomes[host] = dict(outcome='passed', res=res)
+            self.add_per_host_outcome(host, 'passed', res)
 
     def handle_skipped_result(self, host):
         if self.is_test_task(self.task):
-            self.per_host_outcomes[host] = dict(outcome='skipped')
+            self.add_per_host_outcome(host, 'skipped')
 
     def handle_failed_result(self, host, res):
         if self.is_test_task(self.task):
-            self.per_host_outcomes[host] = dict(outcome='failed', res=res)
+            self.add_per_host_outcome(host, 'failed', res)
         else:
             self.send_event('error', message=str(res))
