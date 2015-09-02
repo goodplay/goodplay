@@ -118,10 +118,9 @@ class Playbook(object):
 
     def tasks(self, with_tag):
         roles_path = []
-        roles_path.append(str(self.installed_roles_path))
-
         if self.role_path:
             roles_path.append(str(self.role_path.dirpath()))
+        roles_path.append(str(self.installed_roles_path))
 
         env = dict(
             PYTHONUNBUFFERED='1',
@@ -186,10 +185,9 @@ class PlaybookRunner(object):
         callback_plugin_path = this_path.dirpath('callback_plugin')
 
         roles_path = []
-        roles_path.append(str(self.playbook.installed_roles_path))
-
         if self.playbook.role_path:
             roles_path.append(str(self.playbook.role_path.dirpath()))
+        roles_path.append(str(self.playbook.installed_roles_path))
 
         env = dict(
             PYTHONUNBUFFERED='1',

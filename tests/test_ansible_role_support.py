@@ -323,6 +323,141 @@ def test_passed_on_role_with_multi_level_external_soft_dependent_role(testdir):
     assert result.countoutcomes() == [3, 0, 0]
 
 
+def test_dependency_beside_takes_precedence_over_soft_dependency(testdir):
+    external_role_base_path = testdir.tmpdir.join('external-role-base')
+    local_role_base_path = testdir.tmpdir.join('local-role-base')
+
+    create_role(local_role_base_path, 'role1')
+    role1soft_url = create_role(external_role_base_path, 'role1soft')
+
+    create_role(local_role_base_path, 'role2', '''---
+- hosts: 127.0.0.1
+  roles:
+    - role: role1
+    - role: role2
+
+- hosts: 127.0.0.1
+  tasks:
+    - name: assert role1 run
+      file:
+        path: "{0!s}"
+        state: file
+      tags: test
+
+    - name: assert role1soft not run
+      file:
+        path: "{1!s}"
+        state: absent
+      tags: test
+
+    - name: assert role2 run
+      file:
+        path: "{2!s}"
+        state: file
+      tags: test
+'''.format(
+        local_role_base_path.join('role1', '.run'),
+        external_role_base_path.join('role1soft', '.run'),
+        local_role_base_path.join('role2', '.run')
+    ), dependencies=[])
+
+    local_role_base_path.join('role2', 'tests', 'requirements.yml').write('''---
+- name: role1
+  src: "{0!s}"
+'''.format(role1soft_url), ensure=True)
+
+    result = run(testdir)
+    assert result.countoutcomes() == [3, 0, 0]
+
+
+def test_dependency_beside_takes_precedence_over_role_dependency(testdir):
+    external_role_base_path = testdir.tmpdir.join('external-role-base')
+    local_role_base_path = testdir.tmpdir.join('local-role-base')
+
+    create_role(local_role_base_path, 'role1')
+    role1external_url = create_role(external_role_base_path, 'role1')
+
+    create_role(local_role_base_path, 'role2', '''---
+- hosts: 127.0.0.1
+  roles:
+    - role: role2
+
+- hosts: 127.0.0.1
+  tasks:
+    - name: assert role1 run
+      file:
+        path: "{0!s}"
+        state: file
+      tags: test
+
+    - name: assert role1external not run
+      file:
+        path: "{1!s}"
+        state: absent
+      tags: test
+
+    - name: assert role2 run
+      file:
+        path: "{2!s}"
+        state: file
+      tags: test
+'''.format(
+        local_role_base_path.join('role1', '.run'),
+        external_role_base_path.join('role1', '.run'),
+        local_role_base_path.join('role2', '.run')
+    ), dependencies=[role1external_url])
+
+    result = run(testdir)
+    assert result.countoutcomes() == [3, 0, 0]
+
+
+def test_soft_dependency_takes_precedence_over_role_dependency(testdir):
+    external_role_base_path = testdir.tmpdir.join('external-role-base')
+    local_role_base_path = testdir.tmpdir.join('local-role-base')
+
+    role1_url = create_role(external_role_base_path, 'role1')
+    role1soft_url = create_role(external_role_base_path, 'role1soft')
+
+    create_role(local_role_base_path, 'role2', '''---
+- hosts: 127.0.0.1
+  roles:
+    - role: role1
+    - role: role2
+
+- hosts: 127.0.0.1
+  tasks:
+    - name: assert role1 not run
+      file:
+        path: "{0!s}"
+        state: absent
+      tags: test
+
+    - name: assert role1soft run
+      file:
+        path: "{1!s}"
+        state: file
+      tags: test
+
+    - name: assert role2 run
+      file:
+        path: "{2!s}"
+        state: file
+      tags: test
+'''.format(
+        external_role_base_path.join('role1', '.run'),
+        external_role_base_path.join('role1soft', '.run'),
+        local_role_base_path.join('role2', '.run')
+    ), dependencies=[role1_url])
+
+    local_role_base_path.join('role2', 'tests', 'requirements.yml').write('''---
+- name: role1
+  src: "{0!s}"
+'''.format(role1soft_url), ensure=True)
+
+    result = run(testdir)
+    assert result.countoutcomes() == [3, 0, 0]
+
+
 def test_failed_on_unresolvable_role(testdir):
     local_role_base_path = testdir.tmpdir.join('local-role-base')
 
