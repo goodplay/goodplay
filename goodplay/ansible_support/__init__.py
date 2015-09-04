@@ -82,14 +82,12 @@ class Playbook(object):
             requirements_file = self.installed_roles_path.join('requirements')
             requirements_file.write('\n'.join(role_dependencies))
 
-            env = dict(PYTHONUNBUFFERED='1')
-
             cmd = sarge.shell_format(
                 'ansible-galaxy install --force --role-file {0} --roles-path {1}',
                 str(requirements_file),
                 str(self.installed_roles_path))
 
-            process = sarge.run(cmd, env=env, stdout=Capture(), stderr=Capture())
+            process = sarge.run(cmd, stdout=Capture(), stderr=Capture())
             print ''.join(process.stdout.readlines())
             if process.returncode != 0:
                 raise Exception(process.stderr.readlines())
@@ -98,14 +96,12 @@ class Playbook(object):
         requirements_file = self.playbook_path.dirpath('requirements.yml')
 
         if requirements_file.check(file=1):
-            env = dict(PYTHONUNBUFFERED='1')
-
             cmd = sarge.shell_format(
                 'ansible-galaxy install --force --role-file {0} --roles-path {1}',
                 str(requirements_file),
                 str(self.installed_roles_path))
 
-            process = sarge.run(cmd, env=env, stdout=Capture(), stderr=Capture())
+            process = sarge.run(cmd, stdout=Capture(), stderr=Capture())
             print ''.join(process.stdout.readlines())
             if process.returncode != 0:
                 raise Exception(process.stderr.readlines())
@@ -123,7 +119,6 @@ class Playbook(object):
         roles_path.append(str(self.installed_roles_path))
 
         env = dict(
-            PYTHONUNBUFFERED='1',
             ANSIBLE_ROLES_PATH=os.pathsep.join(roles_path),
         )
 
