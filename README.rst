@@ -22,20 +22,20 @@ Documentation
 Documentation is available at https://goodplay.readthedocs.org/.
 
 
-.. |build-status| image:: https://img.shields.io/circleci/project/benjixx/goodplay.svg
+.. |build-status| image:: https://img.shields.io/travis/benjixx/goodplay.svg
     :alt: Build Status
     :scale: 100%
-    :target: https://circleci.com/gh/benjixx/goodplay
+    :target: https://travis-ci.org/benjixx/goodplay
 
 .. |code-climate| image:: https://img.shields.io/codeclimate/github/benjixx/goodplay.svg
     :alt: Code Climate
     :scale: 100%
     :target: https://codeclimate.com/github/benjixx/goodplay
 
-.. |code-coverage| image:: https://img.shields.io/codecov/c/github/benjixx/goodplay.svg
+.. |code-coverage| image:: https://img.shields.io/coveralls/benjixx/goodplay.svg
     :alt: Code Coverage
     :scale: 100%
-    :target: https://codecov.io/github/benjixx/goodplay
+    :target: https://coveralls.io/github/benjixx/goodplay
 
 .. |docs| image:: https://readthedocs.org/projects/goodplay/badge/?version=latest
     :alt: Documentation
