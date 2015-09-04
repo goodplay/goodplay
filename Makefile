@@ -1,4 +1,4 @@
-TOX := $(shell which detox || which tox || which ~/.virtualenvs/tox/bin/tox)
+TOX := $(shell which tox || which ~/.virtualenvs/tox/bin/tox)
 
 all: docs lint test dist
 
@@ -20,7 +20,7 @@ ifeq ($(TOX),)
 endif
 
 clean:
-	rm -rf .tox artifacts build dist docs/build *.egg-info coverage.xml
+	rm -rf .coverage .tox build dist docs/build *.egg-info coverage.xml
 
 dist:
 	python setup.py sdist

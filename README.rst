@@ -32,10 +32,10 @@ Documentation is available at https://goodplay.readthedocs.org/.
     :scale: 100%
     :target: https://codeclimate.com/github/benjixx/goodplay
 
-.. |code-coverage| image:: https://img.shields.io/coveralls/benjixx/goodplay.svg
+.. |code-coverage| image:: https://img.shields.io/codecov/c/github/benjixx/goodplay.svg
     :alt: Code Coverage
     :scale: 100%
-    :target: https://coveralls.io/github/benjixx/goodplay
+    :target: https://codecov.io/github/benjixx/goodplay
 
 .. |docs| image:: https://readthedocs.org/projects/goodplay/badge/?version=latest
     :alt: Documentation

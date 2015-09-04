@@ -3,6 +3,8 @@
 
 .tox/
 __pytest__/
-artifacts/
 build/
 dist/
+
+.coverage
+coverage.xml
