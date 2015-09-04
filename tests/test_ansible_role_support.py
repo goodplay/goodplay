@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
+
+import ansible  # noqa: F401
+import pytest
 import yaml
 
 
 pytest_plugins = 'pytester'
+
+xfail_if_ansible_v2 = pytest.mark.xfail(
+    'ansible.__version__.startswith("2.")',
+    reason='ansible-galaxy in ansible v2 is not ready yet')
 
 
 def create_role(
@@ -82,6 +89,7 @@ def test_passed_on_selfcontained_role(testdir):
     assert result.countoutcomes() == [1, 0, 0]
 
 
+@xfail_if_ansible_v2
 def test_passed_on_role_with_dependent_role_beside(testdir):
     local_role_base_path = testdir.tmpdir.join('local-role-base')
 
@@ -114,6 +122,7 @@ def test_passed_on_role_with_dependent_role_beside(testdir):
     assert result.countoutcomes() == [2, 0, 0]
 
 
+@xfail_if_ansible_v2
 def test_passed_on_role_with_multi_level_dependent_role_beside(testdir):
     local_role_base_path = testdir.tmpdir.join('local-role-base')
 
@@ -157,6 +166,7 @@ def test_passed_on_role_with_multi_level_dependent_role_beside(testdir):
     assert result.countoutcomes() == [3, 0, 0]
 
 
+@xfail_if_ansible_v2
 def test_passed_on_role_with_external_dependent_role(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -190,6 +200,7 @@ def test_passed_on_role_with_external_dependent_role(testdir):
     assert result.countoutcomes() == [2, 0, 0]
 
 
+@xfail_if_ansible_v2
 def test_passed_on_role_with_multi_level_external_dependent_role(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -234,6 +245,7 @@ def test_passed_on_role_with_multi_level_external_dependent_role(testdir):
     assert result.countoutcomes() == [3, 0, 0]
 
 
+@xfail_if_ansible_v2
 def test_passed_on_role_with_external_soft_dependent_role(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -273,6 +285,7 @@ def test_passed_on_role_with_external_soft_dependent_role(testdir):
     assert result.countoutcomes() == [2, 0, 0]
 
 
+@xfail_if_ansible_v2
 def test_passed_on_role_with_multi_level_external_soft_dependent_role(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -323,6 +336,7 @@ def test_passed_on_role_with_multi_level_external_soft_dependent_role(testdir):
     assert result.countoutcomes() == [3, 0, 0]
 
 
+@xfail_if_ansible_v2
 def test_dependency_beside_takes_precedence_over_soft_dependency(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -370,6 +384,7 @@ def test_dependency_beside_takes_precedence_over_soft_dependency(testdir):
     assert result.countoutcomes() == [3, 0, 0]
 
 
+@xfail_if_ansible_v2
 def test_dependency_beside_takes_precedence_over_role_dependency(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -411,6 +426,7 @@ def test_dependency_beside_takes_precedence_over_role_dependency(testdir):
     assert result.countoutcomes() == [3, 0, 0]
 
 
+@xfail_if_ansible_v2
 def test_soft_dependency_takes_precedence_over_role_dependency(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')

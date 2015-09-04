@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import ansible  # noqa: F401
-
 import pytest
 
 
