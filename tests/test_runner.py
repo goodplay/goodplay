@@ -257,3 +257,38 @@ host3 ansible_connection=local
 ''')
 
     assert result.countoutcomes() == [0, 0, 1]
+
+
+def test_failed_on_failing_non_test_task_after_passed_test_task(testdir):
+    result = create_playbook_and_run(testdir, '''---
+- hosts: 127.0.0.1
+  tasks:
+    - name: task1
+      ping:
+      tags: test
+
+    - name: intentionally failed task
+      ping:
+      failed_when: True
+''')
+
+    assert result.countoutcomes() == [1, 0, 1]
+
+
+def test_ansible_stdout_is_forwarded_even_after_final_failing_non_test_task(
+        testdir, capsys):
+    create_playbook_and_run(testdir, '''---
+- hosts: 127.0.0.1
+  tasks:
+    - name: task1
+      ping:
+      tags: test
+
+    - name: intentionally failed task
+      ping:
+      failed_when: True
+''')
+
+    out, _ = capsys.readouterr()
+    ansible_play_recap_part = 'failed=1'
+    assert ansible_play_recap_part in out

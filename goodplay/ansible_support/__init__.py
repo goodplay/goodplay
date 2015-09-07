@@ -125,6 +125,8 @@ class PlaybookRunner(object):
         self.process.wait_events()
 
     def wait(self):
+        self.wait_for_event()
+
         for line in self.process.stdout:
             sys.stdout.write(line)
 
@@ -133,7 +135,7 @@ class PlaybookRunner(object):
         if self.all_test_tasks_skipped:
             self.failures.append('all test tasks have been skipped')
 
-    def wait_for_event(self, event_name, **kwargs):
+    def wait_for_event(self, event_name=None, **kwargs):
         for event in self.receive_events():
             if event['event_name'] == event_name:
                 if all(item in event['data'].items()
