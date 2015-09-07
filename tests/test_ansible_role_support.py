@@ -86,7 +86,7 @@ def test_passed_on_selfcontained_role(testdir):
 '''.format(local_role_base_path.join('role1', '.run')))
 
     result = run(testdir)
-    assert result.countoutcomes() == [1, 0, 0]
+    result.assertoutcome(passed=1)
 
 
 @xfail_if_ansible_v2
@@ -119,7 +119,7 @@ def test_passed_on_role_with_dependent_role_beside(testdir):
     ), dependencies=[role1_url])
 
     result = run(testdir)
-    assert result.countoutcomes() == [2, 0, 0]
+    result.assertoutcome(passed=2)
 
 
 @xfail_if_ansible_v2
@@ -163,7 +163,7 @@ def test_passed_on_role_with_multi_level_dependent_role_beside(testdir):
     ), dependencies=[role2_url])
 
     result = run(testdir)
-    assert result.countoutcomes() == [3, 0, 0]
+    result.assertoutcome(passed=3)
 
 
 @xfail_if_ansible_v2
@@ -197,7 +197,7 @@ def test_passed_on_role_with_external_dependent_role(testdir):
     ), dependencies=[role1_url])
 
     result = run(testdir)
-    assert result.countoutcomes() == [2, 0, 0]
+    result.assertoutcome(passed=2)
 
 
 @xfail_if_ansible_v2
@@ -242,7 +242,7 @@ def test_passed_on_role_with_multi_level_external_dependent_role(testdir):
     ), dependencies=[role2_url])
 
     result = run(testdir)
-    assert result.countoutcomes() == [3, 0, 0]
+    result.assertoutcome(passed=3)
 
 
 @xfail_if_ansible_v2
@@ -282,7 +282,7 @@ def test_passed_on_role_with_external_soft_dependent_role(testdir):
 '''.format(role1_url), ensure=True)
 
     result = run(testdir)
-    assert result.countoutcomes() == [2, 0, 0]
+    result.assertoutcome(passed=2)
 
 
 @xfail_if_ansible_v2
@@ -333,7 +333,7 @@ def test_passed_on_role_with_multi_level_external_soft_dependent_role(testdir):
 '''.format(role2_url), ensure=True)
 
     result = run(testdir)
-    assert result.countoutcomes() == [3, 0, 0]
+    result.assertoutcome(passed=3)
 
 
 @xfail_if_ansible_v2
@@ -381,7 +381,7 @@ def test_dependency_beside_takes_precedence_over_soft_dependency(testdir):
 '''.format(role1soft_url), ensure=True)
 
     result = run(testdir)
-    assert result.countoutcomes() == [3, 0, 0]
+    result.assertoutcome(passed=3)
 
 
 @xfail_if_ansible_v2
@@ -423,7 +423,7 @@ def test_dependency_beside_takes_precedence_over_role_dependency(testdir):
     ), dependencies=[role1external_url])
 
     result = run(testdir)
-    assert result.countoutcomes() == [3, 0, 0]
+    result.assertoutcome(passed=3)
 
 
 @xfail_if_ansible_v2
@@ -471,7 +471,7 @@ def test_soft_dependency_takes_precedence_over_role_dependency(testdir):
 '''.format(role1soft_url), ensure=True)
 
     result = run(testdir)
-    assert result.countoutcomes() == [3, 0, 0]
+    result.assertoutcome(passed=3)
 
 
 def test_failed_on_unresolvable_role(testdir):
@@ -490,4 +490,4 @@ def test_failed_on_unresolvable_role(testdir):
 ''')
 
     result = run(testdir)
-    assert result.countoutcomes() == [0, 0, 1]
+    result.assertoutcome(failed=1)
