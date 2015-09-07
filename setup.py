@@ -7,6 +7,7 @@ from setuptools import setup
 
 install_requires = [
     'ansible>=1.9',
+    'cached-property>=1.2.0',
     'pytest>=2.5',
     'sarge>=0.1.4',
 ]
