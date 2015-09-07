@@ -21,7 +21,7 @@ def test_passed_on_non_changed_task(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [1, 0, 0]
+    result.assertoutcome(passed=1)
 
 
 def test_passed_on_previously_changed_non_test_task(testdir):
@@ -37,7 +37,7 @@ def test_passed_on_previously_changed_non_test_task(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [1, 0, 0]
+    result.assertoutcome(passed=1)
 
 
 def test_passed_on_previously_skipped_non_test_task(testdir):
@@ -53,7 +53,7 @@ def test_passed_on_previously_skipped_non_test_task(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [1, 0, 0]
+    result.assertoutcome(passed=1)
 
 
 def test_passed_on_previously_failed_non_test_task_with_ignore_errors(testdir):
@@ -70,7 +70,7 @@ def test_passed_on_previously_failed_non_test_task_with_ignore_errors(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [1, 0, 0]
+    result.assertoutcome(passed=1)
 
 
 def test_passed_on_multiple_plays(testdir):
@@ -88,7 +88,7 @@ def test_passed_on_multiple_plays(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [2, 0, 0]
+    result.assertoutcome(passed=2)
 
 
 def test_passed_without_gather_facts(testdir):
@@ -101,7 +101,7 @@ def test_passed_without_gather_facts(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [1, 0, 0]
+    result.assertoutcome(passed=1)
 
 
 def test_skipped_outcome_takes_priority_over_passed(testdir):
@@ -122,7 +122,7 @@ def test_skipped_outcome_takes_priority_over_passed(testdir):
 host2 ansible_connection=local
 ''')
 
-    assert result.countoutcomes() == [1, 1, 0]
+    result.assertoutcome(passed=1, skipped=1)
 
 
 def test_skipped_on_previously_failed_non_test_task(testdir):
@@ -138,7 +138,7 @@ def test_skipped_on_previously_failed_non_test_task(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [0, 1, 1]
+    result.assertoutcome(skipped=1, failed=1)
 
 
 def test_skipped_multiple_on_previously_failed_non_test_task(testdir):
@@ -158,7 +158,7 @@ def test_skipped_multiple_on_previously_failed_non_test_task(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [0, 2, 1]
+    result.assertoutcome(skipped=2, failed=1)
 
 
 def test_failed_on_changed_task(testdir):
@@ -171,7 +171,7 @@ def test_failed_on_changed_task(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [0, 0, 1]
+    result.assertoutcome(failed=1)
 
 
 def test_failed_on_failed_task(testdir):
@@ -184,7 +184,7 @@ def test_failed_on_failed_task(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [0, 0, 1]
+    result.assertoutcome(failed=1)
 
 
 def test_failed_on_wait_for_timeout(testdir):
@@ -198,7 +198,7 @@ def test_failed_on_wait_for_timeout(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [0, 0, 1]
+    result.assertoutcome(failed=1)
 
 
 def test_failed_on_unreachable_host_on_gather_facts(testdir):
@@ -210,7 +210,7 @@ def test_failed_on_unreachable_host_on_gather_facts(testdir):
       tags: test
 ''', inventory='unreachable.host.local')
 
-    assert result.countoutcomes() == [0, 1, 1]
+    result.assertoutcome(skipped=1, failed=1)
 
 
 def test_failed_on_single_failed_host(testdir):
@@ -225,7 +225,7 @@ def test_failed_on_single_failed_host(testdir):
 host2 ansible_connection=local
 ''')
 
-    assert result.countoutcomes() == [0, 0, 1]
+    result.assertoutcome(failed=1)
 
 
 def test_failed_on_all_tasks_skipped(testdir):
@@ -237,7 +237,7 @@ def test_failed_on_all_tasks_skipped(testdir):
       tags: test
 ''')
 
-    assert result.countoutcomes() == [0, 1, 1]
+    result.assertoutcome(skipped=1, failed=1)
     assert 'Failed: all test tasks have been skipped' in \
         str(result.getfailures()[0].longrepr)
 
@@ -256,7 +256,7 @@ host2 ansible_connection=local
 host3 ansible_connection=local
 ''')
 
-    assert result.countoutcomes() == [0, 0, 1]
+    result.assertoutcome(failed=1)
 
 
 def test_failed_on_failing_non_test_task_after_passed_test_task(testdir):
@@ -272,11 +272,10 @@ def test_failed_on_failing_non_test_task_after_passed_test_task(testdir):
       failed_when: True
 ''')
 
-    assert result.countoutcomes() == [1, 0, 1]
+    result.assertoutcome(passed=1, failed=1)
 
 
-def test_ansible_stdout_is_forwarded_even_after_final_failing_non_test_task(
-        testdir, capsys):
+def test_ansible_stdout_is_fully_consumed(testdir, capsys):
     create_playbook_and_run(testdir, '''---
 - hosts: 127.0.0.1
   tasks:
