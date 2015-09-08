@@ -3,21 +3,12 @@
 import os
 
 import py.path
-import sarge
 import yaml
 
-from .base import abstractproperty, Capture, PlaybookMixin
+from ..utils.subprocess import run
 
 
-class DependencySupport(PlaybookMixin):
-    @abstractproperty
-    def is_role_test_playbook(self):
-        pass
-
-    @abstractproperty
-    def role_path(self):
-        pass
-
+class DependencySupport(object):
     def initialize(self):
         self.installed_roles_path = py.path.local.mkdtemp()
         self.install_all_dependencies()
@@ -59,12 +50,10 @@ class DependencySupport(PlaybookMixin):
             self.install_roles_from_requirements_file(requirements_file)
 
     def install_roles_from_requirements_file(self, requirements_file):
-        cmd = sarge.shell_format(
+        process = run(
             'ansible-galaxy install --force --role-file {0} --roles-path {1}',
-            str(requirements_file),
-            str(self.installed_roles_path))
+            requirements_file, self.installed_roles_path)
 
-        process = sarge.run(cmd, stdout=Capture(), stderr=Capture())
         print ''.join(process.stdout.readlines())
         if process.returncode != 0:
             raise Exception(process.stderr.readlines())

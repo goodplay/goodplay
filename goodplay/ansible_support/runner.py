@@ -4,9 +4,8 @@ import json
 import sys
 
 import py.path
-import sarge
 
-from .base import Capture
+from ..utils.subprocess import run
 
 
 class PlaybookRunner(object):
@@ -29,12 +28,10 @@ class PlaybookRunner(object):
         )
         env.update(additional_env)
 
-        cmd = sarge.shell_format(
+        self.process = run(
             'ansible-playbook --verbose -i {0} {1}',
-            self.playbook.inventory_path,
-            self.playbook.playbook_path)
-
-        self.process = sarge.run(cmd, env=env, stdout=Capture(), async=True)
+            self.playbook.inventory_path, self.playbook.playbook_path,
+            env=env, async=True)
 
         # wait for subprocess to be responsive
         self.process.wait_events()

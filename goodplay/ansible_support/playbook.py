@@ -2,13 +2,10 @@
 
 import re
 
-import py.path
-import sarge
-
-from .base import Capture
 from .dependency import DependencySupport
 from .role import RoleSupport
 from .runner import PlaybookRunner
+from ..utils.subprocess import run
 
 
 class Playbook(RoleSupport, DependencySupport):
@@ -38,12 +35,11 @@ class Playbook(RoleSupport, DependencySupport):
         return PlaybookRunner(self)
 
     def tasks(self, with_tag):
-        cmd = sarge.shell_format(
+        process = run(
             'ansible-playbook --list-tasks --list-tags -i {0} {1}',
-            str(self.inventory_path),
-            str(self.playbook_path))
+            self.inventory_path, self.playbook_path,
+            env=self.env())
 
-        process = sarge.run(cmd, env=self.env(), stdout=Capture(), stderr=Capture())
         if process.returncode != 0:
             raise Exception(process.stderr.readlines())
 

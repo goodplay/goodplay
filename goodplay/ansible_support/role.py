@@ -2,14 +2,8 @@
 
 from cached_property import cached_property
 
-from .base import PlaybookMixin
 
-
-class RoleSupport(PlaybookMixin):
-    @cached_property
-    def is_role_test_playbook(self):
-        return bool(self.role_path)
-
+class RoleSupport(object):
     @cached_property
     def role_path(self):
         for ancestor_dir in self.playbook_path.parts(reverse=True)[1:]:

@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from abc import ABCMeta, abstractmethod, abstractproperty
-
 import sarge
+
+
+def run(command, *args, **kwargs):
+    if args:
+        command = sarge.shell_format(command, *args)
+
+    process = sarge.run(
+        command, stdout=Capture(), stderr=Capture(), **kwargs)
+
+    return process
 
 
 class Capture(sarge.Capture):
@@ -22,7 +30,3 @@ class Capture(sarge.Capture):
             if not line:
                 break
             yield line
-
-
-class PlaybookMixin(object):
-    __metaclass__ = ABCMeta
