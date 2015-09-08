@@ -36,8 +36,8 @@ class AnsiblePlaybook(pytest.File):
 
                 if test_name in already_seen_test_names:
                     raise ValueError(
-                        '{0!r} contains tests with non-unique name {1!r}'.format(
-                            self, str(test_name)))
+                        '{0!r} contains tests with non-unique name {1!r}'
+                        .format(self, str(test_name)))
                 already_seen_test_names.add(test_name)
 
                 yield AnsibleTestTask(task, self)

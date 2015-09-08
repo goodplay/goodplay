@@ -2,7 +2,7 @@
 
 import yaml
 
-from .playbook import Playbook
+from .playbook import Playbook  # noqa: F401
 
 
 def is_test_playbook_file(path):

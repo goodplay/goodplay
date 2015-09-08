@@ -89,6 +89,29 @@ def test_passed_on_selfcontained_role(testdir):
     result.assertoutcome(passed=1)
 
 
+def test_failed_on_selfcontained_role_without_meta(testdir):
+    local_role_base_path = testdir.tmpdir.join('local-role-base')
+
+    create_role(local_role_base_path, 'role1', '''---
+- hosts: 127.0.0.1
+  roles:
+    - role: role1
+
+- hosts: 127.0.0.1
+  tasks:
+    - name: assert role1 run
+      file:
+        path: "{0!s}"
+        state: file
+      tags: test
+'''.format(local_role_base_path.join('role1', '.run')))
+
+    local_role_base_path.join('role1', 'meta').remove(rec=1)
+
+    result = run(testdir)
+    result.assertoutcome(failed=1)
+
+
 @xfail_if_ansible_v2
 def test_passed_on_role_with_dependent_role_beside(testdir):
     local_role_base_path = testdir.tmpdir.join('local-role-base')

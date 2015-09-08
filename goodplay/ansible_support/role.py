@@ -6,11 +6,11 @@ from cached_property import cached_property
 class RoleSupport(object):
     @cached_property
     def role_path(self):
-        for ancestor_dir in self.playbook_path.parts(reverse=True)[1:]:
-            if ancestor_dir.basename == 'tests':
-                potential_role_path = ancestor_dir.dirpath()
-                potential_meta_path = potential_role_path.join('meta', 'main.yml')
+        for ancestor_path in self.playbook_path.parts(reverse=True)[1:]:
+            if ancestor_path.basename == 'tests':
+                role_path = ancestor_path.dirpath()
+                is_role_path = role_path.join('meta', 'main.yml').check(file=1)
 
-                if potential_meta_path.check(file=1):
-                    return potential_role_path
+                if is_role_path:
+                    return role_path
                 break

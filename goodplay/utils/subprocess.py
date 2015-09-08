@@ -4,8 +4,7 @@ import sarge
 
 
 def run(command, *args, **kwargs):
-    if args:
-        command = sarge.shell_format(command, *args)
+    command = sarge.shell_format(command, *args)
 
     process = sarge.run(
         command, stdout=Capture(), stderr=Capture(), **kwargs)
