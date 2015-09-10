@@ -21,3 +21,4 @@ instructions for digging deeper into what can be accomplished with goodplay.
    user/install
    user/quickstart
    user/advanced
+   user/faq
