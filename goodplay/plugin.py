@@ -46,16 +46,16 @@ class AnsiblePlaybook(pytest.File):
                 self.playbook.release()
 
     def setup(self):
-        self.runner = self.playbook.create_runner()
-        self.runner.run_async()
+        self.playbook_runner = self.playbook.create_runner()
+        self.playbook_runner.run_async()
 
     def teardown(self):
-        self.runner.wait()
+        self.playbook_runner.wait()
 
         self.playbook.release()
 
-        if self.runner.failures:
-            pytest.fail('\n'.join(self.runner.failures))
+        if self.playbook_runner.failures:
+            pytest.fail('\n'.join(self.playbook_runner.failures))
 
 
 class AnsibleTestTask(pytest.Item):
@@ -65,14 +65,14 @@ class AnsibleTestTask(pytest.Item):
         self.task = task
 
     @property
-    def runner(self):
-        return self.parent.runner
+    def playbook_runner(self):
+        return self.parent.playbook_runner
 
     def setup(self):
-        self.runner.wait_for_test_task(self.task)
+        self.playbook_runner.wait_for_test_task(self.task)
 
     def runtest(self):
-        outcome = self.runner.wait_for_test_task_outcome(self.task)
+        outcome = self.playbook_runner.wait_for_test_task_outcome(self.task)
 
         if outcome in ('skipped', None):
             pytest.skip()
