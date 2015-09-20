@@ -2,6 +2,7 @@
 
 import yaml
 
+from .inventory import Inventory  # noqa: F401
 from .playbook import Playbook  # noqa: F401
 
 

@@ -83,6 +83,11 @@ class CallbackModule(CallbackBase):
         else:
             self.handle_non_changed_result(host, res)
 
+    # TODO: remove when ansible #12683 is fixed
+    def v2_runner_on_skipped(self, result):
+        host = result._host.get_name()
+        self.runner_on_skipped(host)
+
     def runner_on_skipped(self, host, item=None):
         self.handle_skipped_result(host)
 

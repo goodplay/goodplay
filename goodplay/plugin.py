@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 import pytest
 
-from goodplay import ansible_support
+from goodplay import ansible_support, docker_support
+
+
+# https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
+logging.captureWarnings(True)
 
 
 def pytest_collect_file(parent, path):
@@ -46,16 +52,28 @@ class AnsiblePlaybook(pytest.File):
                 self.playbook.release()
 
     def setup(self):
+        inventory = ansible_support.Inventory(self.inventory_path)
+        self.docker_runner = docker_support.DockerRunner(
+            self.inventory_path, inventory, self.playbook)
+        self.docker_runner.up()
+
         self.playbook_runner = self.playbook.create_runner()
         self.playbook_runner.run_async()
 
     def teardown(self):
-        self.playbook_runner.wait()
+        if hasattr(self, 'playbook_runner'):
+            self.playbook_runner.wait()
 
         self.playbook.release()
 
-        if self.playbook_runner.failures:
-            pytest.fail('\n'.join(self.playbook_runner.failures))
+        try:
+            self.docker_runner.destroy()
+        finally:
+            self.docker_runner.release()
+
+        if hasattr(self, 'playbook_runner'):
+            if self.playbook_runner.failures:
+                pytest.fail('\n'.join(self.playbook_runner.failures))
 
 
 class AnsibleTestTask(pytest.Item):

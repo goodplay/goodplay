@@ -38,7 +38,8 @@ class DependencySupport(object):
         role_dependencies = role_meta_content.get('dependencies', [])
 
         if role_dependencies:
-            requirements_file = self.installed_roles_path.join('requirements.yml')
+            requirements_file = \
+                self.installed_roles_path.join('requirements.yml')
             requirements_file.write(yaml.dump(role_dependencies))
 
             self.install_roles_from_requirements_file(requirements_file)
@@ -46,12 +47,13 @@ class DependencySupport(object):
     def install_soft_dependencies(self):
         requirements_file = self.playbook_path.dirpath('requirements.yml')
 
-        if requirements_file.check(file=1):
+        if requirements_file.check(file=True):
             self.install_roles_from_requirements_file(requirements_file)
 
     def install_roles_from_requirements_file(self, requirements_file):
         process = run(
-            'ansible-galaxy install -vvvv --force --role-file {0} --roles-path {1}',
+            'ansible-galaxy install -vvvv --force '
+            '--role-file {0} --roles-path {1}',
             requirements_file, self.installed_roles_path)
 
         print ''.join(process.stdout.readlines())

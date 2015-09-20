@@ -29,7 +29,7 @@ class PlaybookRunner(object):
         env.update(additional_env)
 
         self.process = run(
-            'ansible-playbook --verbose -i {0} {1}',
+            'ansible-playbook -vvv -i {0} {1}',
             self.playbook.inventory_path, self.playbook.playbook_path,
             env=env, async=True)
 

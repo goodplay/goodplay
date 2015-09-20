@@ -8,6 +8,7 @@ from setuptools import setup, find_packages
 install_requires = [
     'ansible>=2.0.0',
     'cached-property>=1.2.0',
+    'docker-py>=1.4.0',
     'pytest>=2.5',
     'sarge>=0.1.4',
 ]
@@ -31,7 +32,7 @@ setup(
     license='Apache License 2.0',
 
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'Environment :: Plugins',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
