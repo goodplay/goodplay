@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import ansible  # noqa: F401
 import pytest
 
 
 pytest_plugins = 'pytester'
-
-skip_if_ansible_v1 = pytest.mark.skipif('ansible.__version__.startswith("1.")')
 
 
 def create_playbook_and_collect_items(testdir, playbook):
@@ -216,7 +213,6 @@ def test_multiple_plays_multiple_tests(testdir):
 
 # ansible block support
 
-@skip_if_ansible_v1
 def test_single_play_single_block_no_tests(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -230,7 +226,6 @@ def test_single_play_single_block_no_tests(testdir):
     assert len(items) == 0
 
 
-@skip_if_ansible_v1
 def test_single_play_single_block_single_test(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -246,7 +241,6 @@ def test_single_play_single_block_single_test(testdir):
     assert items[0].name == 'task1'
 
 
-@skip_if_ansible_v1
 def test_single_play_single_block_multiple_tests(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -267,7 +261,6 @@ def test_single_play_single_block_multiple_tests(testdir):
     assert items[1].name == 'task2'
 
 
-@skip_if_ansible_v1
 def test_single_play_multiple_blocks_no_tests(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -285,7 +278,6 @@ def test_single_play_multiple_blocks_no_tests(testdir):
     assert len(items) == 0
 
 
-@skip_if_ansible_v1
 def test_single_play_multiple_blocks_single_test(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -305,7 +297,6 @@ def test_single_play_multiple_blocks_single_test(testdir):
     assert items[0].name == 'task2'
 
 
-@skip_if_ansible_v1
 def test_single_play_multiple_blocks_multiple_tests(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -335,7 +326,6 @@ def test_single_play_multiple_blocks_multiple_tests(testdir):
     assert items[2].name == 'task4'
 
 
-@skip_if_ansible_v1
 def test_multiple_plays_single_block_no_tests(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -355,7 +345,6 @@ def test_multiple_plays_single_block_no_tests(testdir):
     assert len(items) == 0
 
 
-@skip_if_ansible_v1
 def test_multiple_plays_single_block_single_test(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -377,7 +366,6 @@ def test_multiple_plays_single_block_single_test(testdir):
     assert items[0].name == 'task2'
 
 
-@skip_if_ansible_v1
 def test_multiple_plays_single_block_multiple_tests(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -407,7 +395,6 @@ def test_multiple_plays_single_block_multiple_tests(testdir):
     assert items[1].name == 'task4'
 
 
-@skip_if_ansible_v1
 def test_multiple_plays_multiple_blocks_no_tests(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -435,7 +422,6 @@ def test_multiple_plays_multiple_blocks_no_tests(testdir):
     assert len(items) == 0
 
 
-@skip_if_ansible_v1
 def test_multiple_plays_multiple_blocks_single_test(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -465,7 +451,6 @@ def test_multiple_plays_multiple_blocks_single_test(testdir):
     assert items[0].name == 'task4'
 
 
-@skip_if_ansible_v1
 def test_multiple_plays_multiple_blocks_multiple_tests(testdir):
     items, result = create_playbook_and_collect_items(testdir, '''---
 - hosts: all
@@ -510,3 +495,40 @@ def test_multiple_plays_multiple_blocks_multiple_tests(testdir):
     assert items[2].name == 'task4'
     assert items[3].name == 'task5'
     assert items[4].name == 'task6'
+
+
+def test_ignore_test_tasks_in_rescue_block(testdir):
+    items, result = create_playbook_and_collect_items(testdir, '''---
+- hosts: all
+  tasks:
+    - block:
+        - name: task1
+          ping:
+      rescue:
+        - name: task2
+          ping:
+          tags: test
+''')
+
+    result.assertoutcome()
+    assert len(items) == 0
+
+
+def test_ignore_test_tasks_in_always_block(testdir):
+    items, result = create_playbook_and_collect_items(testdir, '''---
+- hosts: all
+  tasks:
+    - block:
+        - name: task1
+          ping:
+      rescue:
+        - name: task2
+          ping:
+      always:
+        - name: task3
+          ping:
+          tags: test
+''')
+
+    result.assertoutcome()
+    assert len(items) == 0

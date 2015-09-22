@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import json
-import multiprocessing
 
-import ansible
-
-
-ANSIBLE_VERSION = tuple(map(int, ansible.__version__.split('.')))
-
-if ANSIBLE_VERSION >= (2, 0):
-    from ansible.plugins.callback import CallbackBase
-else:
-    CallbackBase = object
+from ansible.plugins.callback import CallbackBase
 
 
 class CallbackModule(CallbackBase):
@@ -26,26 +17,14 @@ class CallbackModule(CallbackBase):
         self.previously_ended_task = None
         self.task = None
 
-        # need to use shared dict here as ansible v1 runner callbacks
-        # are called from different processes (depending on number of forks)
-        self.per_host_outcomes = multiprocessing.Manager().dict()
-
-    def display(self, msg):
-        if ANSIBLE_VERSION >= (2, 0):
-            self._display.display(msg)
-        else:
-            from ansible.callbacks import display
-            display(msg)
+        self.reset_per_host_outcomes()
 
     # ansible playbook-specific callback methods
 
     def v2_playbook_on_task_start(self, task, is_conditional):
-        # ensure task is available as attribute on instance as in ansible v1
+        # ensure task is available as attribute on instance
         self.task = task
 
-        self.playbook_on_task_start(task.name, is_conditional)
-
-    def playbook_on_task_start(self, name, is_conditional):
         self.check_and_handle_playbook_on_task_end()
 
         if self.is_test_task(self.task):
@@ -70,7 +49,7 @@ class CallbackModule(CallbackBase):
         event_line_prefix = 'GOODPLAY => '
         event_json = json.dumps(dict(event_name=event_name, data=kwargs))
         msg = event_line_prefix + event_json
-        self.display(msg)
+        self._display.display(msg)
 
     def playbook_on_task_end(self, task):
         if self.is_test_task(task):
@@ -82,10 +61,10 @@ class CallbackModule(CallbackBase):
         self.send_event('test-task-end', name=task.name, outcome=outcome)
         self.reset_per_host_outcomes()
 
-    def playbook_on_play_start(self, name):
+    def v2_playbook_on_play_start(self, play):
         self.check_and_handle_playbook_on_task_end()
 
-    def playbook_on_stats(self, stats):
+    def v2_playbook_on_stats(self, stats):
         self.check_and_handle_playbook_on_task_end()
 
     # ansible runner-specific callback methods
@@ -113,7 +92,7 @@ class CallbackModule(CallbackBase):
     # handle results and outcome
 
     def reset_per_host_outcomes(self):
-        self.per_host_outcomes.clear()
+        self.per_host_outcomes = {}
 
     def add_per_host_outcome(self, host, outcome, res=None):
         self.per_host_outcomes[host] = dict(outcome=outcome, res=res)

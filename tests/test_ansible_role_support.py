@@ -2,15 +2,14 @@
 
 import subprocess
 
-import ansible  # noqa: F401
 import pytest
 import yaml
 
 
 pytest_plugins = 'pytester'
 
-xfail_if_ansible_v2 = pytest.mark.xfail(
-    'ansible.__version__.startswith("2.")',
+xfail_ansible_galaxy_not_ready_yet = pytest.mark.xfail(
+    run=False,
     reason='ansible-galaxy in ansible v2 is not ready yet')
 
 
@@ -31,7 +30,7 @@ def create_role(
         'galaxy_info': {
             'author': 'John Doe'
         },
-        'dependencies': dependencies,
+        'dependencies': [dict(src=dependency) for dependency in dependencies],
     }
     role_path.join('meta', 'main.yml').write(yaml.dump(meta_info), ensure=True)
 
@@ -112,7 +111,7 @@ def test_failed_on_selfcontained_role_without_meta(testdir):
     result.assertoutcome(failed=1)
 
 
-@xfail_if_ansible_v2
+@xfail_ansible_galaxy_not_ready_yet
 def test_passed_on_role_with_dependent_role_beside(testdir):
     local_role_base_path = testdir.tmpdir.join('local-role-base')
 
@@ -145,7 +144,7 @@ def test_passed_on_role_with_dependent_role_beside(testdir):
     result.assertoutcome(passed=2)
 
 
-@xfail_if_ansible_v2
+@xfail_ansible_galaxy_not_ready_yet
 def test_passed_on_role_with_multi_level_dependent_role_beside(testdir):
     local_role_base_path = testdir.tmpdir.join('local-role-base')
 
@@ -189,7 +188,7 @@ def test_passed_on_role_with_multi_level_dependent_role_beside(testdir):
     result.assertoutcome(passed=3)
 
 
-@xfail_if_ansible_v2
+@xfail_ansible_galaxy_not_ready_yet
 def test_passed_on_role_with_external_dependent_role(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -223,7 +222,7 @@ def test_passed_on_role_with_external_dependent_role(testdir):
     result.assertoutcome(passed=2)
 
 
-@xfail_if_ansible_v2
+@xfail_ansible_galaxy_not_ready_yet
 def test_passed_on_role_with_multi_level_external_dependent_role(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -268,7 +267,7 @@ def test_passed_on_role_with_multi_level_external_dependent_role(testdir):
     result.assertoutcome(passed=3)
 
 
-@xfail_if_ansible_v2
+@xfail_ansible_galaxy_not_ready_yet
 def test_passed_on_role_with_external_soft_dependent_role(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -308,7 +307,7 @@ def test_passed_on_role_with_external_soft_dependent_role(testdir):
     result.assertoutcome(passed=2)
 
 
-@xfail_if_ansible_v2
+@xfail_ansible_galaxy_not_ready_yet
 def test_passed_on_role_with_multi_level_external_soft_dependent_role(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -359,7 +358,7 @@ def test_passed_on_role_with_multi_level_external_soft_dependent_role(testdir):
     result.assertoutcome(passed=3)
 
 
-@xfail_if_ansible_v2
+@xfail_ansible_galaxy_not_ready_yet
 def test_dependency_beside_takes_precedence_over_soft_dependency(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -407,7 +406,7 @@ def test_dependency_beside_takes_precedence_over_soft_dependency(testdir):
     result.assertoutcome(passed=3)
 
 
-@xfail_if_ansible_v2
+@xfail_ansible_galaxy_not_ready_yet
 def test_dependency_beside_takes_precedence_over_role_dependency(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')
@@ -449,7 +448,7 @@ def test_dependency_beside_takes_precedence_over_role_dependency(testdir):
     result.assertoutcome(passed=3)
 
 
-@xfail_if_ansible_v2
+@xfail_ansible_galaxy_not_ready_yet
 def test_soft_dependency_takes_precedence_over_role_dependency(testdir):
     external_role_base_path = testdir.tmpdir.join('external-role-base')
     local_role_base_path = testdir.tmpdir.join('local-role-base')

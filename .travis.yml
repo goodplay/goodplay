@@ -2,8 +2,7 @@ language: python
 python: 2.7
 
 env:
-  - TOXENV=py27-ansible19
-  - TOXENV=py27-ansible20
+  - TOXENV=py27
 
 install:
   - pip install codecov tox

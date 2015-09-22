@@ -20,7 +20,7 @@ ifeq ($(TOX),)
 endif
 
 clean:
-	rm -rf .coverage .tox build dist docs/build *.egg-info coverage.xml
+	rm -rf .cache .coverage .tox build dist docs/build *.egg-info coverage.xml
 
 dist:
 	python setup.py sdist

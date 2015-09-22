@@ -10,10 +10,9 @@ from ..utils.subprocess import run
 
 class Playbook(RoleSupport, DependencySupport):
     tagged_tasks_re = re.compile(r'''
-        ^\ {4}             # 4 spaces at the beginning of line
-        (?:\ {2}TASK:\ )?  # additional task prefix used in ansible v2
+        (?:^\ {6}TASK:\ )  # 6 spaces at the beginning of line plus task prefix
         (?P<name>.*?)      # group: task name
-        (?:\ {4}|\t)       # delimiter (spaces in ansible v2, tab in v1)
+        (?:\ {4})          # 4 space delimiter
         TAGS:\ \[          # task tags prefix
         (?P<tags>.+?)      # group: task tags
         \]$                # task tags suffix at the end of line

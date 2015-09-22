@@ -2,11 +2,11 @@
 
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 install_requires = [
-    'ansible>=1.9',
+    'ansible>=2.0.0',
     'cached-property>=1.2.0',
     'pytest>=2.5',
     'sarge>=0.1.4',
@@ -49,11 +49,7 @@ setup(
         ]
     },
 
-    packages=[
-        'goodplay',
-        'goodplay.ansible_support',
-        'goodplay.ansible_support.callback_plugin',
-    ],
+    packages=find_packages(),
     install_requires=install_requires,
     zip_safe=False,
 )
