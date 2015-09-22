@@ -34,13 +34,15 @@ class Playbook(RoleSupport, DependencySupport):
         return PlaybookRunner(self)
 
     def tasks(self, with_tag):
+        __tracebackhide__ = True
+
         process = run(
             'ansible-playbook --list-tasks --list-tags -i {0} {1}',
             self.inventory_path, self.playbook_path,
             env=self.env())
 
         if process.returncode != 0:
-            raise Exception(process.stderr.readlines())
+            raise Exception(process.stderr.read())
 
         for line in process.stdout:
             match = self.tagged_tasks_re.match(line)

@@ -15,6 +15,23 @@ def create_playbook_and_collect_items(testdir, playbook):
     return items, result
 
 
+def test_ansible_error_message_is_forwarded(testdir):
+    _, result = create_playbook_and_collect_items(testdir, '''---
+- hosts: 127.0.0.1
+  tasks:
+    - name: task1
+      unknownmodule:
+      tags: test
+''')
+
+    result.assertoutcome(failed=1)
+
+    assert result.getfailures()[0].__class__.__name__ == 'CollectReport'
+
+    assert 'Exception: ERROR! no action detected in task' \
+        in str(result.getfailures()[0].longrepr)
+
+
 def test_nothing_collected_when_inventory_missing(testdir):
     testdir.makefile('.yml', test_playbook='''---
 - hosts: all
