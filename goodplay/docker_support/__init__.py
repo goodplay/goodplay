@@ -82,7 +82,7 @@ class DockerRunner(object):
                 hostname=hostname,
                 detach=True,
                 tty=True,
-                host_config=self.client.create_host_config()
+                host_config=self.client.create_host_config(privileged=True)
             )
             self.client.start(container)
             self.containers.append(container)
