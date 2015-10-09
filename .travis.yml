@@ -9,6 +9,9 @@ services:
 env:
   - TOXENV=py27
 
+before_install:
+  - sudo apt-get remove apparmor
+
 install:
   - pip install codecov tox
 
