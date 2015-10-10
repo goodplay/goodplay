@@ -10,11 +10,11 @@ env:
   - TOXENV=py27
 
 install:
-  # disable apparmor docker profile
+  # place apparmor docker profile in complain mode
   # to workaround https://github.com/travis-ci/travis-ci/issues/4661
-  - sudo mkdir -p /etc/apparmor.d/disable
-  - sudo ln -s /etc/apparmor.d/docker /etc/apparmor.d/disable/
-  - sudo apparmor_parser -R /etc/apparmor.d/docker
+  - sudo apt-get -y update
+  - sudo apt-get -y install apparmor-utils
+  - sudo aa-complain /etc/apparmor.d/docker
 
   - pip install codecov tox
 
