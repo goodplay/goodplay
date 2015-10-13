@@ -1,7 +1,7 @@
 goodplay
 ========
 
-|version| |build-status| |docs| |license| |code-climate| |code-coverage| |download-stats| |requirements-status|
+|version| |build-status| |docs| |license| |code-climate| |code-coverage| |requirements-status|
 
 goodplay is an Apache-2.0 licensed py.test plugin for testing ansible roles and playbooks.
 
@@ -41,11 +41,6 @@ Documentation is available at http://docs.goodplay.io/.
     :alt: Documentation
     :scale: 100%
     :target: http://docs.goodplay.io/
-
-.. |download-stats| image:: https://img.shields.io/pypi/dm/goodplay.svg
-    :alt: Download Stats
-    :scale: 100%
-    :target: https://pypi.python.org/pypi/goodplay
 
 .. |license| image:: https://img.shields.io/pypi/l/goodplay.svg
     :alt: License
