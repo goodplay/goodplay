@@ -22,6 +22,7 @@ class DockerRunner(object):
     @cached_property
     def client(self):
         return docker.Client(
+            version='auto',
             **docker.utils.kwargs_from_env(assert_hostname=False))
 
     def create_extended_inventory_path(self):

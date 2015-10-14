@@ -20,6 +20,7 @@ def docker_client(mocker):
     )
 
     client = docker.Client(
+        version='auto',
         **docker.utils.kwargs_from_env(assert_hostname=False))
 
     for proxy_method_name in proxy_method_names:
