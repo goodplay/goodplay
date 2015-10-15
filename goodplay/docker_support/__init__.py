@@ -46,7 +46,7 @@ class DockerRunner(object):
 
         return extended_inventory_path
 
-    def up(self):
+    def setup(self):
         self.pull_required_images()
 
         inventory_lines = []
@@ -127,7 +127,7 @@ class DockerRunner(object):
     def release(self):
         self.extended_inventory_path.remove()
 
-    def destroy(self):
+    def teardown(self):
         # kill and remove containers
         for container in self.running_containers:
             self.client.remove_container(container, force=True)

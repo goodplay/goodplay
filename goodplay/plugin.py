@@ -55,7 +55,7 @@ class AnsiblePlaybook(pytest.File):
         inventory = ansible_support.Inventory(self.inventory_path)
         self.docker_runner = docker_support.DockerRunner(
             self.inventory_path, inventory, self.playbook)
-        self.docker_runner.up()
+        self.docker_runner.setup()
 
         self.playbook_runner = self.playbook.create_runner()
         self.playbook_runner.run_async()
@@ -67,7 +67,7 @@ class AnsiblePlaybook(pytest.File):
         self.playbook.release()
 
         try:
-            self.docker_runner.destroy()
+            self.docker_runner.teardown()
         finally:
             self.docker_runner.release()
 
