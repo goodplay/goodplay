@@ -28,7 +28,7 @@ setup(
     maintainer='Benjamin Schwarze',
     maintainer_email='benjamin.schwarze@mailboxd.de',
 
-    url='https://goodplay.readthedocs.org/',
+    url='https://goodplay.io/',
     license='Apache License 2.0',
 
     classifiers=[
