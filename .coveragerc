@@ -3,6 +3,7 @@ branch = True
 include =
     goodplay/*
     */site-packages/goodplay/*
+parallel = True
 
 [paths]
 source =
