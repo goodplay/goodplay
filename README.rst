@@ -19,7 +19,7 @@ To install goodplay, simply:
 Documentation
 -------------
 
-Documentation is available at http://docs.goodplay.io/.
+Documentation is available at https://goodplay.io/.
 
 
 .. |build-status| image:: https://img.shields.io/travis/benjixx/goodplay.svg
@@ -40,7 +40,7 @@ Documentation is available at http://docs.goodplay.io/.
 .. |docs| image:: https://readthedocs.org/projects/goodplay/badge/?version=latest
     :alt: Documentation
     :scale: 100%
-    :target: http://docs.goodplay.io/
+    :target: https://goodplay.io/
 
 .. |license| image:: https://img.shields.io/pypi/l/goodplay.svg
     :alt: License
