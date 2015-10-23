@@ -51,6 +51,10 @@ setup(
     },
 
     packages=find_packages(),
+    package_data={
+        '': ['ansible_support/callback_plugin/goodplay.py'],
+    },
+
     install_requires=install_requires,
     zip_safe=False,
 )

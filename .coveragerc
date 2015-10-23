@@ -1,6 +1,13 @@
 [run]
 branch = True
-source = goodplay
+include =
+    goodplay/*
+    */site-packages/goodplay/*
+
+[paths]
+source =
+    goodplay/
+    */site-packages/goodplay/
 
 [report]
 exclude_lines =

@@ -10,6 +10,7 @@ help:
 	@echo "  clean          Remove all temporary artifacts."
 	@echo "  dist           Create source and binary wheel distribution."
 	@echo "  docs           Generate documentation."
+	@echo "  docswatch      Generate documentation and watch for changes."
 	@echo "  lint           Perform PEP8 style check, run PyFlakes, and run McCabe"
 	@echo "                 complexity metrics."
 	@echo "  test           Run test commands on each supported interpreter."
@@ -20,7 +21,7 @@ ifeq ($(TOX),)
 endif
 
 clean:
-	rm -rf .cache .coverage .tox build dist docs/build *.egg-info coverage.xml
+	rm -rf .cache .coverage .coverage.* .tox build dist docs/build *.egg-info htmlcov coverage.xml
 
 dist:
 	python setup.py sdist

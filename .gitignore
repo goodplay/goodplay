@@ -6,6 +6,7 @@
 __pytest__/
 build/
 dist/
+htmlcov/
 
 .coverage
 coverage.xml
