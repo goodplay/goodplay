@@ -4,7 +4,7 @@ from __future__ import absolute_import
 
 import ansible
 import ansible.inventory
-import ansible.parsing
+import ansible.parsing.dataloader
 import ansible.utils.vars
 import ansible.vars
 
@@ -19,7 +19,7 @@ class Inventory(object):
         self.inventory = self.build_inventory()
 
     def build_inventory(self):
-        loader = ansible.parsing.DataLoader()
+        loader = ansible.parsing.dataloader.DataLoader()
         variable_manager = ansible.vars.VariableManager()
         variable_manager.extra_vars = ansible.utils.vars.load_extra_vars(
             loader=loader, options=EmptyOptions())

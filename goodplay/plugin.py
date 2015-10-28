@@ -66,10 +66,11 @@ class AnsiblePlaybook(pytest.File):
 
         self.playbook.release()
 
-        try:
-            self.docker_runner.teardown()
-        finally:
-            self.docker_runner.release()
+        if hasattr(self, 'docker_runner'):
+            try:
+                self.docker_runner.teardown()
+            finally:
+                self.docker_runner.release()
 
         if hasattr(self, 'playbook_runner'):
             if self.playbook_runner.failures:
