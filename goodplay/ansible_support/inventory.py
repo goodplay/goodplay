@@ -19,6 +19,10 @@ class Inventory(object):
         self.inventory = self.build_inventory()
 
     def build_inventory(self):
+        # unfortunately we have to reset cache prior to
+        # creating new inventory as it is kept as module state
+        ansible.inventory.HOSTS_PATTERNS_CACHE.clear()
+
         loader = ansible.parsing.dataloader.DataLoader()
         variable_manager = ansible.vars.VariableManager()
         variable_manager.extra_vars = ansible.utils.vars.load_extra_vars(
