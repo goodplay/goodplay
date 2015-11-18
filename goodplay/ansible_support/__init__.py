@@ -21,10 +21,7 @@ def is_playbook_file(path):
             isinstance(yaml_file_content, list) \
             and len(yaml_file_content) \
             and isinstance(yaml_file_content[0], dict) \
-            and (
-                yaml_file_content[0].get('hosts')
-                or yaml_file_content[0].get('include')
-            )
+            and (yaml_file_content[0].get('hosts') or yaml_file_content[0].get('include'))
 
         return yaml_file_is_ansible_playbook
 

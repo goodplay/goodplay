@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import subprocess
+import tarfile
 
+import pytest
 import yaml
 
-
+pytestmark = pytest.mark.integration
 pytest_plugins = 'pytester'
 
 
@@ -26,7 +27,7 @@ def create_role(
             'author': 'John Doe'
         },
         'dependencies': [
-            dict(name=dependency.split('/')[-1], src=dependency)
+            dict(name=dependency.split('/')[-1][:-7], src=dependency)
             for dependency in dependencies
         ],
     }
@@ -45,20 +46,11 @@ def create_role(
         role_path.join('tests', 'test_playbook.yml').write(
             test_playbook, ensure=True)
 
-    # create role git repo
-    subprocess.check_call(
-        ['git', 'init'], cwd=str(role_path))
-    subprocess.check_call(
-        ['git', 'config', 'user.name', 'John Doe'], cwd=str(role_path))
-    subprocess.check_call(
-        ['git', 'config', 'user.email', 'john.doe@acme.com'],
-        cwd=str(role_path))
-    subprocess.check_call(
-        ['git', 'add', '--all'], cwd=str(role_path))
-    subprocess.check_call(
-        ['git', 'commit', '-m', 'initial commit'], cwd=str(role_path))
+    archive_path = role_base_path.join(role_name + '.tar.gz')
+    with tarfile.open(str(archive_path), 'w:gz') as tar:
+        tar.add(str(role_path), arcname=role_path.basename)
 
-    return 'git+file://{0!s}'.format(role_path)
+    return str(archive_path)
 
 
 def run(testdir):

@@ -13,7 +13,8 @@ help:
 	@echo "  docswatch      Generate documentation and watch for changes."
 	@echo "  lint           Perform PEP8 style check, run PyFlakes, and run McCabe"
 	@echo "                 complexity metrics."
-	@echo "  test           Run test commands on each supported interpreter."
+	@echo "  test           Run all tests on each supported interpreter."
+	@echo "  test-unit      Run non-integration tests on each supported interpreter."
 
 check-tox:
 ifeq ($(TOX),)
@@ -39,4 +40,7 @@ lint: check-tox
 test: check-tox
 	$(TOX)
 
-.PHONY: help clean dist docs docswatch lint test
+test-unit: check-tox
+	PYTEST_ADDOPTS='-m "not integration"' $(TOX)
+
+.PHONY: help clean dist docs docswatch lint test test-unit

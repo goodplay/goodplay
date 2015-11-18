@@ -2,88 +2,121 @@
 
 import logging
 
-import pytest
-
-from goodplay import ansible_support, docker_support
-
-
 # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
 logging.captureWarnings(True)
 
+from cached_property import cached_property
+import pytest
+
+from goodplay import ansible_support, docker_support, junitxml
+from goodplay.context import GoodplayContext
+
+junitxml.patch_mangle_testnames()
+
+# - GoodplayPlaybookFile (pytest.File)
+#   - GoodplayPlatform (pytest.Collector) -- manage docker
+#     - GoodplayPlaybook (pytest.Collector) -- manage ansible runner
+#       - GoodplayTest (pytest.Item)
+
 
 def pytest_collect_file(parent, path):
-    if ansible_support.is_test_playbook_file(path):
-        return AnsiblePlaybook(path, parent)
+    return GoodplayPlaybookFile.consider_and_create(path, parent)
 
 
-class AnsiblePlaybook(pytest.File):
-    @property
-    def playbook_path(self):
-        return self.fspath
+class GoodplayContextSupport(object):
+    @cached_property
+    def ctx(self):
+        return self.parent.ctx
 
-    @property
-    def inventory_path(self):
-        inventory_path = self.playbook_path.dirpath('inventory')
 
-        if inventory_path.check():
-            return inventory_path
+# generic playbook preparations
+class GoodplayPlaybookFile(pytest.File):
+    def __init__(self, ctx, fspath, parent=None, config=None, session=None):
+        super(GoodplayPlaybookFile, self).__init__(fspath, parent, config, session)
+
+        self.ctx = ctx
+
+    @classmethod
+    def consider_and_create(cls, path, parent):
+        if ansible_support.is_test_playbook_file(path):
+            ctx = GoodplayContext(playbook_path=path)
+
+            if ctx.inventory_path:
+                return GoodplayPlaybookFile(ctx, path, parent)
 
     def collect(self):
-        if not self.inventory_path:
-            return
-
-        self.playbook = ansible_support.Playbook(
-            self.playbook_path, self.inventory_path)
-
         try:
-            already_seen_test_names = set()
-            for task in self.playbook.tasks(with_tag='test'):
-                test_name = task.name
+            platforms = self.ctx.platforms if self.ctx.platforms else (None,)
 
-                if test_name in already_seen_test_names:
-                    raise ValueError(
-                        '{0!r} contains tests with non-unique name {1!r}'
-                        .format(self, str(test_name)))
-                already_seen_test_names.add(test_name)
-
-                yield AnsibleTestTask(task, self)
+            for platform in platforms:
+                yield GoodplayPlatform(platform, self, self.config, self.session)
         finally:
             if self.config.option.collectonly:
-                self.playbook.release()
+                self.ctx.release()
+
+    def teardown(self):
+        self.ctx.release()
+
+
+# platform can be unspecific
+class GoodplayPlatform(GoodplayContextSupport, pytest.Collector):
+    def __init__(self, platform, parent=None, config=None, session=None):
+        super(GoodplayPlatform, self).__init__(str(platform), parent, config, session)
+        self.platform = platform
+
+        self.docker_runner = None
+
+    def _makeid(self):
+        if not self.platform:
+            return self.parent.nodeid
+
+        return super(GoodplayPlatform, self)._makeid()
+
+    def collect(self):
+        yield GoodplayPlaybook(self.parent.name, self, self.config, self.session)
 
     def setup(self):
-        inventory = ansible_support.Inventory(self.inventory_path)
-        self.docker_runner = docker_support.DockerRunner(
-            self.inventory_path, inventory, self.playbook)
+        self.docker_runner = docker_support.DockerRunner(self.ctx, self.platform)
         self.docker_runner.setup()
 
-        self.playbook_runner = self.playbook.create_runner()
+    def teardown(self):
+        if self.docker_runner:
+            self.docker_runner.teardown()
+
+
+# platform specific playbook preparations
+class GoodplayPlaybook(GoodplayContextSupport, pytest.Collector):
+    def __init__(self, name, parent=None, config=None, session=None):
+        super(GoodplayPlaybook, self).__init__(name, parent, config, session)
+
+        self.playbook_runner = None
+
+    def _makeid(self):
+        return self.parent.nodeid
+
+    def collect(self):
+        for task in self.ctx.playbook.test_tasks:
+            yield GoodplayTest(task, self)
+
+    def setup(self):
+        self.playbook_runner = self.ctx.playbook.create_runner()
         self.playbook_runner.run_async()
 
     def teardown(self):
-        if hasattr(self, 'playbook_runner'):
+        if self.playbook_runner:
             self.playbook_runner.wait()
 
-        self.playbook.release()
-
-        if hasattr(self, 'docker_runner'):
-            try:
-                self.docker_runner.teardown()
-            finally:
-                self.docker_runner.release()
-
-        if hasattr(self, 'playbook_runner'):
             if self.playbook_runner.failures:
                 pytest.fail('\n'.join(self.playbook_runner.failures))
 
 
-class AnsibleTestTask(pytest.Item):
-    def __init__(self, task, parent):
-        super(AnsibleTestTask, self).__init__(task.name, parent)
+class GoodplayTest(GoodplayContextSupport, pytest.Item):
+    def __init__(self, task, parent=None, config=None, session=None):
+        super(GoodplayTest, self).__init__(task.name, parent, config, session)
 
         self.task = task
 
-    @property
+    @cached_property
     def playbook_runner(self):
         return self.parent.playbook_runner
 

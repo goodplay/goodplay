@@ -6,10 +6,7 @@ import sarge
 def run(command, *args, **kwargs):
     command = sarge.shell_format(command, *args)
 
-    process = sarge.run(
-        command, stdout=Capture(), stderr=Capture(), **kwargs)
-
-    return process
+    return sarge.run(command, stdout=Capture(), stderr=Capture(), **kwargs)
 
 
 class Capture(sarge.Capture):

@@ -31,8 +31,7 @@ class CallbackModule(CallbackBase):
             self.playbook_on_test_task_start(self.task)
 
     def check_and_handle_playbook_on_task_end(self):
-        if self.previous_task and \
-                self.previously_ended_task != self.previous_task:
+        if self.previous_task and self.previously_ended_task != self.previous_task:
             self.playbook_on_task_end(self.previous_task)
             self.previously_ended_task = self.previous_task
 
@@ -99,8 +98,7 @@ class CallbackModule(CallbackBase):
 
     def final_test_task_outcome(self):
         if self.per_host_outcomes:
-            outcomes = \
-                set((x['outcome'] for x in self.per_host_outcomes.values()))
+            outcomes = set(x['outcome'] for x in self.per_host_outcomes.values())
             outcome_priority = ('failed', 'skipped', 'passed')
             for outcome in outcome_priority:
                 if outcome in outcomes:

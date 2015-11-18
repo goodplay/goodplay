@@ -13,7 +13,7 @@ install:
   - pip install codecov tox
 
 script:
-  - tox
+  - make test lint
 
 after_success:
   - codecov

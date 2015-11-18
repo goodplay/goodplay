@@ -8,8 +8,8 @@ from setuptools import setup, find_packages
 install_requires = [
     'ansible>=2.0.0',
     'cached-property>=1.2.0',
-    'docker-py>=1.4.0',
-    'pytest>=2.5',
+    'docker-py>=1.5.0',
+    'pytest>=2.8.2',
     'sarge>=0.1.4',
 ]
 
@@ -20,7 +20,9 @@ with open(readme_path, 'r') as readme_file:
 setup(
     name='goodplay',
     version=__import__('goodplay').__version__,
-    description='A py.test plugin for testing ansible roles and playbooks.',
+    description='Goodplay enables you to test your deployments and '
+                'distributed software infrastructure by reusing your '
+                'existing knowledge of ansible.',
     long_description=long_description,
 
     author='Benjamin Schwarze',
@@ -30,6 +32,11 @@ setup(
 
     url='https://goodplay.io/',
     license='Apache License 2.0',
+    keywords=[
+        'good', 'play', 'test', 'deployment', 'ansible', 'playbook',
+        'role', 'integration', 'system', 'tdd', 'configuration',
+        'management'
+    ],
 
     classifiers=[
         'Development Status :: 3 - Alpha',

@@ -9,8 +9,9 @@ from ..utils.subprocess import run
 
 
 class PlaybookRunner(object):
-    def __init__(self, playbook):
-        self.playbook = playbook
+    def __init__(self, ctx):
+        self.ctx = ctx
+
         self.process = None
         self.skip_wait = False
         self.failures = []
@@ -20,7 +21,7 @@ class PlaybookRunner(object):
         this_path = py.path.local(__file__)
         callback_plugin_path = this_path.dirpath('callback_plugin')
 
-        env = self.playbook.env()
+        env = self.ctx.playbook.env()
         additional_env = dict(
             PYTHONUNBUFFERED='1',
             ANSIBLE_CALLBACK_PLUGINS=str(callback_plugin_path),
@@ -30,7 +31,7 @@ class PlaybookRunner(object):
 
         self.process = run(
             'ansible-playbook -vvv -i {0} {1}',
-            self.playbook.inventory_path, self.playbook.playbook_path,
+            self.ctx.extended_inventory_path, self.ctx.playbook_path,
             env=env, async=True)
 
         # wait for subprocess to be responsive
@@ -50,22 +51,19 @@ class PlaybookRunner(object):
     def wait_for_event(self, event_name=None, **kwargs):
         for event in self.receive_events():
             if event['event_name'] == event_name:
-                if all(item in event['data'].items()
-                       for item in kwargs.items()):
+                if all(item in event['data'].items() for item in kwargs.items()):
                     return event
                 else:  # pragma: no cover
-                    message = 'found unexpected data in goodplay ' \
-                        'event: {0!r}'.format(event)
-                    raise Exception(message)
+                    raise Exception(
+                        'found unexpected data in goodplay event: {0!r}'.format(event))
             elif event['event_name'] == 'error':
                 error_message = event['data']['message']
                 self.failures.append(error_message)
                 self.skip_wait = True
                 return
             else:  # pragma: no cover
-                message = 'found unexpected goodplay event: {0!r}'.format(
-                    event)
-                raise Exception(message)
+                raise Exception(
+                    'found unexpected goodplay event: {0!r}'.format(event))
 
     def receive_events(self):
         event_line_prefix = 'GOODPLAY => '

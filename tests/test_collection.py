@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 pytest_plugins = 'pytester'
 
 
@@ -74,7 +73,7 @@ def test_fail_on_non_unique_task_names_both_tagged_test(testdir):
 ''')
 
     result.assertoutcome(failed=1)
-    assert "ValueError: <AnsiblePlaybook 'test_playbook.yml'> contains tests with non-unique name 'task1'" in \
+    assert "ValueError: Playbook '{0!s}' contains tests with non-unique name 'task1'".format(testdir.tmpdir.join('test_playbook.yml')) in \
         str(result.getfailures()[0].longrepr)
     assert len(items) == 0
 
