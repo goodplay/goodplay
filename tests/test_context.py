@@ -356,6 +356,14 @@ def test_platform_manager_find_by_id_not_found():
     assert platform_manager.find_by_id('ubuntu:precise') is None
 
 
+def test_platform_manager_find_by_id_without_colon():
+    available_platform = Platform('ubuntu', 'trusty')
+    available_platforms = [available_platform]
+    platform_manager = PlatformManager(available_platforms)
+
+    assert platform_manager.find_by_id('ubuntutrusty') is None
+
+
 def test_platform_manager_find_by_name_and_version_found():
     available_platform = Platform('ubuntu', 'trusty')
     available_platforms = [available_platform]
