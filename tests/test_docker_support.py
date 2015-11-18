@@ -22,7 +22,7 @@ def test_client_negotiates_version(without_docker_env_vars, mocker):
     client_mock.assert_called_once_with(version='auto')
 
 
-def test_client_uses_docker_host_env_var(monkeypatch, mocker):
+def test_client_uses_docker_host_env_var(without_docker_env_vars, monkeypatch, mocker):
     monkeypatch.setenv('DOCKER_HOST', 'tcp://192.168.10.2:2376')
 
     client_mock = mocker.patch('docker.Client', autospec=True)
@@ -31,7 +31,7 @@ def test_client_uses_docker_host_env_var(monkeypatch, mocker):
     docker_runner.client
 
     _, _, kwargs = client_mock.mock_calls[0]
-    assert kwargs['base_url'] == 'https://192.168.10.2:2376'
+    assert kwargs['base_url'] == 'tcp://192.168.10.2:2376'
 
 
 def test_client_does_not_validate_hostname(without_docker_env_vars, mocker):
