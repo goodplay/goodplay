@@ -24,12 +24,10 @@ setup(
                 'distributed software infrastructure by reusing your '
                 'existing knowledge of ansible.',
     long_description=long_description,
-
     author='Benjamin Schwarze',
     author_email='benjamin.schwarze@mailboxd.de',
     maintainer='Benjamin Schwarze',
     maintainer_email='benjamin.schwarze@mailboxd.de',
-
     url='https://goodplay.io/',
     license='Apache License 2.0',
     keywords=[
@@ -37,9 +35,8 @@ setup(
         'role', 'integration', 'system', 'tdd', 'configuration',
         'management'
     ],
-
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Plugins',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
@@ -50,18 +47,20 @@ setup(
         'Topic :: Software Development :: Quality Assurance',
         'Topic :: Software Development :: Testing',
     ],
-
     entry_points={
         'pytest11': [
             'goodplay = goodplay.plugin',
         ]
     },
-
     packages=find_packages(),
     package_data={
         '': ['ansible_support/callback_plugin/goodplay.py'],
     },
-
     install_requires=install_requires,
+    dependency_links=[
+        # ease installation while ansible-2.0.0 stable is not released yet,
+        # once it has been released this can be removed
+        'https://releases.ansible.com/ansible/ansible-2.0.0-0.6.rc1.tar.gz#egg=ansible-2.0.0'
+    ],
     zip_safe=False,
 )
