@@ -26,10 +26,7 @@ def create_role(
         'galaxy_info': {
             'author': 'John Doe'
         },
-        'dependencies': [
-            dict(name=dependency.split('/')[-1][:-7], src=dependency)
-            for dependency in dependencies
-        ],
+        'dependencies': ansible_role_dependencies(dependencies),
     }
     role_path.join('meta', 'main.yml').write(yaml.dump(meta_info), ensure=True)
 
@@ -51,6 +48,11 @@ def create_role(
         tar.add(str(role_path), arcname=role_path.basename)
 
     return str(archive_path)
+
+
+def ansible_role_dependencies(dependencies):
+    return [dict(name=dependency.split('/')[-1][:-7], src=dependency)
+            for dependency in dependencies]
 
 
 def run(testdir):

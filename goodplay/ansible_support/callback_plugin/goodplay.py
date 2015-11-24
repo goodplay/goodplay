@@ -107,19 +107,20 @@ class CallbackModule(CallbackBase):
         return 'skipped'
 
     def handle_changed_result(self, host, res):
-        if self.is_test_task(self.task):
-            self.add_per_host_outcome(host, 'failed', res)
+        self.check_and_handle_test_task(host, 'failed', res)
 
     def handle_non_changed_result(self, host, res):
-        if self.is_test_task(self.task):
-            self.add_per_host_outcome(host, 'passed', res)
+        self.check_and_handle_test_task(host, 'passed', res)
 
     def handle_skipped_result(self, host):
-        if self.is_test_task(self.task):
-            self.add_per_host_outcome(host, 'skipped')
+        self.check_and_handle_test_task(host, 'skipped')
 
     def handle_failed_result(self, host, res):
-        if self.is_test_task(self.task):
-            self.add_per_host_outcome(host, 'failed', res)
-        else:
+        if not self.check_and_handle_test_task(host, 'failed', res):
             self.send_event('error', message=str(res))
+
+    def check_and_handle_test_task(self, host, outcome, res=None):
+        if self.is_test_task(self.task):
+            self.add_per_host_outcome(host, outcome, res)
+            return True
+        return False

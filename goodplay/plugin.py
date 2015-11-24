@@ -2,14 +2,14 @@
 
 import logging
 
-# https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
-logging.captureWarnings(True)
-
 from cached_property import cached_property
 import pytest
 
 from goodplay import ansible_support, docker_support, junitxml
 from goodplay.context import GoodplayContext
+
+# https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
+logging.captureWarnings(True)
 
 junitxml.patch_mangle_testnames()
 

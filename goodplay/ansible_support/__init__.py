@@ -17,12 +17,15 @@ def is_playbook_file(path):
 
     if is_yaml_file:
         yaml_file_content = yaml.safe_load(path.read())
-        yaml_file_is_ansible_playbook = \
-            isinstance(yaml_file_content, list) \
-            and len(yaml_file_content) \
-            and isinstance(yaml_file_content[0], dict) \
-            and (yaml_file_content[0].get('hosts') or yaml_file_content[0].get('include'))
+        yaml_file_is_ansible_playbook = is_playbook_content(yaml_file_content)
 
         return yaml_file_is_ansible_playbook
 
     return False
+
+
+def is_playbook_content(content):
+    return isinstance(content, list) \
+        and len(content) \
+        and isinstance(content[0], dict) \
+        and (content[0].get('hosts') or content[0].get('include'))

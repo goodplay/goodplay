@@ -1,6 +1,21 @@
-languages:
-  Python: true
-
+---
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        python:
+          paths:
+            - "goodplay/**/*"
+  pep8:
+    enabled: true
+  radon:
+    enabled: true
+    config:
+      threshold: "B"
+ratings:
+  paths:
+    - "**.py"
 exclude_paths:
+  - ".*"
   - "docs/source/conf.py"
-  - "tests/*"

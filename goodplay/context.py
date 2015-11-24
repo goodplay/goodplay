@@ -27,11 +27,7 @@ class GoodplayContext(object):
     def platform_manager(self):
         platform_manager = PlatformManager.from_dicts(self.config['platforms'])
 
-        inventory_with_goodplay_platform_wildcard = \
-            any(host.vars().get('goodplay_platform', None) == '*'
-                for host in self.inventory.hosts())
-
-        if self.is_role_playbook and inventory_with_goodplay_platform_wildcard:
+        if self.is_platform_matrix_requested:
             platforms = self.role_meta_info['galaxy_info'].get('platforms', [])
             for platform in platforms:
                 name = platform['name']
@@ -40,6 +36,14 @@ class GoodplayContext(object):
                     platform_manager.select_platform_by_name_and_version(name, version)
 
         return platform_manager
+
+    @cached_property
+    def is_platform_matrix_requested(self):
+        is_goodplay_platform_wildcard_used = \
+            any(host.vars().get('goodplay_platform', None) == '*'
+                for host in self.inventory.hosts())
+
+        return self.is_role_playbook and is_goodplay_platform_wildcard_used
 
     @cached_property
     def platforms(self):
@@ -157,8 +161,7 @@ class Platform(object):
         return '{0!s}:{1!s}'.format(self.name, self.version)
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__)
-                and str(self) == str(other))
+        return (isinstance(other, self.__class__) and str(self) == str(other))
 
     def __ne__(self, other):
         return not self.__eq__(other)

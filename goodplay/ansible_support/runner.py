@@ -50,20 +50,16 @@ class PlaybookRunner(object):
 
     def wait_for_event(self, event_name=None, **kwargs):
         for event in self.receive_events():
-            if event['event_name'] == event_name:
-                if all(item in event['data'].items() for item in kwargs.items()):
-                    return event
-                else:  # pragma: no cover
-                    raise Exception(
-                        'found unexpected data in goodplay event: {0!r}'.format(event))
+            if event['event_name'] == event_name \
+                    and set(kwargs.items()).issubset(set(event['data'].items())):
+                return event
             elif event['event_name'] == 'error':
                 error_message = event['data']['message']
                 self.failures.append(error_message)
                 self.skip_wait = True
                 return
             else:  # pragma: no cover
-                raise Exception(
-                    'found unexpected goodplay event: {0!r}'.format(event))
+                raise Exception('found unexpected goodplay event: {0!r}'.format(event))
 
     def receive_events(self):
         event_line_prefix = 'GOODPLAY => '

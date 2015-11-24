@@ -193,8 +193,10 @@ def test_failed_when_goodplay_platform_cannot_be_resolved(
 ''', inventory='guesthostname goodplay_platform=thename:theversion')
 
     result.assertoutcome(failed=1)
-    assert "goodplay_platform 'thename:theversion' specified in inventory for host 'guesthostname' not found in .goodplay.yml" in \
-        str(result.getfailures()[0].longrepr)
+
+    message = "goodplay_platform 'thename:theversion' specified in inventory for host " \
+        "'guesthostname' not found in .goodplay.yml"
+    assert message in str(result.getfailures()[0].longrepr)
 
 
 def test_docker_pull_called_with_resolved_goodplay_platform(

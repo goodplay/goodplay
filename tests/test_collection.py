@@ -73,8 +73,10 @@ def test_fail_on_non_unique_task_names_both_tagged_test(testdir):
 ''')
 
     result.assertoutcome(failed=1)
-    assert "ValueError: Playbook '{0!s}' contains tests with non-unique name 'task1'".format(testdir.tmpdir.join('test_playbook.yml')) in \
-        str(result.getfailures()[0].longrepr)
+
+    message = "ValueError: Playbook '{0!s}' contains tests with non-unique name 'task1'".format(
+        testdir.tmpdir.join('test_playbook.yml'))
+    assert message in str(result.getfailures()[0].longrepr)
     assert len(items) == 0
 
 
@@ -504,11 +506,7 @@ def test_multiple_plays_multiple_blocks_multiple_tests(testdir):
 
     result.assertoutcome()
     assert len(items) == 5
-    assert items[0].name == 'task1'
-    assert items[1].name == 'task3'
-    assert items[2].name == 'task4'
-    assert items[3].name == 'task5'
-    assert items[4].name == 'task6'
+    assert [item.name for item in items] == ['task1', 'task3', 'task4', 'task5', 'task6']
 
 
 def test_ignore_test_tasks_in_rescue_block(testdir):

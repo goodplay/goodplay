@@ -76,8 +76,12 @@ class Playbook(object):
 
     @cached_property
     def test_tasks(self):
-        tasks = list(self.tasks(with_tag='test'))
+        test_tasks = [task for task in self.tasks() if 'test' in task.tags]
+        self.ensure_unique_task_names(test_tasks)
 
+        return test_tasks
+
+    def ensure_unique_task_names(self, tasks):
         non_unique_task_names = [
             task_name for task_name, count in
             collections.Counter(task.name for task in tasks).items()
@@ -88,11 +92,7 @@ class Playbook(object):
                 "Playbook '{0!s}' contains tests with non-unique name '{1}'"
                 .format(self.ctx.playbook_path, non_unique_task_names[0]))
 
-        return tasks
-
-    def tasks(self, with_tag):
-        __tracebackhide__ = True
-
+    def tasks(self):
         process = run(
             'ansible-playbook --list-tasks --list-tags -i {0} {1}',
             self.ctx.inventory_path, self.ctx.playbook_path,
@@ -108,8 +108,7 @@ class Playbook(object):
                 name = match.group('name')
                 tags = [tag.strip() for tag in match.group('tags').split(',')]
 
-                if with_tag in tags:
-                    yield Task(name, tags)
+                yield Task(name, tags)
 
 
 class Task(object):
