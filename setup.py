@@ -48,6 +48,9 @@ setup(
         'Topic :: Software Development :: Testing',
     ],
     entry_points={
+        'console_scripts': [
+            'goodplay = goodplay.cli:main',
+        ],
         'pytest11': [
             'goodplay = goodplay.plugin',
         ]
