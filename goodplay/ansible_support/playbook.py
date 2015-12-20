@@ -15,12 +15,12 @@ from ..utils.subprocess import run
 
 class Playbook(object):
     tagged_tasks_re = re.compile(r'''
-        (?:^\ {6}TASK:\ )  # 6 spaces at the beginning of line plus task prefix
-        (?P<name>.*?)      # group: task name
-        (?:\ {4})          # 4 space delimiter
-        TAGS:\ \[          # task tags prefix
-        (?P<tags>.+?)      # group: task tags
-        \]$                # task tags suffix at the end of line
+        (?:^\ {6})        # 6 spaces at the beginning of line
+        (?P<name>.*?)     # group: task name
+        (?:\t)            # 1 tab delimiter
+        TAGS:\ \[         # task tags prefix
+        (?P<tags>.+?)     # group: task tags
+        \]$               # task tags suffix at the end of line
         ''', re.VERBOSE)
 
     def __init__(self, ctx):
