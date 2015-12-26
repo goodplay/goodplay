@@ -63,7 +63,7 @@ setup(
     dependency_links=[
         # ease installation while ansible-2.0.0 stable is not released yet,
         # once it has been released this can be removed
-        'https://releases.ansible.com/ansible/ansible-2.0.0-0.6.rc1.tar.gz#egg=ansible-2.0.0'
+        'https://releases.ansible.com/ansible/ansible-2.0.0-0.8.rc3.tar.gz#egg=ansible-2.0.0'
     ],
     zip_safe=False,
 )
