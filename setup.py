@@ -20,7 +20,7 @@ with open(readme_path, 'r') as readme_file:
 setup(
     name='goodplay',
     version=__import__('goodplay').__version__,
-    description='Goodplay enables you to test your deployments and '
+    description='goodplay enables you to test your deployments and '
                 'distributed software infrastructure by reusing your '
                 'existing knowledge of ansible.',
     long_description=long_description,
