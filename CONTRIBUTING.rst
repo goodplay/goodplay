@@ -7,7 +7,7 @@ Before opening any issues or proposing any pull requests, please read our
 To get the greatest chance of helpful responses, please also observe the
 following additional notes.
 
-.. _`Contributor's Guide`: https://docs.goodplay.io/en/latest/dev/contributing/
+.. _`Contributor's Guide`: https://docs.goodplay.io/en/latest/dev/contributing.html
 
 
 Questions
