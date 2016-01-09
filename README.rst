@@ -73,12 +73,6 @@ Installing goodplay is simple with pip_, just run this in your terminal:
 
     $ pip install goodplay
 
-Alternatively, you can install the latest development version from GitHub via:
-
-.. code-block:: bash
-
-    $ pip install git+https://github.com/benjixx/goodplay.git#egg=goodplay
-
 .. _pip: https://pip.readthedocs.org/
 
 
