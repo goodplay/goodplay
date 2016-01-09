@@ -2,19 +2,25 @@ Contribution Guidelines
 =======================
 
 Before opening any issues or proposing any pull requests, please read our
-[Contributor's Guide](https://docs.goodplay.io/en/latest/dev/contributing/).
+`Contributor's Guide`_.
 
 To get the greatest chance of helpful responses, please also observe the
 following additional notes.
+
+.. _`Contributor's Guide`: https://docs.goodplay.io/en/latest/dev/contributing/
+
 
 Questions
 ---------
 
 The GitHub issue tracker is for *bug reports* and *feature requests*. Please do
 not use it to ask questions about how to use goodplay. These questions should
-instead be directed to [Stack Overflow](https://stackoverflow.com/). Make sure
+instead be directed to `Stack Overflow`_. Make sure
 that your question is tagged with the `python-goodplay` tag when asking it on
 Stack Overflow, to ensure that it is answered promptly and accurately.
+
+.. _`Stack Overflow`: https://stackoverflow.com/
+
 
 Good Bug Reports
 ----------------
