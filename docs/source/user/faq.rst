@@ -1,28 +1,51 @@
 .. _faq:
 
-FAQ
-===
+Frequently Asked Questions
+==========================
 
-When gets a test marked as passed, skipped, or failed?
-------------------------------------------------------
+Is Docker required for running goodplay?
+----------------------------------------
 
-====================================  =============  =========
-task result                           non-test task  test task
-====================================  =============  =========
-**runner_on_ok**                      n/a            passed
-**runner_on_failed**                  global failed  failed
-**runner_on_failed (ignore failed)**  n/a            n/a
-**runner_on_skipped**                 n/a            skipped
-**runner_on_unreachable**             global failed  failed
-**runner_on_no_hosts**                n/a            n/a
-====================================  =============  =========
+Although most people may use goodplay with Docker, it is absolutely fine to
+run goodplay without Docker and instead run on localhost or against remote
+hosts.
+Just keep in mind that you need to take care on your own for setting up and
+cleaning up your test environment in this case.
 
-These results are collected for each host a task runs on.
+
+When is a test marked as passed, skipped, or failed?
+----------------------------------------------------
+
+An executed test always results in one of the following three test outcomes:
+``passed``, ``skipped``, and ``failed``.
+The following table shows the relation of Ansible *task results* of
+*non-test tasks* and *test tasks* to the actual *test result*.
+
+==========================  =================  ===========
+task result                 non-test task      test task
+==========================  =================  ===========
+**ok**                      n/a                ``passed``
+**ok (changed)**            n/a                ``failed``
+**failed**                  ``global failed``  ``failed``
+**failed (ignore failed)**  n/a                n/a
+**skipped**                 n/a                ``skipped``
+**unreachable host**        ``global failed``  ``failed``
+**no hosts**                n/a                n/a
+==========================  =================  ===========
+
+These test results are collected for each host a task runs on.
 At the end of a test task the results are combined to the final test outcome
-according to the following rules:
+according to the following rules in order:
 
-1. If the task has been failed on one or more hosts test outcome is
+#. If the task has been failed on one or more hosts test outcome is
    ``failed``.
-2. If the task has been skipped on one or more hosts test outcome is
+#. If the task has been skipped on one or more hosts test outcome is
    ``skipped``.
-3. Otherwise result in ``passed``.
+#. Otherwise result in ``passed``.
+
+.. note::
+
+   - In case of a ``global failed`` this results in a failure with all
+     subsequent tests being ``skipped``.
+
+   - If all test tasks of a playbook are ``skipped`` this results in a failure.

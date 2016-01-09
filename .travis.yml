@@ -13,7 +13,8 @@ install:
   - pip install codecov tox
 
 script:
-  - tox
+  - make test
+  - make docs
 
 after_success:
   - codecov

@@ -32,7 +32,7 @@ docs: check-tox
 	$(TOX) -e docs
 
 docswatch: check-tox
-	$(TOX) -e docs -- html livehtml
+	$(TOX) -e docs -- livehtml
 
 lint: check-tox
 	$(TOX) -e lint

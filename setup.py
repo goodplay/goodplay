@@ -7,9 +7,9 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'ansible>=2.0.0',
-    'cached-property>=1.2.0',
-    'docker-py>=1.5.0',
-    'pytest>=2.8.2',
+    'cached-property>=1.3.0',
+    'docker-py>=1.6.0',
+    'pytest>=2.8.5',
     'sarge>=0.1.4',
 ]
 
@@ -63,7 +63,7 @@ setup(
     dependency_links=[
         # ease installation while ansible-2.0.0 stable is not released yet,
         # once it has been released this can be removed
-        'https://releases.ansible.com/ansible/ansible-2.0.0-0.8.rc3.tar.gz#egg=ansible-2.0.0'
+        'https://releases.ansible.com/ansible/ansible-2.0.0-0.9.rc4.tar.gz#egg=ansible-2.0.0'
     ],
     zip_safe=False,
 )

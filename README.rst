@@ -3,24 +3,8 @@ goodplay
 
 |build-status| |version| |docs| |license| |code-climate| |code-coverage| |requirements-status|
 
-goodplay is an Apache-2.0 licensed py.test plugin for testing ansible roles and playbooks.
-
-
-Installation
-------------
-
-To install goodplay, simply:
-
-.. code-block:: bash
-
-    $ pip install goodplay
-
-
-Documentation
--------------
-
-Documentation is available at https://goodplay.io/.
-
+goodplay is an Apache2-licensed test framework for testing Ansible 2.x roles
+and playbooks as well as running full integration tests for your software.
 
 .. |build-status| image:: https://img.shields.io/travis/benjixx/goodplay.svg
     :alt: Build Status
@@ -40,7 +24,7 @@ Documentation is available at https://goodplay.io/.
 .. |docs| image:: https://readthedocs.org/projects/goodplay/badge/?version=latest
     :alt: Documentation
     :scale: 100%
-    :target: https://goodplay.io/en/latest/?badge=latest
+    :target: https://docs.goodplay.io/en/latest/?badge=latest
 
 .. |license| image:: https://img.shields.io/pypi/l/goodplay.svg
     :alt: License
@@ -54,3 +38,70 @@ Documentation is available at https://goodplay.io/.
     :alt: Version
     :scale: 100%
     :target: https://pypi.python.org/pypi/goodplay
+
+
+Features
+--------
+
+* define your test environments as `Ansible inventories`_
+* write your tests as `Ansible 2.x playbook tasks`_
+* resolve and auto-install Ansible role dependencies prior to test run
+* run your tests within Docker_ container(s) or on localhost
+* built as a pytest_ plugin, so you can run your goodplay tests together with your other tests
+
+.. _`Ansible 2.x playbook tasks`: https://docs.ansible.com/playbooks.html
+.. _`Ansible inventories`: https://docs.ansible.com/ansible/intro_inventory.html
+.. _Docker: https://www.docker.com/
+.. _pytest: https://pytest.org/
+
+
+Versioning
+----------
+
+goodplay will use `Semantic Versioning`_ when reaching v1.0.0.
+Until then, the minor version is used for backwards-incompatible changes.
+
+.. _`Semantic Versioning`: http://semver.org/
+
+
+Installation
+------------
+
+Installing goodplay is simple with pip_, just run this in your terminal:
+
+.. code-block:: bash
+
+    $ pip install goodplay
+
+Alternatively, you can install the latest development version from GitHub via:
+
+.. code-block:: bash
+
+    $ pip install git+https://github.com/benjixx/goodplay.git#egg=goodplay
+
+.. _pip: https://pip.readthedocs.org/
+
+
+Documentation
+-------------
+
+Documentation is available at https://docs.goodplay.io/.
+
+
+Contributing
+------------
+
+#. Check for open issues or open a fresh issue to start a discussion around a
+   feature idea or bug.
+#. Fork `the repository`_ on GitHub to start making your changes to the
+   **master** branch (or branch off of it).
+#. Write a test which shows that the bug was fixed or that the feature works
+   as expected.
+#. Send a pull request. Make sure to add yourself to AUTHORS_.
+
+Just don't forget to check out our `CONTRIBUTING`_ guidelines — it includes
+few technical details that will make the process a lot smoother.
+
+.. _`the repository`: https://github.com/benjixx/goodplay
+.. _AUTHORS: https://github.com/benjixx/goodplay/blob/master/AUTHORS.rst
+.. _CONTRIBUTING: https://github.com/benjixx/goodplay/blob/master/CONTRIBUTING.rst
