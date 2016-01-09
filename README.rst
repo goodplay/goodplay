@@ -82,6 +82,16 @@ Documentation
 Documentation is available at https://docs.goodplay.io/.
 
 
+Roadmap
+-------
+
+- better error messages, without the clutter
+- support to keep test environment running for debugging purposes
+- support full-fledged virtual machine within a Docker container (see `RancherVM`_)
+
+.. _`RancherVM`: https://github.com/rancher/vm
+
+
 Contributing
 ------------
 
