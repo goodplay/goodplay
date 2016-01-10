@@ -1,0 +1,2 @@
+# empty requirements file to make readthedocs.org choose this one instead of
+# the requirements.txt at root level
