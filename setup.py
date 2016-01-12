@@ -60,10 +60,5 @@ setup(
         '': ['ansible_support/callback_plugin/goodplay.py'],
     },
     install_requires=install_requires,
-    dependency_links=[
-        # ease installation while ansible-2.0.0 stable is not released yet,
-        # once it has been released this can be removed
-        'https://releases.ansible.com/ansible/ansible-2.0.0-0.9.rc4.tar.gz#egg=ansible-2.0.0'
-    ],
     zip_safe=False,
 )
