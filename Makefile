@@ -37,10 +37,14 @@ docswatch: check-tox
 lint: check-tox
 	$(TOX) -e lint
 
+publish:
+	python setup.py register
+	python setup.py sdist bdist_wheel upload
+
 test: check-tox
 	$(TOX)
 
 test-unit: check-tox
 	PYTEST_ADDOPTS='-m "not integration"' $(TOX)
 
-.PHONY: help clean dist docs docswatch lint test test-unit
+.PHONY: help clean dist docs docswatch lint publish test test-unit
