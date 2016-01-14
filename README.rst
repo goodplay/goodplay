@@ -1,12 +1,12 @@
 goodplay
 ========
 
-|build-status| |version| |docs| |license| |code-climate| |code-coverage| |requirements-status|
+|build-status| |version| |docs| |license| |code-climate| |code-coverage| |dependencies-status|
 
 goodplay is an Apache2-licensed test framework for testing Ansible 2.x roles
 and playbooks as well as running full integration tests for your software.
 
-.. |build-status| image:: https://img.shields.io/travis/benjixx/goodplay.svg
+.. |build-status| image:: https://img.shields.io/travis/benjixx/goodplay/master.svg
     :alt: Build Status
     :scale: 100%
     :target: https://travis-ci.org/benjixx/goodplay
@@ -21,17 +21,19 @@ and playbooks as well as running full integration tests for your software.
     :scale: 100%
     :target: https://codecov.io/github/benjixx/goodplay
 
-.. |docs| image:: https://readthedocs.org/projects/goodplay/badge/?version=latest
+.. |docs| image:: https://img.shields.io/badge/docs-latest-blue.svg
     :alt: Documentation
     :scale: 100%
-    :target: https://docs.goodplay.io/en/latest/?badge=latest
+    :target: https://docs.goodplay.io/
 
 .. |license| image:: https://img.shields.io/pypi/l/goodplay.svg
     :alt: License
     :scale: 100%
+    :target: https://github.com/benjixx/goodplay/blob/master/LICENSE
 
-.. |requirements-status| image:: https://img.shields.io/requires/github/benjixx/goodplay.svg
-    :alt: Requirements Status
+.. |dependencies-status| image:: https://img.shields.io/requires/github/benjixx/goodplay.svg?label=dependencies
+    :alt: Dependencies Status
+    :scale: 100%
     :target: https://requires.io/github/benjixx/goodplay/requirements/
 
 .. |version| image:: https://img.shields.io/pypi/v/goodplay.svg
