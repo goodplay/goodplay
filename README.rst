@@ -1,7 +1,7 @@
 goodplay
 ========
 
-|build-status| |version| |docs| |license| |code-climate| |code-coverage| |dependencies-status|
+|build-status| |version| |docs| |license| |code-climate| |code-coverage| |dependencies-status| |donate|
 
 goodplay is an Apache2-licensed test framework for testing Ansible 2.x roles
 and playbooks as well as running full integration tests for your software.
@@ -25,6 +25,11 @@ and playbooks as well as running full integration tests for your software.
     :alt: Documentation
     :scale: 100%
     :target: https://docs.goodplay.io/
+
+.. |donate| image:: https://img.shields.io/badge/donate_via_paypal-$5-yellow.svg
+    :alt: Donate via PayPal
+    :scale: 100%
+    :target: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SDQVYJQBMHVX2
 
 .. |license| image:: https://img.shields.io/pypi/l/goodplay.svg
     :alt: License
