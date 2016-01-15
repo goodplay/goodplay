@@ -14,7 +14,8 @@ env:
     - TOXENV=docs
 
 cache:
-  - $HOME/.pip-cache
+  directories:
+    - $HOME/.pip-cache
 
 install:
   - pip install codecov tox
