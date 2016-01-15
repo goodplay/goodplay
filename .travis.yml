@@ -7,8 +7,6 @@ services:
   - docker
 
 env:
-  global:
-    - PIP_DOWNLOAD_CACHE=$HOME/.pip-cache
   matrix:
     - TOXENV=py27-ansible20
     - TOXENV=py27-ansibledevel
@@ -18,10 +16,6 @@ matrix:
   allow_failures:
     env: TOXENV=py27-ansibledevel
   fast_finish: true
-
-cache:
-  directories:
-    - $HOME/.pip-cache
 
 install:
   - pip install codecov tox
