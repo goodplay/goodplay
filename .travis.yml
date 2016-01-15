@@ -14,6 +14,11 @@ env:
     - TOXENV=py27-ansibledevel
     - TOXENV=docs
 
+matrix:
+  allow_failures:
+    env: TOXENV=py27-ansibledevel
+  fast_finish: true
+
 cache:
   directories:
     - $HOME/.pip-cache
