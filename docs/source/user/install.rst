@@ -47,7 +47,7 @@ just run this in your terminal::
 
 Alternatively you can install the latest goodplay development version::
 
-   $ pip install git+https://github.com/benjixx/goodplay.git#egg=goodplay
+   $ pip install git+https://github.com/goodplay/goodplay.git#egg=goodplay
 
 .. _pip: https://pip.pypa.io
 
@@ -56,19 +56,19 @@ Get the Code
 ------------
 
 goodplay is actively developed on GitHub, where the code is
-`always available <https://github.com/benjixx/goodplay>`_.
+`always available <https://github.com/goodplay/goodplay>`_.
 
 You can either clone the public repository::
 
-    $ git clone https://github.com/benjixx/goodplay.git
+    $ git clone https://github.com/goodplay/goodplay.git
 
-Download the `tarball <https://github.com/benjixx/goodplay/archive/master.tar.gz>`_::
+Download the `tarball <https://github.com/goodplay/goodplay/archive/master.tar.gz>`_::
 
-    $ curl -OL https://github.com/benjixx/goodplay/archive/master.tar.gz
+    $ curl -OL https://github.com/goodplay/goodplay/archive/master.tar.gz
 
-Or, download the `zipball <https://github.com/benjixx/goodplay/archive/master.zip>`_::
+Or, download the `zipball <https://github.com/goodplay/goodplay/archive/master.zip>`_::
 
-    $ curl -OL https://github.com/benjixx/goodplay/archive/master.zip
+    $ curl -OL https://github.com/goodplay/goodplay/archive/master.zip
 
 
 Once you have a copy of the source, you can install it into your

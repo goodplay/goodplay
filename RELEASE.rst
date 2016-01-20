@@ -4,7 +4,7 @@ Release Process
 The following steps describe the release process which is only expected to be
 executed by maintainers of goodplay.
 
-#. Ensure you are on branch ``master``.
+#. Ensure you are on ``master`` branch.
 
 #. Update version number in ``goodplay/__init__.py``.
    Keep in mind that this needs to follow `Semantic Versioning`_.
@@ -48,4 +48,4 @@ executed by maintainers of goodplay.
 .. _`Semantic Versioning`: http://semver.org/
 .. _PyPI: https://pypi.python.org/pypi
 .. _`goodplay package`: https://pypi.python.org/pypi/goodplay
-.. _`Create new release`: https://github.com/benjixx/goodplay/releases/new
+.. _`Create new release`: https://github.com/goodplay/goodplay/releases/new

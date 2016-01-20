@@ -6,22 +6,22 @@ goodplay
 goodplay is an Apache2-licensed test framework for testing Ansible 2.x roles
 and playbooks as well as running full integration tests for your software.
 
-.. |build-status| image:: https://img.shields.io/travis/benjixx/goodplay/master.svg
+.. |build-status| image:: https://img.shields.io/travis/goodplay/goodplay/master.svg
     :alt: Build Status
     :scale: 100%
-    :target: https://travis-ci.org/benjixx/goodplay
+    :target: https://travis-ci.org/goodplay/goodplay
 
-.. |code-climate| image:: https://img.shields.io/codeclimate/github/benjixx/goodplay.svg
+.. |code-climate| image:: https://img.shields.io/codeclimate/github/goodplay/goodplay.svg
     :alt: Code Climate
     :scale: 100%
-    :target: https://codeclimate.com/github/benjixx/goodplay
+    :target: https://codeclimate.com/github/goodplay/goodplay
 
-.. |code-coverage| image:: https://img.shields.io/codecov/c/github/benjixx/goodplay.svg
+.. |code-coverage| image:: https://img.shields.io/codecov/c/github/goodplay/goodplay.svg
     :alt: Code Coverage
     :scale: 100%
-    :target: https://codecov.io/github/benjixx/goodplay
+    :target: https://codecov.io/github/goodplay/goodplay
 
-.. |docs| image:: https://img.shields.io/badge/docs-latest-blue.svg
+.. |docs| image:: https://img.shields.io/badge/docs-latest-brightgreen.svg
     :alt: Documentation
     :scale: 100%
     :target: https://docs.goodplay.io/
@@ -34,12 +34,12 @@ and playbooks as well as running full integration tests for your software.
 .. |license| image:: https://img.shields.io/pypi/l/goodplay.svg
     :alt: License
     :scale: 100%
-    :target: https://github.com/benjixx/goodplay/blob/master/LICENSE
+    :target: https://github.com/goodplay/goodplay/blob/master/LICENSE
 
-.. |dependencies-status| image:: https://img.shields.io/requires/github/benjixx/goodplay.svg?label=dependencies
+.. |dependencies-status| image:: https://img.shields.io/requires/github/goodplay/goodplay.svg?label=dependencies
     :alt: Dependencies Status
     :scale: 100%
-    :target: https://requires.io/github/benjixx/goodplay/requirements/
+    :target: https://requires.io/github/goodplay/goodplay/requirements/
 
 .. |version| image:: https://img.shields.io/pypi/v/goodplay.svg
     :alt: Version
@@ -105,7 +105,7 @@ Contributing
 #. Check for open issues or open a fresh issue to start a discussion around a
    feature idea or bug.
 #. Fork `the repository`_ on GitHub to start making your changes to the
-   **master** branch (or branch off of it).
+   ``master`` branch (or branch off of it).
 #. Write a test which shows that the bug was fixed or that the feature works
    as expected.
 #. Send a pull request. Make sure to add yourself to AUTHORS_.
@@ -113,6 +113,6 @@ Contributing
 Just don't forget to check out our `CONTRIBUTING`_ guidelines — it includes
 few technical details that will make the process a lot smoother.
 
-.. _`the repository`: https://github.com/benjixx/goodplay
-.. _AUTHORS: https://github.com/benjixx/goodplay/blob/master/AUTHORS.rst
-.. _CONTRIBUTING: https://github.com/benjixx/goodplay/blob/master/CONTRIBUTING.rst
+.. _`the repository`: https://github.com/goodplay/goodplay
+.. _AUTHORS: https://github.com/goodplay/goodplay/blob/master/AUTHORS.rst
+.. _CONTRIBUTING: https://github.com/goodplay/goodplay/blob/master/CONTRIBUTING.rst
