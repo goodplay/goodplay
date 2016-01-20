@@ -118,3 +118,23 @@ def test_is_test_playbook_file_with_invalid_content(
     path.write(invalid_test_playbook_content)
 
     assert not ansible_support.is_test_playbook_file(path)
+
+
+def test_host_vars_are_not_mixed_when_using_multiple_inventories(tmpdir):
+    inventory1_path = tmpdir.join('inventory1')
+    inventory1_path.write('default goodplay_image=image1')
+
+    inventory2_path = tmpdir.join('inventory2')
+    inventory2_path.write('default goodplay_image=image2')
+
+    inventory1 = ansible_support.Inventory(inventory1_path)
+    inventory2 = ansible_support.Inventory(inventory2_path)
+
+    inventory1_hosts = inventory1.hosts()
+    inventory2_hosts = inventory2.hosts()
+
+    assert len(inventory1_hosts) == 1
+    assert inventory1_hosts[0].vars()['goodplay_image'] == 'image1'
+
+    assert len(inventory2_hosts) == 1
+    assert inventory2_hosts[0].vars()['goodplay_image'] == 'image2'
