@@ -17,9 +17,7 @@ class Inventory(object):
         self.inventory = self.build_inventory()
 
     def build_inventory(self):
-        # unfortunately we have to reset cache prior to
-        # creating new inventory as it is kept as module state
-        ansible.inventory.HOSTS_PATTERNS_CACHE.clear()
+        self.clear_host_caches()
 
         loader = ansible.parsing.dataloader.DataLoader()
         variable_manager = ansible.vars.VariableManager()
@@ -34,7 +32,14 @@ class Inventory(object):
 
         return inventory
 
+    def clear_host_caches(self):
+        # unfortunately we have to reset caches as these are kept as module state
+        ansible.inventory.HOSTS_PATTERNS_CACHE.clear()
+        ansible.vars.HOSTVARS_CACHE.clear()
+
     def hosts(self):
+        self.clear_host_caches()
+
         return [Host(host) for host in self.inventory.get_hosts()]
 
 
