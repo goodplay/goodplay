@@ -31,8 +31,6 @@ setup(
     maintainer_email='benjamin.schwarze@mailboxd.de',
 
     url='https://goodplay.io/',
-    docs_url='https://docs.goodplay.io/',
-    bugtrack_url='https://github.com/goodplay/goodplay/issues',
 
     license='Apache License 2.0',
     keywords=[
