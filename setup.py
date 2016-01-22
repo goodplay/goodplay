@@ -24,11 +24,16 @@ setup(
                 'distributed software infrastructure by reusing your '
                 'existing knowledge of ansible.',
     long_description=long_description,
+
     author='Benjamin Schwarze',
     author_email='benjamin.schwarze@mailboxd.de',
     maintainer='Benjamin Schwarze',
     maintainer_email='benjamin.schwarze@mailboxd.de',
+
     url='https://goodplay.io/',
+    docs_url='https://docs.goodplay.io/',
+    bugtrack_url='https://github.com/goodplay/goodplay/issues',
+
     license='Apache License 2.0',
     keywords=[
         'good', 'play', 'test', 'deployment', 'ansible', 'playbook',
@@ -47,6 +52,7 @@ setup(
         'Topic :: Software Development :: Quality Assurance',
         'Topic :: Software Development :: Testing',
     ],
+
     entry_points={
         'console_scripts': [
             'goodplay = goodplay.cli:main',

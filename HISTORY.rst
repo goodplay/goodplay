@@ -3,8 +3,18 @@
 History
 =======
 
-0.5.0 (TBD - ACTIVE DEVELOPMENT)
---------------------------------
+0.4.1 (2016-01-22)
+------------------
+
+Major Changes
+~~~~~~~~~~~~~
+
+* repository moved to new organization on GitHub: goodplay/goodplay
+
+Bug Fixes
+~~~~~~~~~
+
+* fix host vars getting mixed due to Ansible caches being kept as module state
 
 
 0.4.0 (2016-01-13)
