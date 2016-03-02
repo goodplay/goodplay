@@ -40,6 +40,55 @@ Until then, the minor version is used for backwards-incompatible changes.
 .. _`Semantic Versioning`: http://semver.org/
 
 
+goodplay vs. Other Software
+---------------------------
+
+In this section we compare goodplay to some of the other software options
+that are available to partly solve what goodplay can accomplish for you.
+
+Ansible
+~~~~~~~
+
+Ansible_ itself comes bundled with some testing facilities mentioned in the
+`Ansible Testing Strategies`_ documentation.
+It makes a low-level ``assert`` module available which helps to verify that
+some condition holds true, e.g. some output from a previous task which has
+been stored in a variable contains an expected value.
+
+Although it can be sometimes necessary to use something low-level as Ansible's
+``assert``, goodplay enables you to use high-level modules for describing
+your test cases.
+
+Besides the actual testing, goodplay takes care of setting up and tearing down
+the test environment as well as collecting the test results -- both being
+something Ansible was not made for.
+
+.. _`Ansible Testing Strategies`: https://docs.ansible.com/ansible/test_strategies.html
+
+
+pytest-ansible
+~~~~~~~~~~~~~~
+
+`pytest-ansible`_ is as the name already implies a pytest_ plugin just like
+goodplay.
+But instead of being used for testing Ansible playbooks or roles, it provides
+pytest fixtures that allow you to execute Ansible modules from your
+Python-based tests.
+
+.. _pytest-ansible: https://pypi.python.org/pypi/pytest-ansible
+
+
+serverspec
+~~~~~~~~~~
+
+serverspec_ seems to be more targeted to assert hosts are in a defined
+state.
+In comparison to goodplay it allows you to run tests against single hosts
+only and does not include test environment management.
+
+.. _serverspec: http://serverspec.org
+
+
 License
 -------
 
