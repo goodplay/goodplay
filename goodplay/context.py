@@ -9,8 +9,9 @@ from goodplay.config import get_goodplay_config
 
 
 class GoodplayContext(object):
-    def __init__(self, playbook_path):
+    def __init__(self, playbook_path, pytestconfig=None):
         self.playbook_path = playbook_path
+        self.pytestconfig = pytestconfig
 
         self._temp_paths = []
 
@@ -110,6 +111,10 @@ class GoodplayContext(object):
     @cached_property
     def installed_roles_path(self):
         return self._create_temporary_dir()
+
+    @cached_property
+    def use_local_roles(self):
+        return self.pytestconfig.option.use_local_roles
 
     def release(self):
         for temp_path in reversed(self._temp_paths):

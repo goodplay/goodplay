@@ -6,6 +6,7 @@ import collections
 import os
 import re
 
+import ansible.constants
 from cached_property import cached_property
 import yaml
 
@@ -53,10 +54,13 @@ class Playbook(object):
             self.install_roles_from_requirements_file(requirements_file)
 
     def install_roles_from_requirements_file(self, requirements_file):
-        process = run(
-            'ansible-galaxy install -vvvv --force '
-            '--role-file {0} --roles-path {1}',
-            requirements_file, self.ctx.installed_roles_path)
+        ansible_galaxy_cmd = \
+            'ansible-galaxy install -vvvv --force --role-file {0} --roles-path {1}'
+
+        if self.ctx.use_local_roles:
+            ansible_galaxy_cmd += ' --ignore-errors'
+
+        process = run(ansible_galaxy_cmd, requirements_file, self.ctx.installed_roles_path)
 
         print(''.join(process.stdout.readlines()))
         if process.returncode != 0:
@@ -67,6 +71,10 @@ class Playbook(object):
         if self.ctx.role_path:
             role_base_path = self.ctx.role_path.dirpath()
             roles_path.append(str(role_base_path))
+
+        if self.ctx.use_local_roles:
+            roles_path.append(ansible.constants.DEFAULT_ROLES_PATH)
+
         roles_path.append(str(self.ctx.installed_roles_path))
 
         return dict(ANSIBLE_ROLES_PATH=os.pathsep.join(roles_path))

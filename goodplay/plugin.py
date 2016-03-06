@@ -13,6 +13,14 @@ logging.captureWarnings(True)
 
 junitxml.patch_mangle_testnames()
 
+
+def pytest_addoption(parser):
+    group = parser.getgroup('goodplay')
+    group.addoption(
+        '--use-local-roles', action='store_true',
+        help='some help text')
+
+
 # - GoodplayPlaybookFile (pytest.File)
 #   - GoodplayPlatform (pytest.Collector) -- manage docker
 #     - GoodplayPlaybook (pytest.Collector) -- manage ansible runner
@@ -39,7 +47,7 @@ class GoodplayPlaybookFile(pytest.File):
     @classmethod
     def consider_and_create(cls, path, parent):
         if ansible_support.is_test_playbook_file(path):
-            ctx = GoodplayContext(playbook_path=path)
+            ctx = GoodplayContext(playbook_path=path, pytestconfig=parent.config)
 
             if ctx.inventory_path:
                 return GoodplayPlaybookFile(ctx, path, parent)

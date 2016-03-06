@@ -496,3 +496,50 @@ def test_failed_on_unresolvable_role(testdir):
 
     result = run(testdir)
     result.assertoutcome(failed=1)
+
+
+def test_ansible_path_is_considered_when_use_local_roles_enabled(testdir, monkeypatch):
+    some_ansible_roles_path = testdir.tmpdir.join('some', 'ansible', 'roles')
+    some_ansible_roles_path.ensure(dir=True)
+    monkeypatch.setattr('ansible.constants.DEFAULT_ROLES_PATH', str(some_ansible_roles_path))
+
+    local_role1_path = some_ansible_roles_path.join('role1')
+    local_role1_path.join('tasks', 'main.yml').write('''---
+- file:
+    path: "{0!s}"
+    state: touch
+'''.format(local_role1_path.join('.run')), ensure=True)
+
+    role2_path = testdir.tmpdir.join('role2')
+    role2_path.join('meta', 'main.yml').write('''---
+galaxy_info:
+  author: John Doe
+dependencies:
+  - role1
+''', ensure=True)
+
+    role2_path.join('tasks', 'main.yml').write('''---
+- ping:
+''', ensure=True)
+
+    role2_path.join('tests', 'inventory').write('127.0.0.1 ansible_connection=local', ensure=True)
+    role2_path.join('tests', 'test_role2.yml').write('''---
+- hosts: 127.0.0.1
+  gather_facts: no
+
+  roles:
+    - role: role2
+
+- hosts: 127.0.0.1
+  gather_facts: no
+
+  tasks:
+    - name: assert role1 run
+      file:
+        path: "{0!s}"
+        state: file
+      tags: test
+'''.format(local_role1_path.join('.run')), ensure=True)
+
+    result = testdir.inline_run('-s', '--use-local-roles')
+    result.assertoutcome(passed=1)
