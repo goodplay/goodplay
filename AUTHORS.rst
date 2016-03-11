@@ -10,7 +10,7 @@ Development Lead
 Contributors
 ------------
 
-None yet. Why not be the first?
+Eric Van Steenbergen <vs.eric@gmail.com>
 
 
 Credits
