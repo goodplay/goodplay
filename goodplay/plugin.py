@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import sys
 
 from cached_property import cached_property
 import pytest
@@ -8,10 +9,23 @@ import pytest
 from goodplay import ansible_support, docker_support, junitxml
 from goodplay.context import GoodplayContext
 
-# https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
-logging.captureWarnings(True)
-
 junitxml.patch_mangle_testnames()
+
+
+def pytest_configure(config):
+    # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
+    logging.captureWarnings(True)
+
+    enable_logging_goodplay_info_to_stdout()
+
+
+def enable_logging_goodplay_info_to_stdout():
+    goodplay_stdout_handler = logging.StreamHandler(sys.stdout)
+    goodplay_stdout_handler.setLevel(logging.INFO)
+    goodplay_stdout_handler.setFormatter(logging.Formatter())
+
+    logging.getLogger('goodplay').addHandler(goodplay_stdout_handler)
+
 
 # - GoodplayPlaybookFile (pytest.File)
 #   - GoodplayPlatform (pytest.Collector) -- manage docker

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import json
-import sys
 
 import py.path
 
 from ..utils.subprocess import run
+
+log = logging.getLogger(__name__)
 
 
 class PlaybookRunner(object):
@@ -41,7 +43,7 @@ class PlaybookRunner(object):
         self.wait_for_event()
 
         for line in self.process.stdout:
-            sys.stdout.write(line)
+            log.info(line[:-1])
 
         self.process.wait()
 
@@ -64,7 +66,7 @@ class PlaybookRunner(object):
     def receive_events(self):
         event_line_prefix = 'GOODPLAY => '
         for line in self.process.stdout:
-            sys.stdout.write(line)
+            log.info(line[:-1])
 
             if line.startswith(event_line_prefix):
                 event = json.loads(line[len(event_line_prefix):])

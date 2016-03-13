@@ -3,8 +3,6 @@
 from goodplay.context import Platform
 from goodplay.plugin import GoodplayPlaybookFile, GoodplayPlatform, GoodplayPlaybook, GoodplayTest
 
-pytest_plugins = 'pytester'
-
 
 class AttrDict(dict):
     def __getattr__(self, attr):
