@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import sarge
+
+log = logging.getLogger(__name__)
 
 
 def run(command, *args, **kwargs):
     command = sarge.shell_format(command, *args)
+    log.info('run process: %s', command)
 
     return sarge.run(command, stdout=Capture(), stderr=Capture(), **kwargs)
 

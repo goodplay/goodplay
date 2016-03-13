@@ -1,296 +1,439 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 import pytest
 
+from goodplay_helpers import smart_create
+
 pytestmark = pytest.mark.integration
-pytest_plugins = 'pytester'
 
 
-def create_playbook_and_run(testdir, playbook, inventory=None):
-    if not inventory:
-        inventory = '127.0.0.1 ansible_connection=local'
-    testdir.makefile('', inventory=inventory)
-    testdir.makefile('.yml', test_playbook=playbook)
+def test_goodplay_info_is_logged_to_stdout_and_logging(testdir, caplog, capsys):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
-    return testdir.inline_run('-s')
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    testdir.inline_run('-s')
+
+    message = 'soft dependencies file not found at {0!s} ... nothing to install'.format(
+        testdir.tmpdir.join('requirements.yml'))
+
+    stdout, _ = capsys.readouterr()
+    assert message in stdout
+
+    assert ('goodplay.ansible_support.playbook', logging.INFO, message) in caplog.record_tuples
 
 
 def test_passed_on_non_changed_task(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: task1
-      ping:
-      tags: test
-''')
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(passed=1)
 
 
 def test_passed_on_previously_changed_non_test_task(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: intentionally changed task
-      ping:
-      changed_when: True
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
-    - name: task1
-      ping:
-      tags: test
-''')
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: intentionally changed task
+          ping:
+          changed_when: True
 
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(passed=1)
 
 
 def test_passed_on_previously_skipped_non_test_task(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: intentionally skipped task
-      ping:
-      when: False
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
-    - name: task1
-      ping:
-      tags: test
-''')
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: intentionally skipped task
+          ping:
+          when: False
 
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(passed=1)
 
 
 def test_passed_on_previously_failed_non_test_task_with_ignore_errors(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: intentionally failed task
-      ping:
-      failed_when: True
-      ignore_errors: yes
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
-    - name: task1
-      ping:
-      tags: test
-''')
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: intentionally failed task
+          ping:
+          failed_when: True
+          ignore_errors: yes
 
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(passed=1)
 
 
 def test_passed_on_multiple_plays(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: task1
-      ping:
-      tags: test
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
-- hosts: 127.0.0.1
-  tasks:
-    - name: task2
-      ping:
-      tags: test
-''')
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          tags: test
 
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task2
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(passed=2)
 
 
-def test_passed_without_gather_facts(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  gather_facts: no
-  tasks:
-    - name: task1
-      ping:
-      tags: test
-''')
+def test_passed_with_gather_facts(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: yes
+      tasks:
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=1)
+
+
+def test_passed_without_gather_facts(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(passed=1)
 
 
 def test_skipped_outcome_takes_priority_over_passed(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: host1
-  tasks:
-    - name: avoid all test tasks skipped
-      ping:
-      tags: test
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    host1 ansible_connection=local
+    host2 ansible_connection=local
 
-- hosts: host1:host2
-  tasks:
-    - name: task2
-      ping:
-      when: inventory_hostname != 'host2'
-      tags: test
-''', inventory='''host1 ansible_connection=local
-host2 ansible_connection=local
-''')
+    ## test_playbook.yml
+    - hosts: host1
+      gather_facts: no
+      tasks:
+        - name: avoid all test tasks skipped
+          ping:
+          tags: test
 
+    - hosts: host1:host2
+      gather_facts: no
+      tasks:
+        - name: task2
+          ping:
+          when: inventory_hostname != 'host2'
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(passed=1, skipped=1)
 
 
 def test_skipped_on_previously_failed_non_test_task(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: intentionally failed task
-      ping:
-      failed_when: True
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
-    - name: task1
-      ping:
-      tags: test
-''')
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: intentionally failed task
+          ping:
+          failed_when: True
 
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(skipped=1, failed=1)
 
 
 def test_skipped_multiple_on_previously_failed_non_test_task(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: intentionally failed task
-      ping:
-      failed_when: True
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
-    - name: task1
-      ping:
-      tags: test
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: intentionally failed task
+          ping:
+          failed_when: True
 
-    - name: task2
-      ping:
-      tags: test
-''')
+        - name: task1
+          ping:
+          tags: test
 
+        - name: task2
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(skipped=2, failed=1)
 
 
 def test_failed_on_changed_task(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: task1
-      ping:
-      changed_when: True
-      tags: test
-''')
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          changed_when: True
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(failed=1)
 
 
 def test_failed_on_failed_task(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: task1
-      ping:
-      failed_when: True
-      tags: test
-''')
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          failed_when: True
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(failed=1)
 
 
 def test_failed_on_wait_for_timeout(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: task1
-      wait_for:
-        path: /path/to/some/nonexisting/file
-        timeout: 0
-      tags: test
-''')
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          wait_for:
+            path: /path/to/some/nonexisting/file
+            timeout: 0
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(failed=1)
 
 
 def test_failed_on_unreachable_host_on_gather_facts(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: unreachable.host.local
-  tasks:
-    - name: task1
-      ping:
-      tags: test
-''', inventory='unreachable.host.local')
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    unreachable.host.local
 
+    ## test_playbook.yml
+    - hosts: unreachable.host.local
+      gather_facts: yes
+      tasks:
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(skipped=1, failed=1)
 
 
 def test_failed_on_single_failed_host(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: host1:host2
-  tasks:
-    - name: task1
-      ping:
-      failed_when: inventory_hostname == 'host1'
-      tags: test
-''', inventory='''host1 ansible_connection=local
-host2 ansible_connection=local
-''')
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    host1 ansible_connection=local
+    host2 ansible_connection=local
 
+    ## test_playbook.yml
+    - hosts: host1:host2
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          failed_when: inventory_hostname == 'host1'
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(failed=1)
 
 
 def test_failed_on_all_tasks_skipped(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: unknownhost
-  tasks:
-    - name: task1
-      ping:
-      tags: test
-''')
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
+    ## test_playbook.yml
+    - hosts: unknownhost
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(skipped=1, failed=1)
     assert 'Failed: all test tasks have been skipped' in \
         str(result.getfailures()[0].longrepr)
 
 
 def test_failed_outcome_takes_highest_priority(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: host1:host2:host3
-  tasks:
-    - name: task1
-      ping:
-      when: inventory_hostname != 'host2'
-      failed_when: inventory_hostname == 'host3'
-      tags: test
-''', inventory='''host1 ansible_connection=local
-host2 ansible_connection=local
-host3 ansible_connection=local
-''')
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    host1 ansible_connection=local
+    host2 ansible_connection=local
+    host3 ansible_connection=local
 
+    ## test_playbook.yml
+    - hosts: host1:host2:host3
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          when: inventory_hostname != 'host2'
+          failed_when: inventory_hostname == 'host3'
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(failed=1)
 
 
 def test_failed_on_failing_non_test_task_after_passed_test_task(testdir):
-    result = create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: task1
-      ping:
-      tags: test
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
-    - name: intentionally failed task
-      ping:
-      failed_when: True
-''')
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          tags: test
 
+        - name: intentionally failed task
+          ping:
+          failed_when: True
+    ''')
+
+    result = testdir.inline_run('-s')
     result.assertoutcome(passed=1, failed=1)
 
 
 def test_ansible_stdout_is_fully_consumed(testdir, capsys):
-    create_playbook_and_run(testdir, '''---
-- hosts: 127.0.0.1
-  tasks:
-    - name: task1
-      ping:
-      tags: test
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
 
-    - name: intentionally failed task
-      ping:
-      failed_when: True
-''')
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          tags: test
 
-    out, _ = capsys.readouterr()
+        - name: intentionally failed task
+          ping:
+          failed_when: True
+    ''')
+
+    testdir.inline_run('-s')
+    stdout, _ = capsys.readouterr()
     ansible_play_recap_part = 'failed=1'
-    assert ansible_play_recap_part in out
+    assert ansible_play_recap_part in stdout
