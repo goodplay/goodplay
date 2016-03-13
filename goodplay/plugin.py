@@ -28,6 +28,13 @@ def enable_logging_goodplay_info_to_stdout():
 enable_logging_goodplay_info_to_stdout()
 
 
+def pytest_addoption(parser):
+    parser.addini('use_local_roles', default=False, help='default value for use_local_roles')
+    parser.getgroup('goodplay').addoption(
+        '--use-local-roles', dest='use_local_roles', action='store_true',
+        help='prefer to use local roles instead of auto-installed requirements')
+
+
 # - GoodplayPlaybookFile (pytest.File)
 #   - GoodplayPlatform (pytest.Collector) -- manage docker
 #     - GoodplayPlaybook (pytest.Collector) -- manage ansible runner
@@ -54,7 +61,7 @@ class GoodplayPlaybookFile(pytest.File):
     @classmethod
     def consider_and_create(cls, path, parent):
         if ansible_support.is_test_playbook_file(path):
-            ctx = GoodplayContext(playbook_path=path)
+            ctx = GoodplayContext(playbook_path=path, pytestconfig=parent.config)
 
             if ctx.inventory_path:
                 return GoodplayPlaybookFile(ctx, path, parent)

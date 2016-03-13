@@ -177,8 +177,8 @@ subdirectories named by convention:
      templates/
      vars/
 
-When writing tests for your role, goodplay expects another conventional
-subdirectory:
+When writing tests for your role, goodplay expects another subdirectory
+by convention:
 
 .. code-block:: none
 

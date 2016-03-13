@@ -9,8 +9,9 @@ from goodplay.config import get_goodplay_config
 
 
 class GoodplayContext(object):
-    def __init__(self, playbook_path):
+    def __init__(self, playbook_path, pytestconfig=None):
         self.playbook_path = playbook_path
+        self.pytestconfig = pytestconfig
 
         self._temp_paths = []
 
@@ -108,8 +109,20 @@ class GoodplayContext(object):
         return yaml.safe_load(self.role_path.join('meta', 'main.yml').read())
 
     @cached_property
+    def role_under_test_roles_path(self):
+        role_under_test_roles_path = self._create_temporary_dir()
+
+        role_under_test_roles_path.join(self.role_path.basename).mksymlinkto(self.role_path)
+
+        return role_under_test_roles_path
+
+    @cached_property
     def installed_roles_path(self):
         return self._create_temporary_dir()
+
+    @cached_property
+    def use_local_roles(self):
+        return self.pytestconfig.getoption('use_local_roles')
 
     def release(self):
         for temp_path in reversed(self._temp_paths):

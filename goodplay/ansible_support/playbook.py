@@ -5,6 +5,7 @@ import logging
 import os
 import re
 
+import ansible.constants
 from cached_property import cached_property
 import yaml
 
@@ -61,11 +62,14 @@ class Playbook(object):
             log.info('soft dependencies file not found at %s ... nothing to install',
                      requirements_path)
 
-    def install_roles_from_requirements_file(self, requirements_path):
-        process = run(
-            'ansible-galaxy install -vvvv --force '
-            '--role-file {0} --roles-path {1}',
-            requirements_path, self.ctx.installed_roles_path)
+    def install_roles_from_requirements_file(self, requirements_file):
+        ansible_galaxy_cmd = \
+            'ansible-galaxy install -vvvv --force --role-file {0} --roles-path {1}'
+
+        if self.ctx.use_local_roles:
+            ansible_galaxy_cmd += ' --ignore-errors'
+
+        process = run(ansible_galaxy_cmd, requirements_file, self.ctx.installed_roles_path)
 
         for line in process.stdout:
             log.info(line[:-1])
@@ -75,9 +79,13 @@ class Playbook(object):
 
     def env(self):
         roles_path = []
+
         if self.ctx.role_path:
-            role_base_path = self.ctx.role_path.dirpath()
-            roles_path.append(str(role_base_path))
+            roles_path.append(str(self.ctx.role_under_test_roles_path))
+
+        if self.ctx.use_local_roles:
+            roles_path.append(ansible.constants.DEFAULT_ROLES_PATH)
+
         roles_path.append(str(self.ctx.installed_roles_path))
 
         return dict(
