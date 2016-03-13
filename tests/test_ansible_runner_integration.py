@@ -9,7 +9,7 @@ from goodplay_helpers import smart_create
 pytestmark = pytest.mark.integration
 
 
-def test_goodplay_info_is_logged_to_stdout_and_logging(testdir, caplog, capsys):
+def test_goodplay_info_is_logged_to_stdout_and_logging(testdir, caplog, capfd):
     smart_create(testdir.tmpdir, '''
     ## inventory
     127.0.0.1 ansible_connection=local
@@ -28,8 +28,10 @@ def test_goodplay_info_is_logged_to_stdout_and_logging(testdir, caplog, capsys):
     message = 'soft dependencies file not found at {0!s} ... nothing to install'.format(
         testdir.tmpdir.join('requirements.yml'))
 
-    stdout, _ = capsys.readouterr()
-    assert message in stdout
+    # capfd needs to be used here as logging module seems to use fd
+    stdout, _ = capfd.readouterr()
+    # assert message is exactly once in stdout (no double logging occurs)
+    assert stdout.count(message) == 1
 
     assert ('goodplay.ansible_support.playbook', logging.INFO, message) in caplog.record_tuples
 

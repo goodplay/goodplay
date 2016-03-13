@@ -12,11 +12,8 @@ from goodplay.context import GoodplayContext
 junitxml.patch_mangle_testnames()
 
 
-def pytest_configure(config):
-    # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
-    logging.captureWarnings(True)
-
-    enable_logging_goodplay_info_to_stdout()
+# https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
+logging.captureWarnings(True)
 
 
 def enable_logging_goodplay_info_to_stdout():
@@ -25,6 +22,8 @@ def enable_logging_goodplay_info_to_stdout():
     goodplay_stdout_handler.setFormatter(logging.Formatter())
 
     logging.getLogger('goodplay').addHandler(goodplay_stdout_handler)
+
+enable_logging_goodplay_info_to_stdout()
 
 
 # - GoodplayPlaybookFile (pytest.File)
