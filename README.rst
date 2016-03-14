@@ -1,6 +1,10 @@
 goodplay
 ========
 
+.. image:: https://badges.gitter.im/goodplay/goodplay.svg
+   :alt: Join the chat at https://gitter.im/goodplay/goodplay
+   :target: https://gitter.im/goodplay/goodplay?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
 |build-status| |version| |docs| |license| |code-climate| |code-coverage| |dependencies-status| |donate|
 
 goodplay is an Apache2-licensed test framework for testing Ansible 2.x roles
