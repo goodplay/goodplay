@@ -80,7 +80,10 @@ class Playbook(object):
             roles_path.append(str(role_base_path))
         roles_path.append(str(self.ctx.installed_roles_path))
 
-        return dict(ANSIBLE_ROLES_PATH=os.pathsep.join(roles_path))
+        return dict(
+            ANSIBLE_ROLES_PATH=os.pathsep.join(roles_path),
+            ANSIBLE_RETRY_FILES_ENABLED='false',
+            )
 
     def create_runner(self):
         return PlaybookRunner(self.ctx)
