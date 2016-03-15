@@ -10,7 +10,7 @@ Development Lead
 Contributors
 ------------
 
-Eric Van Steenbergen <vs.eric@gmail.com>
+* Eric Van Steenbergen <vs.eric@gmail.com>
 
 
 Credits
