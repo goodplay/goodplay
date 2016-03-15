@@ -439,3 +439,24 @@ def test_ansible_stdout_is_fully_consumed(testdir, capsys):
     stdout, _ = capsys.readouterr()
     ansible_play_recap_part = 'failed=1'
     assert ansible_play_recap_part in stdout
+
+
+def test_ansible_retry_files_are_disabled(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          failed_when: True
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(failed=1)
+
+    assert not testdir.tmpdir.join('test_playbook.retry').check()
