@@ -21,7 +21,9 @@ def enable_logging_goodplay_info_to_stdout():
     goodplay_stdout_handler.setLevel(logging.INFO)
     goodplay_stdout_handler.setFormatter(logging.Formatter())
 
-    logging.getLogger('goodplay').addHandler(goodplay_stdout_handler)
+    goodplay_logger = logging.getLogger('goodplay')
+    goodplay_logger.addHandler(goodplay_stdout_handler)
+    goodplay_logger.setLevel(logging.DEBUG)
 
 enable_logging_goodplay_info_to_stdout()
 
