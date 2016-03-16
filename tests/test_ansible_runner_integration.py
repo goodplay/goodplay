@@ -36,6 +36,26 @@ def test_goodplay_info_is_logged_to_stdout_and_logging(testdir, caplog, capfd):
     assert ('goodplay.ansible_support.playbook', logging.INFO, message) in caplog.record_tuples
 
 
+def test_goodplay_info_is_logged_to_stdout_when_logging_is_not_configured(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.runpytest_subprocess('-s')
+
+    assert len([line for line in result.stdout.lines
+                if 'soft dependencies file not found at ' in line]) == 1
+
+
 def test_passed_on_non_changed_task(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory
