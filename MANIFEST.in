@@ -6,6 +6,7 @@ include LICENSE
 include Makefile
 include MANIFEST.in
 include README.rst
+include RELEASE.rst
 include requirements.txt
 include setup.cfg
 include setup.py
