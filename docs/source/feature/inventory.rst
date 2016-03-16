@@ -63,7 +63,7 @@ Parametrizing Platform
    This may probably be supported for all goodplay tests in a later version.
 
 In case you want to test an Ansible role against multiple platforms, you can
-specify ``goodplay_image=*`` on hosts in inventory.
+specify ``goodplay_platform=*`` on hosts in inventory.
 
 goodplay will then matrix test your Ansible role against all supported
 platforms that are mentioned in the role's ``meta/main.yml`` file, provided
