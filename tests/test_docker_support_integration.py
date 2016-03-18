@@ -437,3 +437,158 @@ def test_role_with_goodplay_platform_wildcard(testdir, docker_client):
     assert kwargs['image'] == 'centos:centos7'
 
     assert docker_client.start.call_count == 2
+
+
+def test_hosts_without_domain_can_resolve_each_other(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    guesthost1 goodplay_image=busybox:latest ansible_user=root
+    guesthost2 goodplay_image=busybox:latest ansible_user=root
+
+    ## test_playbook.yml
+    - hosts: guesthost1
+      gather_facts: no
+      tasks:
+        - name: assert guesthost2 is reachable
+          raw: ping -c 1 guesthost2
+          changed_when: False
+          tags: test
+
+    - hosts: guesthost2
+      gather_facts: no
+      tasks:
+        - name: assert guesthost1 is reachable
+          raw: ping -c 1 guesthost1
+          changed_when: False
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=2)
+
+
+def test_hosts_with_domain_can_resolve_each_other(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    host1.domain1.tld goodplay_image=busybox:latest ansible_user=root
+    host2.domain1.tld goodplay_image=busybox:latest ansible_user=root
+    host1.domain2.tld goodplay_image=busybox:latest ansible_user=root
+
+    ## test_playbook.yml
+    - hosts: host1.domain1.tld
+      gather_facts: no
+      tasks:
+        # host1.domain1.tld assertions
+        - name: assert host1.domain1.tld can be resolved on host1.domain1.tld
+          raw: ping -c 1 host1.domain1.tld
+          changed_when: False
+          tags: test
+
+        - name: assert host1 can be resolved on host1.domain1.tld
+          raw: ping -c 1 host1
+          changed_when: False
+          tags: test
+
+        # host2.domain1.tld assertions
+        - name: assert host2.domain1.tld can be resolved on host1.domain1.tld
+          raw: ping -c 1 host2.domain1.tld
+          changed_when: False
+          tags: test
+
+        - name: assert host2 can be resolved on host1.domain1.tld
+          raw: ping -c 1 host2
+          changed_when: False
+          tags: test
+
+        # host1.domain2.tld assertions
+        - name: assert host1.domain2.tld can be resolved on host1.domain1.tld
+          raw: ping -c 1 host1.domain2.tld
+          changed_when: False
+          tags: test
+
+    - hosts: host2.domain1.tld
+      gather_facts: no
+      tasks:
+        # host1.domain1.tld assertions
+        - name: assert host1.domain1.tld can be resolved on host2.domain1.tld
+          raw: ping -c 1 host1.domain1.tld
+          changed_when: False
+          tags: test
+
+        - name: assert host1 can be resolved on host2.domain1.tld
+          raw: ping -c 1 host1
+          changed_when: False
+          tags: test
+
+        # host2.domain1.tld assertions
+        - name: assert host2.domain1.tld can be resolved on host2.domain1.tld
+          raw: ping -c 1 host2.domain1.tld
+          changed_when: False
+          tags: test
+
+        - name: assert host2 can be resolved on host2.domain1.tld
+          raw: ping -c 1 host2
+          changed_when: False
+          tags: test
+
+        # host1.domain2.tld assertions
+        - name: assert host1.domain2.tld can be resolved on host2.domain1.tld
+          raw: ping -c 1 host1.domain2.tld
+          changed_when: False
+          tags: test
+
+    - hosts: host1.domain2.tld
+      gather_facts: no
+      tasks:
+        # host1.domain1.tld assertions
+        - name: assert host1.domain1.tld can be resolved on host1.domain2.tld
+          raw: ping -c 1 host1.domain1.tld
+          changed_when: False
+          tags: test
+
+        # host2.domain1.tld assertions
+        - name: assert host2.domain1.tld can be resolved on host1.domain2.tld
+          raw: ping -c 1 host2.domain1.tld
+          changed_when: False
+          tags: test
+
+        - name: assert host2 cannot be resolved on host1.domain2.tld
+          raw: ping -c 1 host2
+          register: ping_result
+          changed_when: False
+          failed_when: "ping_result.rc != 1"
+          tags: test
+
+        # host1.domain2.tld assertions
+        - name: assert host1.domain2.tld can be resolved on host1.domain2.tld
+          raw: ping -c 1 host1.domain2.tld
+          changed_when: False
+          tags: test
+
+        - name: assert host1 can be resolved on host1.domain2.tld
+          raw: ping -c 1 host1
+          changed_when: False
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=15)
+
+
+def test_hosts_can_resolve_google_com_domain(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    guesthost goodplay_image=busybox:latest ansible_user=root
+
+    ## test_playbook.yml
+    - hosts: guesthost
+      gather_facts: no
+      tasks:
+        - name: assert google.com domain is reachable
+          raw: ping -c 1 google.com
+          changed_when: False
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=1)
