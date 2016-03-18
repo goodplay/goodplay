@@ -50,12 +50,12 @@ pytest
 ------
 
 goodplay is built as a pytest_ plugin which is enabled by default.
-Thus when running your other tests via ``py.test`` command line interface,
+Thus when running your other tests via ``py.test`` command-line interface,
 pytest also runs the goodplay tests right beside them.
 
 .. note::
 
-   When running ``goodplay`` command line interface only goodplay tests
+   When running ``goodplay`` command-line interface only goodplay tests
    are considered.
 
 
