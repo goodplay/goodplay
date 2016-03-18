@@ -22,8 +22,7 @@ A pseudo *playbook* -- written as a YAML_ file -- may look like this:
 
 .. code-block:: yaml
 
-   # playbook_name.yml
-   ---
+   ## playbook_name.yml
    # play #1
    - hosts: host1:host2
      tasks:
@@ -93,14 +92,13 @@ An example test playbook that verifies that two hosts
 
 .. code-block:: yaml
 
-   # inventory
-   host1 goodplay_image=centos:centos6
-   host2 goodplay_image=centos:centos6
+   ## inventory
+   host1 goodplay_image=centos:centos6 ansible_user=root
+   host2 goodplay_image=centos:centos6 ansible_user=root
 
 .. code-block:: yaml
 
-   # test_ping_hosts.yml
-   ---
+   ## test_ping_hosts.yml
    - hosts: host1:host2
      tasks:
        - name: hosts are reachable
@@ -121,8 +119,7 @@ Ansible's assert module:
 
 .. code-block:: yaml
 
-   # install_myapp.yml
-   ---
+   ## install_myapp.yml
    - hosts: myapp-hosts
      tasks:
        - name: install myapp
@@ -131,15 +128,14 @@ Ansible's assert module:
 
 .. code-block:: yaml
 
-   # tests/inventory
+   ## tests/inventory
    [myapp-hosts]
-   host1 goodplay_image=centos:centos6
-   host2 goodplay_image=centos:centos6
+   host1 goodplay_image=centos:centos6 ansible_user=root
+   host2 goodplay_image=centos:centos6 ansible_user=root
 
 .. code-block:: yaml
 
-   # tests/test_myapp.yml
-   ---
+   ## tests/test_myapp.yml
    - include: ../install_myapp.yml
 
    - hosts: myapp-hosts

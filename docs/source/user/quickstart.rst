@@ -11,8 +11,7 @@ that is responsible for installing a plain nginx web server on Ubuntu_:
 
 .. code-block:: yaml
 
-   # nginx_install.yml
-   ---
+   ## nginx_install.yml
    - hosts: web
      tasks:
        - name: install nginx package
@@ -73,8 +72,8 @@ Ubuntu Trusty:
 
 .. code-block:: yaml
 
-   # tests/inventory
-   web goodplay_image=ubuntu-upstart:trusty
+   ## tests/inventory
+   web goodplay_image=ubuntu-upstart:trusty ansible_user=root
 
 In this example we define a host with name ``web`` that runs the
 `official Docker Ubuntu image`_ ``ubuntu-upstart:trusty``.
@@ -93,8 +92,7 @@ requirements:
 
 .. code-block:: yaml
 
-   # tests/test_nginx_install.yml
-   ---
+   ## tests/test_nginx_install.yml
    - include: ../nginx_install.yml
 
    - hosts: web

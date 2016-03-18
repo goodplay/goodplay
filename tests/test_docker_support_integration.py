@@ -115,7 +115,7 @@ def test_docker_pull_called_when_image_does_not_exist(testdir, docker_client):
 
     smart_create(testdir.tmpdir, '''
     ## inventory
-    guesthostname goodplay_image=busybox:latest
+    guesthostname goodplay_image=busybox:latest ansible_user=root
 
     ## test_playbook.yml
     - hosts: guesthostname
@@ -141,8 +141,8 @@ def test_docker_pull_is_called_once_per_image_when_multiple_times(testdir, docke
 
     smart_create(testdir.tmpdir, '''
     ## inventory
-    guesthostname1 goodplay_image=busybox:latest
-    guesthostname2 goodplay_image=busybox:latest
+    guesthostname1 goodplay_image=busybox:latest ansible_user=root
+    guesthostname2 goodplay_image=busybox:latest ansible_user=root
 
     ## test_playbook.yml
     - hosts: guesthostname1:guesthostname2
@@ -168,7 +168,7 @@ def test_docker_pull_not_called_when_image_already_exists(testdir, docker_client
 
     smart_create(testdir.tmpdir, '''
     ## inventory
-    guesthostname goodplay_image=busybox:latest
+    guesthostname goodplay_image=busybox:latest ansible_user=root
 
     ## test_playbook.yml
     - hosts: guesthostname
@@ -223,7 +223,7 @@ def test_docker_pull_called_with_resolved_goodplay_platform(testdir, docker_clie
         image: busybox:latest
 
     ## inventory
-    guesthostname goodplay_platform=thename:theversion
+    guesthostname goodplay_platform=thename:theversion ansible_user=root
 
     ## test_playbook.yml
     - hosts: guesthostname
@@ -245,7 +245,7 @@ def test_docker_pull_called_with_resolved_goodplay_platform(testdir, docker_clie
 def test_started_docker_container_is_removed_after_successful_run(testdir, docker_client):
     smart_create(testdir.tmpdir, '''
     ## inventory
-    guesthostname goodplay_image=busybox:latest
+    guesthostname goodplay_image=busybox:latest ansible_user=root
 
     ## test_playbook.yml
     - hosts: guesthostname
@@ -270,7 +270,7 @@ def test_started_docker_container_is_removed_after_successful_run(testdir, docke
 def test_started_docker_container_is_removed_after_failed_run(testdir, docker_client):
     smart_create(testdir.tmpdir, '''
     ## inventory
-    guesthostname goodplay_image=busybox:latest
+    guesthostname goodplay_image=busybox:latest ansible_user=root
 
     ## test_playbook.yml
     - hosts: guesthostname
@@ -295,7 +295,7 @@ def test_started_docker_container_is_removed_after_failed_run(testdir, docker_cl
 def test_group_vars_directory_beside_inventory_file_is_incorporated(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory
-    guesthostname goodplay_image=busybox:latest
+    guesthostname goodplay_image=busybox:latest ansible_user=root
 
     ## group_vars/all
     hello: world
@@ -319,7 +319,7 @@ def test_group_vars_directory_beside_inventory_file_is_incorporated(testdir):
 def test_group_vars_directory_beside_inventory_directory_is_incorporated(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory/static
-    guesthostname goodplay_image=busybox:latest
+    guesthostname goodplay_image=busybox:latest ansible_user=root
 
     ## inventory/group_vars/all
     hello: world
@@ -343,7 +343,7 @@ def test_group_vars_directory_beside_inventory_directory_is_incorporated(testdir
 def test_host_vars_directory_beside_inventory_file_is_incorporated(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory
-    guesthostname goodplay_image=busybox:latest
+    guesthostname goodplay_image=busybox:latest ansible_user=root
 
     ## host_vars/guesthostname
     hello: world
@@ -367,7 +367,7 @@ def test_host_vars_directory_beside_inventory_file_is_incorporated(testdir):
 def test_host_vars_directory_beside_inventory_directory_is_incorporated(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory/static
-    guesthostname goodplay_image=busybox:latest
+    guesthostname goodplay_image=busybox:latest ansible_user=root
 
     ## inventory/host_vars/guesthostname
     hello: world
@@ -414,7 +414,7 @@ def test_role_with_goodplay_platform_wildcard(testdir, docker_client):
         image: centos:centos7
 
     ## local-role-base/role1/tests/inventory
-    default goodplay_platform=*
+    default goodplay_platform=* ansible_user=root
 
     ## local-role-base/role1/tests/test_playbook.yml
     - hosts: default
