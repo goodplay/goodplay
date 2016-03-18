@@ -9,19 +9,23 @@ Throughout this documentation we will often refer to this as *inventory*.
 
 goodplay borrows this term from Ansible which already provides
 `various ways to define inventories`_.
-When doing a test run, goodplay reads an inventory during setup phase and
-creates appropriate hosts as Docker containers.
+When doing a test run, goodplay reads an inventory during setup phase that
+defines the hosts to be used for the test.
+These can be hosts you have already available in your environment or Docker
+containers that are automatically created as we will see in a minute.
 
 The usual and easiest way to define an *inventory* is to create a file
 named ``inventory`` right beside the :ref:`test playbook <writing-test-playbook>`:
 
 .. code-block:: yaml
 
-   # inventory
-   web
-   db
+   ## inventory
+   web ansible_user=root
+   db ansible_user=root
 
 This example defines two hosts -- ``web`` and ``db``.
+The remote user that is used to connect to the host needs to be specified
+via ``ansible_user`` inventory variable.
 
 .. _`various ways to define inventories`: https://docs.ansible.com/ansible/intro_inventory.html
 
@@ -47,9 +51,9 @@ run latest CentOS 7, we could update the inventory file:
 
 .. code-block:: yaml
 
-   # inventory
-   web goodplay_image=centos:centos6
-   db goodplay_image=centos:centos7
+   ## inventory
+   web goodplay_image=centos:centos6 ansible_user=root
+   db goodplay_image=centos:centos7 ansible_user=root
 
 
 .. _`parametrizing-platform`:

@@ -20,8 +20,7 @@ images:
 
 .. code-block:: yaml
 
-   # .goodplay.yml
-   ---
+   ## .goodplay.yml
    platforms:
      - name: EL
        version: 6

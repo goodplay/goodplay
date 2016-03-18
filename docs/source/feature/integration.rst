@@ -9,7 +9,7 @@ to open source projects at no cost.
 
 .. code-block:: yaml
 
-   # .travis.yml
+   ## .travis.yml
    sudo: required
 
    language: python
