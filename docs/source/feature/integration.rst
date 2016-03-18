@@ -11,12 +11,22 @@ to open source projects at no cost.
 
    ## .travis.yml
    sudo: required
+   dist: trusty
 
    language: python
    python: 2.7
 
    services:
      - docker
+
+   before_install:
+     # ensure apt-get cache is up-to-date
+     - sudo apt-get -qq update
+
+     # upgrade docker-engine to latest version
+     - export DEBIAN_FRONTEND=noninteractive
+     - sudo apt-get -qq -o Dpkg::Options::="--force-confnew" -y install docker-engine
+     - docker version
 
    install:
      - pip install goodplay

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import random
+
 from cached_property import cached_property
 
 import docker
@@ -12,6 +14,7 @@ class DockerRunner(object):
         self.ctx = ctx
         self.default_platform = default_platform
 
+        self.network = None
         self.running_containers = []
 
     @cached_property
@@ -78,6 +81,10 @@ class DockerRunner(object):
             if not self.get_docker_image_for_host(host):
                 continue
 
+            if not self.network:
+                network_name = u'goodplay{0}'.format(random.getrandbits(24))[:14]
+                self.network = self.client.create_network(network_name, driver='bridge')
+
             container = self.start_container(host)
             self.running_containers.append(container)
 
@@ -87,21 +94,26 @@ class DockerRunner(object):
         hostname = host.vars()['inventory_hostname']
         image = self.get_docker_image_for_host(host)
 
-        # host_config:
-        # probably create a new network stack for the first container
-        #   (network_mode='bridge')
-        # and then reuse this network stack for the other containers
-        #   (network_mode='container:[name|id]')
-        #
+        is_fqhn = '.' in hostname
+        domainname = hostname.split('.', 1)[-1] if is_fqhn else None
+        dns_search = [domainname] if domainname else None
+
         # cap_add probably needed when supporting KVM
+
+        host_config = self.client.create_host_config(
+            dns_search=dns_search
+        )
 
         container = self.client.create_container(
             image=image,
             hostname=hostname,
+            domainname=domainname,
             detach=True,
             tty=True,
-            host_config=self.client.create_host_config()
+            host_config=host_config
         )
+
+        self.client.connect_container_to_network(container, self.network['Id'], aliases=[hostname])
 
         self.client.start(container)
 
@@ -117,3 +129,6 @@ class DockerRunner(object):
         # kill and remove containers
         for container in self.running_containers:
             self.client.remove_container(container, force=True)
+
+        if self.network:
+            self.client.remove_network(self.network['Id'])
