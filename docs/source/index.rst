@@ -37,6 +37,7 @@ So if you're trying to use a specific feature you should find all the details he
    feature/test-playbook
    feature/dependencies
    feature/config
+   feature/cmdline
    feature/integration
 
 
