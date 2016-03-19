@@ -9,7 +9,7 @@ import pytest
 from goodplay import ansible_support, docker_support, junitxml
 from goodplay.context import GoodplayContext
 
-junitxml.patch_mangle_testnames()
+junitxml.patch_pytest_to_strip_file_extensions()
 
 
 # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
