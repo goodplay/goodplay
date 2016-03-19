@@ -9,7 +9,7 @@ def patch_pytest_to_strip_file_extensions():
     if hasattr(_pytest.junitxml, '_py_ext_re'):
         # pytest>=2.9.1
         _pytest.junitxml._py_ext_re = re.compile(r'\.(?:py|yml)$')
-    else:
+    else:  # pragma: no cover
         # pytest<=2.9.0
         # monkeypatch mangle_testnames to remove .yml extension from playbook "class"
         mangle_testnames_orig = _pytest.junitxml.mangle_testnames
