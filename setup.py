@@ -9,7 +9,7 @@ install_requires = [
     'ansible>=2.0.0',
     'cached-property>=1.3.0',
     'docker-py>=1.6.0,<=1.7.0',
-    'py',
+    'py>=1.4.31',
     'pytest>=2.8.5',
     'sarge>=0.1.4',
 ]
