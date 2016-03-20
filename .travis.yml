@@ -47,3 +47,9 @@ branches:
 notifications:
   slack:
     secure: kKyPeBZsg9sZ6owG1V1fuZ0J+Uxy10kCvcbrdcql29Q/YqzIkzfY3dWZzB7a97E8YOBwHEEXVARntJ1Ru3mtn7tf2WUODf00kt+XH27NEVWj7RyyLJWE0W1dDv4tDpKOpUtCndLo10p+xMJ40V9jYW69V4g369bQ/5MaBtn45/4FEKspqTPtEw1EGeMyoMHSJQONVJEW82ugGoM1BSI0o3Tkzg/mJ2oJjBWxd1J9W5XccrMq30YJiRe4tv82Xffpq/4Dm4haqICmwzAGrqfk1ycZYKJ+yl+2mr+0sSBzAg8a/WFhi+7JIhq9nHPJH+XlQOG6cjvi/rjOvMUZz597OLqwXSqhFSFoqIWbJOplm0sTvVfxnewUYtOCr8DjUZPbecBdrLhCGweEUndkCfHDOmv1SetY5J/awQUGBzuYHyjF5wyRMi5Ab7z5iGHVE69nnhNxIoMYA6KBYZOg4xWEWXMT6cOZduULX0VUdjaLwHGN/tUk13IKxSKzeOZ58WI2d1zUNw+cAShkpei101+5pKXyqzeHbpkRA6K7rNfTrj83xtcE7qpZYxH8GAlj/AHVcaw5CgGNPz778saCwuAIsDnFkyh1gJ8B0YK2FUWNabNMgvBM5QkFsvbMA6iDpulzx6mgF5tN/IJyPytfY4P7D7UFwkCH9SORS9nih+XATeQ=
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/8924130ad64b9bea24c7
+    on_success: always
+    on_failure: always
+    on_start: never
