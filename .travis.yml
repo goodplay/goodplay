@@ -16,7 +16,7 @@ env:
 
 matrix:
   allow_failures:
-    env: TOXENV=py27-ansibledevel
+    - env: TOXENV=py27-ansibledevel
   fast_finish: true
 
 before_install:
