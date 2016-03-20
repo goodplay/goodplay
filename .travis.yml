@@ -17,7 +17,6 @@ env:
 matrix:
   allow_failures:
     - env: TOXENV=py27-ansibledevel
-  fast_finish: true
 
 before_install:
   # ensure apt-get cache is up-to-date
