@@ -3,8 +3,36 @@
 History
 =======
 
-0.5.0 (TBD - ACTIVE DEVELOPMENT)
+0.6.0 (TBD - ACTIVE DEVELOPMENT)
 --------------------------------
+
+
+0.5.0 (2016-03-20)
+------------------
+
+Major Changes
+~~~~~~~~~~~~~
+
+* goodplay now requires at least Docker 1.10.0
+* docker: make use of user-defined networks to isolate test environments
+* docker: hosts can now resolve each other thanks to docker's embedded DNS server
+* support use of local Ansible roles (``--use-local-roles``) during test run
+
+Bug Fixes
+~~~~~~~~~
+
+* add missing ``ansible_user`` inventory variable in tests as this is required
+  for latest docker connection plugin in Ansible
+* fix junitxml support for ``pytest>=2.9.1``
+
+Other Improvements
+~~~~~~~~~~~~~~~~~~
+
+* ease test writing by introducing ``smart_create`` helper
+* speed-up tests by using ``gather_facts: no`` where possible
+* docs: compare goodplay to other software
+* add gitter chat badge
+* explicitly disable Ansible retry files
 
 
 0.4.1 (2016-01-22)
