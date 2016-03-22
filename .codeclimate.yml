@@ -7,6 +7,8 @@ engines:
         python:
           paths:
             - "goodplay/**/*"
+    exclude_paths:
+      - "tests/**/*"
   pep8:
     enabled: true
   radon:
