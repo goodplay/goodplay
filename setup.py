@@ -42,6 +42,7 @@ setup(
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Plugins',
+        'Framework :: Pytest',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: MacOS :: MacOS X',
