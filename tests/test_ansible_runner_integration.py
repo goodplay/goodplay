@@ -480,3 +480,39 @@ def test_ansible_retry_files_are_disabled(testdir):
     result.assertoutcome(failed=1)
 
     assert not testdir.tmpdir.join('test_playbook.retry').check()
+
+
+def test_goodplay_traceback_is_absent(testdir, capsys):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          tags: test
+
+        - name: intentionally failed task
+          ping:
+          failed_when: True
+
+    ## test_something.py
+    def please_fail():
+        raise Exception()
+
+    def test_something():
+        please_fail()
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=1, failed=2)
+
+    stdout, _ = capsys.readouterr()
+    stacktrace_entry_separator_count = \
+        len([line for line in stdout.splitlines() if line.startswith('_ _ _ _ ')])
+
+    # assert only single stacktrace entry separator for failing Python test
+    assert stacktrace_entry_separator_count == 1

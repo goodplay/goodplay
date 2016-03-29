@@ -6,6 +6,11 @@ History
 0.6.0 (TBD - ACTIVE DEVELOPMENT)
 --------------------------------
 
+Other Improvements
+~~~~~~~~~~~~~~~~~~
+
+* do not display traceback for goodplay failures
+
 
 0.5.0 (2016-03-20)
 ------------------
