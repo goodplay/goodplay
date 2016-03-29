@@ -35,6 +35,19 @@ def pytest_addoption(parser):
         help='prefer to use local roles instead of auto-installed requirements')
 
 
+class GoodplayFailed(Exception):
+    pass
+
+
+@pytest.mark.hookwrapper
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+
+    if call.excinfo and call.excinfo.typename == 'GoodplayFailed':
+        report.longrepr = 'Failed: {}'.format(call.excinfo.value)
+
+
 # - GoodplayPlaybookFile (pytest.File)
 #   - GoodplayPlatform (pytest.Collector) -- manage docker
 #     - GoodplayPlaybook (pytest.Collector) -- manage ansible runner
@@ -129,7 +142,7 @@ class GoodplayPlaybook(GoodplayContextSupport, pytest.Collector):
             self.playbook_runner.wait()
 
             if self.playbook_runner.failures:
-                pytest.fail('\n'.join(self.playbook_runner.failures))
+                raise GoodplayFailed('\n'.join(self.playbook_runner.failures))
 
 
 class GoodplayTest(GoodplayContextSupport, pytest.Item):
@@ -151,4 +164,4 @@ class GoodplayTest(GoodplayContextSupport, pytest.Item):
         if outcome in ('skipped', None):
             pytest.skip()
         elif outcome == 'failed':
-            pytest.fail()
+            raise GoodplayFailed()
