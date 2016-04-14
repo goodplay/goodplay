@@ -47,4 +47,4 @@ test: check-tox
 test-unit: check-tox
 	PYTEST_ADDOPTS='-m "not integration"' $(TOX)
 
-.PHONY: help clean dist docs docswatch lint publish test test-unit
+.PHONY: help check-tox clean dist docs docswatch lint publish test test-unit

@@ -33,10 +33,9 @@ So if you're trying to use a specific feature you should find all the details he
 .. toctree::
    :maxdepth: 2
 
-   feature/inventory
+   feature/environment
    feature/test-playbook
    feature/dependencies
-   feature/config
    feature/cmdline
    feature/integration
 

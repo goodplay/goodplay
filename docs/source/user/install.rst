@@ -18,16 +18,16 @@ for running your tests.
    test environment you manage on your own, you can skip Docker installation
    and continue with the next section.
 
-As goodplay makes use of user-defined networks and Docker's embedded DNS
-server to allow hosts to resolve each other, it requires at least Docker
-version ``1.10.0``.
+As goodplay uses `Docker Compose`_ which enables you to use some great Docker
+features like user-defined networks or embedded DNS server, we recommend to
+run at least Docker version ``1.10.0``.
 There are a lot of options when it comes to setting up a Docker host.
 
 When running a Linux distribution with a recent kernel version, ``docker``
 is most likely supported natively.
 In this case the `installation process`_ will finish in a minute.
 
-When running on Mac OS X, ``docker`` is not natively supported.
+When running on Mac OS X, ``docker`` is not natively supported (yet).
 Fortunately there is ``docker-machine`` available which lets you create
 Docker hosts as virtual machine on your computer, on cloud providers,
 or inside your own data center.
@@ -36,6 +36,7 @@ In this case `Docker Toolbox`_ helps you to setup everything you need.
 Please make sure to read the official `Install Docker Engine`_ guide.
 
 .. _`installation process`: https://docs.docker.com/linux/step_one/
+.. _`Docker Compose`: https://docs.docker.com/compose/
 .. _`Docker Toolbox`: https://www.docker.com/docker-toolbox
 .. _`Install Docker Engine`: https://docs.docker.com/engine/installation/
 

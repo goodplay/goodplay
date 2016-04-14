@@ -1,8 +1,8 @@
 Command-Line Options
 ====================
 
-Additionally to the default ``py.test`` command-line options,
-goodplay provides the following options for ``goodplay`` and ``py.test`` executables.
+Additionally to the default ``py.test`` command-line options, goodplay
+provides the following options for ``goodplay`` and ``py.test`` executables.
 
 
 ``--use-local-roles``

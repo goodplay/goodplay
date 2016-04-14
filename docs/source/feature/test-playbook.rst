@@ -3,8 +3,8 @@
 Writing Tests
 =============
 
-goodplay builds upon *playbooks* -- Ansible_'s configuration, deployment, and orchestration
-language.
+goodplay builds upon *playbooks* -- Ansible_'s configuration, deployment, and
+orchestration language.
 
 .. _Ansible: https://docs.ansible.com/
 
@@ -16,7 +16,11 @@ Quoting from Ansible's documentation:
 
 .. epigraph::
 
-   At a basic level, playbooks can be used to manage configurations of and deployments to remote machines. At a more advanced level, they can sequence multi-tier rollouts involving rolling updates, and can delegate actions to other hosts, interacting with monitoring servers and load balancers along the way.
+   At a basic level, playbooks can be used to manage configurations of and
+   deployments to remote machines. At a more advanced level, they can
+   sequence multi-tier rollouts involving rolling updates, and can delegate
+   actions to other hosts, interacting with monitoring servers and load
+   balancers along the way.
 
 A pseudo *playbook* -- written as a YAML_ file -- may look like this:
 
@@ -78,23 +82,37 @@ contraints:
 #. The filename is prefixed with ``test_``.
 #. The filename extension is ``.yml``.
 #. Right beside the *test playbook* a file or directory named ``inventory``
-   exists. See :ref:`inventory` for details.
+   exists. See :ref:`environment` for details.
+#. If you want to test against Docker containers you may optionally put a
+   ``docker-compose.yml`` file right beside the *test playbook*.
 #. The *test playbook* contains or includes at least one task tagged with
    ``test``, also called *test task*.
-#. Within a *test playbook* all *test task* names need to be unique.
+#. Within a *test playbook* all *test task* names must be unique.
 
 
 Basic Example
 ~~~~~~~~~~~~~
 
-An example test playbook that verifies that two hosts
-(``host1`` and ``host2``) are reachable:
+An example test playbook that verifies that two hosts (``host1`` and ``host2``
+created as Docker containers, each one running ``centos:centos6`` platform
+image) are reachable:
 
 .. code-block:: yaml
 
+   ## docker-compose.yml
+   version: "2"
+   services:
+     host1:
+       image: "centos:centos6"
+       tty: True
+
+     host2:
+       image: "centos:centos6"
+       tty: True
+
    ## inventory
-   host1 goodplay_image=centos:centos6 ansible_user=root
-   host2 goodplay_image=centos:centos6 ansible_user=root
+   host1 ansible_user=root
+   host2 ansible_user=root
 
 .. code-block:: yaml
 
@@ -128,10 +146,21 @@ Ansible's assert module:
 
 .. code-block:: yaml
 
+   ## tests/docker-compose.yml
+   version: "2"
+   services:
+     host1:
+       image: "centos:centos6"
+       tty: True
+
+     host2:
+       image: "centos:centos6"
+       tty: True
+
    ## tests/inventory
    [myapp-hosts]
-   host1 goodplay_image=centos:centos6 ansible_user=root
-   host2 goodplay_image=centos:centos6 ansible_user=root
+   host1 ansible_user=root
+   host2 ansible_user=root
 
 .. code-block:: yaml
 
@@ -183,6 +212,12 @@ by convention:
 .. code-block:: none
 
    role/
+     ...
      tests/
 
+By following this convention, goodplay takes care of making the Ansible
+role available on the `Ansible Roles Path`_, so you can use them directly in
+your test playbook.
+
 .. _`Ansible Roles`: https://docs.ansible.com/ansible/playbooks_roles.html#roles
+.. _`Ansible Roles Path`: http://docs.ansible.com/ansible/intro_configuration.html#roles-path

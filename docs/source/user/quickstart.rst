@@ -64,23 +64,32 @@ Defining Environment
 
 Before writing the actual tests we need to define our test environment
 which is created as Docker containers behind the scenes.
-This is done via an `Ansible inventory`_ where we define all hosts and groups
-required for the test run.
+This is done via a `Docker Compose file`_ and an `Ansible inventory`_ where
+we define all hosts and groups required for the test run.
 
 In our case we want to test our nginx installation on a single host with
 Ubuntu Trusty:
 
 .. code-block:: yaml
 
+   ## tests/docker-compose.yml
+   version: "2"
+   services:
+     web:
+       image: "ubuntu-upstart:trusty"
+       tty: True
+
    ## tests/inventory
-   web goodplay_image=ubuntu-upstart:trusty ansible_user=root
+   web ansible_user=root
 
-In this example we define a host with name ``web`` that runs the
-`official Docker Ubuntu image`_ ``ubuntu-upstart:trusty``.
+In this example we define a *host* (in Docker Compose terminology this is a
+*service*) with name ``web`` that runs the `official Docker Ubuntu image`_
+``ubuntu-upstart:trusty``.
 
-- :ref:`Feature: Defining Environment <inventory>`
+- :ref:`Feature: Defining Environment <environment>`
 
 .. _`Ansible inventory`: https://docs.ansible.com/ansible/intro_inventory.html
+.. _`Docker Compose file`: https://docs.docker.com/compose/compose-file/
 .. _`official Docker Ubuntu image`: https://hub.docker.com/_/ubuntu-upstart/
 
 
@@ -135,17 +144,16 @@ Running Tests
 .. note::
 
    First-time run may take some more seconds or minutes (depending on your
-   internet connection speed) as the required Docker images need to be
-   downloaded.
+   internet connection) as the required Docker images need to be downloaded.
 
 The following command will kick-off the test run::
 
    $ goodplay -v
    ============================= test session starts ==============================
-   platform darwin -- Python 2.7.6, pytest-2.8.5, py-1.4.31, pluggy-0.3.1 -- /Users
+   platform darwin -- Python 2.7.6, pytest-2.9.1, py-1.4.31, pluggy-0.3.1 -- /Users
    /benjixx/.virtualenvs/goodplay/bin/python2.7
    rootdir: /Users/benjixx/src/goodplay/examples/quickstart
-   plugins: goodplay-0.4.0
+   plugins: goodplay-0.6.0
    collected 3 items
 
    tests/test_nginx_install.yml::nginx service is running PASSED

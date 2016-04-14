@@ -6,6 +6,25 @@ History
 0.6.0 (TBD - ACTIVE DEVELOPMENT)
 --------------------------------
 
+Major Changes
+~~~~~~~~~~~~~
+
+* use Docker Compose for defining environments instead of reinventing the
+  wheel, thus bringing you all the latest and greatest features of
+  Docker Compose (e.g. running from Dockerfile, custom networks, custom
+  entrypoints, shared volumes, and more)
+* support running any test playbook (not only Ansible role playbooks) against
+  multiple environments
+* remove ``goodplay_image`` and ``goodplay_platform`` support from inventory
+  files
+* remove ``.goodplay.yml`` support as it has only been used for defining
+  platform-name-to-docker-image mapping which is now handled by Docker Compose
+
+Minor Changes
+~~~~~~~~~~~~~
+
+* now depend on ``pytest>=2.9.1,<3``
+
 Other Improvements
 ~~~~~~~~~~~~~~~~~~
 
