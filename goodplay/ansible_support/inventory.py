@@ -27,7 +27,7 @@ class Inventory(object):
         inventory = ansible.inventory.Inventory(
             loader=loader,
             variable_manager=variable_manager,
-            host_list=str(self.inventory_path))
+            host_list=self.inventory_path.strpath)
         variable_manager.set_inventory(inventory)
 
         return inventory

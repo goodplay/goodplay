@@ -81,12 +81,12 @@ class Playbook(object):
         roles_path = []
 
         if self.ctx.role_path:
-            roles_path.append(str(self.ctx.role_under_test_roles_path))
+            roles_path.append(self.ctx.role_under_test_roles_path.strpath)
 
         if self.ctx.use_local_roles:
             roles_path.append(ansible.constants.DEFAULT_ROLES_PATH)
 
-        roles_path.append(str(self.ctx.installed_roles_path))
+        roles_path.append(self.ctx.installed_roles_path.strpath)
 
         return dict(
             ANSIBLE_ROLES_PATH=os.pathsep.join(roles_path),
@@ -111,8 +111,8 @@ class Playbook(object):
 
         if non_unique_task_names:
             raise ValueError(
-                "Playbook '{0!s}' contains tests with non-unique name '{1}'"
-                .format(self.ctx.playbook_path, non_unique_task_names[0]))
+                "Playbook '{0}' contains tests with non-unique name '{1}'"
+                .format(self.ctx.playbook_path.strpath, non_unique_task_names[0]))
 
     def tasks(self):
         process = run(

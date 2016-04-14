@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from goodplay.ansible_support import Inventory, Playbook
-from goodplay.context import GoodplayContext, Platform, PlatformManager
+from goodplay.context import GoodplayContext
 
 
 # inventory_path
@@ -113,6 +113,28 @@ def test_inventory_is_cached(tmpdir):
     first_result = ctx.inventory
     assert first_result is not None
     assert id(ctx.inventory) == id(first_result)
+
+
+# playbook_dir_path
+
+def test_playbook_dir_path_is_playbook_path_directory(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+    playbook_path.ensure()
+
+    ctx = GoodplayContext(playbook_path)
+
+    assert ctx.playbook_dir_path == tmpdir
+
+
+def test_playbook_dir_path_is_cached(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+    playbook_path.ensure()
+
+    ctx = GoodplayContext(playbook_path)
+
+    first_result = ctx.playbook_dir_path
+    assert first_result is not None
+    assert id(ctx.playbook_dir_path) == id(first_result)
 
 
 # playbook
@@ -275,152 +297,67 @@ def test_is_role_playbook_is_true_when_role_path_is_not_none(tmpdir):
     assert ctx.is_role_playbook is True
 
 
-# role_meta_info
+# compose_project_name
 
-def test_role_meta_info_reads_meta_dir_main_yml_file(tmpdir):
-    tmpdir.join('meta', 'main.yml').write('''---
-hello: world
-''', ensure=True)
-
-    playbook_path = tmpdir.join('tests', 'test_playbook.yml')
+def test_compose_project_name_is_same_for_playbook_path_and_environment(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
     playbook_path.ensure()
 
     ctx = GoodplayContext(playbook_path)
 
-    assert ctx.role_meta_info == dict(hello='world')
+    assert ctx.compose_project_name('env1') == ctx.compose_project_name('env1')
 
 
-def test_role_meta_info_is_cached(tmpdir):
-    tmpdir.join('meta', 'main.yml').write('''---
-galaxy_info:
-''', ensure=True)
-
-    playbook_path = tmpdir.join('tests', 'test_playbook.yml')
+def test_compose_project_name_incorporates_node_id(tmpdir, monkeypatch):
+    playbook_path = tmpdir.join('test_playbook.yml')
     playbook_path.ensure()
 
     ctx = GoodplayContext(playbook_path)
 
-    first_result = ctx.role_meta_info
-    assert first_result is not None
-    assert id(ctx.role_meta_info) == id(first_result)
+    compose_project_name1 = ctx.compose_project_name('env1')
+
+    monkeypatch.setattr('uuid.getnode', lambda: 1234)
+
+    compose_project_name2 = ctx.compose_project_name('env1')
+
+    assert compose_project_name1 != compose_project_name2
 
 
-# platform
+def test_compose_project_name_incorporates_playbook_path(tmpdir):
+    playbook_path1 = tmpdir.join('dir1', 'test_playbook.yml')
+    playbook_path1.ensure()
 
-def test_platform_base_attributes():
-    platform = Platform(name='ubuntu', version='trusty')
+    playbook_path2 = tmpdir.join('dir2', 'test_playbook.yml')
+    playbook_path2.ensure()
 
-    assert platform.name == 'ubuntu'
-    assert platform.version == 'trusty'
+    ctx1 = GoodplayContext(playbook_path1)
+    ctx2 = GoodplayContext(playbook_path2)
 
-
-def test_platform_equal():
-    platform1 = Platform(name='ubuntu', version='trusty')
-    platform2 = Platform(name='ubuntu', version='trusty')
-
-    assert platform1 == platform2
-    assert not platform1 != platform2
+    assert ctx1.compose_project_name('env1') != ctx2.compose_project_name('env1')
 
 
-def test_platform_version_int_and_string_are_comparable():
-    platform1 = Platform(name='EL', version=6)
-    platform2 = Platform(name='EL', version='6')
+def test_compose_project_name_incorporates_environment(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+    playbook_path.ensure()
 
-    assert platform1 == platform2
-    assert not platform1 != platform2
+    ctx = GoodplayContext(playbook_path)
 
-
-def test_platform_equal_with_different_kwargs():
-    platform1 = Platform(name='ubuntu', version='trusty')
-    platform2 = Platform(name='ubuntu', version='trusty', some_param=1234)
-
-    assert platform1 == platform2
-    assert not platform1 != platform2
+    assert ctx.compose_project_name('env1') != ctx.compose_project_name('env2')
 
 
-# platform manager
+# release
 
-def test_platform_manager_find_by_id_found():
-    available_platform = Platform('ubuntu', 'trusty')
-    available_platforms = [available_platform]
-    platform_manager = PlatformManager(available_platforms)
+def test_release_removes_temp_dir_paths(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+    playbook_path.ensure()
 
-    assert id(platform_manager.find_by_id('ubuntu:trusty')) == id(available_platform)
+    ctx = GoodplayContext(playbook_path)
+    temp_dir_path = ctx._create_temp_dir_path()
 
+    assert temp_dir_path.check(dir=True)
+    assert len(ctx._temp_dir_paths) == 1
 
-def test_platform_manager_find_by_id_not_found():
-    available_platform = Platform('ubuntu', 'trusty')
-    available_platforms = [available_platform]
-    platform_manager = PlatformManager(available_platforms)
+    ctx.release()
 
-    assert platform_manager.find_by_id('ubuntu:precise') is None
-
-
-def test_platform_manager_find_by_id_without_colon():
-    available_platform = Platform('ubuntu', 'trusty')
-    available_platforms = [available_platform]
-    platform_manager = PlatformManager(available_platforms)
-
-    assert platform_manager.find_by_id('ubuntutrusty') is None
-
-
-def test_platform_manager_find_by_name_and_version_found():
-    available_platform = Platform('ubuntu', 'trusty')
-    available_platforms = [available_platform]
-    platform_manager = PlatformManager(available_platforms)
-
-    found_platform = platform_manager.find_by_name_and_version('ubuntu', 'trusty')
-    assert id(found_platform) == id(available_platform)
-
-
-def test_platform_manager_find_by_name_and_version_not_found():
-    available_platform = Platform('ubuntu', 'trusty')
-    available_platforms = [available_platform]
-    platform_manager = PlatformManager(available_platforms)
-
-    assert platform_manager.find_by_name_and_version('ubuntu', 'precise') is None
-
-
-def test_platform_manager_selected_platforms_initial_empty():
-    available_platforms = [Platform('ubuntu', 'trusty')]
-    platform_manager = PlatformManager(available_platforms)
-
-    assert len(platform_manager.selected_platforms) == 0
-
-
-def test_platform_manager_select_platform_by_name_and_version_adds_platform_to_selected():
-    available_platform = Platform('ubuntu', 'trusty')
-    available_platforms = [available_platform]
-    platform_manager = PlatformManager(available_platforms)
-
-    assert len(platform_manager.selected_platforms) == 0
-
-    platform_manager.select_platform_by_name_and_version('ubuntu', 'trusty')
-
-    assert len(platform_manager.selected_platforms) == 1
-    assert id(platform_manager.selected_platforms[0]) == id(available_platform)
-
-
-def test_platform_manager_select_platform_by_name_and_version_ignores_already_selected():
-    available_platform = Platform('ubuntu', 'trusty')
-    available_platforms = [available_platform]
-    platform_manager = PlatformManager(available_platforms)
-
-    assert len(platform_manager.selected_platforms) == 0
-
-    platform_manager.select_platform_by_name_and_version('ubuntu', 'trusty')
-    platform_manager.select_platform_by_name_and_version('ubuntu', 'trusty')
-
-    assert len(platform_manager.selected_platforms) == 1
-    assert id(platform_manager.selected_platforms[0]) == id(available_platform)
-
-
-def test_platform_manager_select_platform_by_name_and_version_ignores_non_available():
-    available_platforms = [Platform('ubuntu', 'trusty')]
-    platform_manager = PlatformManager(available_platforms)
-
-    assert len(platform_manager.selected_platforms) == 0
-
-    platform_manager.select_platform_by_name_and_version('ubuntu', 'precise')
-
-    assert len(platform_manager.selected_platforms) == 0
+    assert not temp_dir_path.check()
+    assert len(ctx._temp_dir_paths) == 0

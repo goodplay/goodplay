@@ -49,7 +49,7 @@ def pytest_runtest_makereport(item, call):
 
 
 # - GoodplayPlaybookFile (pytest.File)
-#   - GoodplayPlatform (pytest.Collector) -- manage docker
+#   - GoodplayEnvironment (pytest.Collector) -- manage docker
 #     - GoodplayPlaybook (pytest.Collector) -- manage ansible runner
 #       - GoodplayTest (pytest.Item)
 
@@ -74,17 +74,21 @@ class GoodplayPlaybookFile(pytest.File):
     @classmethod
     def consider_and_create(cls, path, parent):
         if ansible_support.is_test_playbook_file(path):
-            ctx = GoodplayContext(playbook_path=path, pytestconfig=parent.config)
+            ctx = GoodplayContext(playbook_path=path, config=parent.config)
 
             if ctx.inventory_path:
                 return GoodplayPlaybookFile(ctx, path, parent)
 
     def collect(self):
         try:
-            platforms = self.ctx.platforms if self.ctx.platforms else (None,)
+            environment_names = \
+                docker_support.environment_names_for_playbook_path(self.ctx.playbook_path)
 
-            for platform in platforms:
-                yield GoodplayPlatform(platform, self, self.config, self.session)
+            if environment_names:
+                for environment_name in environment_names:
+                    yield GoodplayEnvironment(environment_name, self, self.config, self.session)
+            else:
+                yield GoodplayEnvironment(None, self, self.config, self.session)
         finally:
             if self.config.option.collectonly:
                 self.ctx.release()
@@ -93,25 +97,25 @@ class GoodplayPlaybookFile(pytest.File):
         self.ctx.release()
 
 
-# platform can be unspecific
-class GoodplayPlatform(GoodplayContextSupport, pytest.Collector):
-    def __init__(self, platform, parent=None, config=None, session=None):
-        super(GoodplayPlatform, self).__init__(str(platform), parent, config, session)
-        self.platform = platform
+# environment can be unspecific
+class GoodplayEnvironment(GoodplayContextSupport, pytest.Collector):
+    def __init__(self, environment_name, parent=None, config=None, session=None):
+        super(GoodplayEnvironment, self).__init__(environment_name, parent, config, session)
+        self.environment_name = environment_name
 
         self.docker_runner = None
 
     def _makeid(self):
-        if not self.platform:
-            return self.parent.nodeid
+        if self.environment_name:
+            return super(GoodplayEnvironment, self)._makeid()
 
-        return super(GoodplayPlatform, self)._makeid()
+        return self.parent.nodeid
 
     def collect(self):
         yield GoodplayPlaybook(self.parent.name, self, self.config, self.session)
 
     def setup(self):
-        self.docker_runner = docker_support.DockerRunner(self.ctx, self.platform)
+        self.docker_runner = docker_support.DockerRunner(self.ctx, self.environment_name)
         self.docker_runner.setup()
 
     def teardown(self):
@@ -119,7 +123,7 @@ class GoodplayPlatform(GoodplayContextSupport, pytest.Collector):
             self.docker_runner.teardown()
 
 
-# platform specific playbook preparations
+# environment specific playbook preparations
 class GoodplayPlaybook(GoodplayContextSupport, pytest.Collector):
     def __init__(self, name, parent=None, config=None, session=None):
         super(GoodplayPlaybook, self).__init__(name, parent, config, session)

@@ -1,54 +1,192 @@
-# -*- coding: utf-8 -*-
+from goodplay.docker_support import (
+    is_docker_compose_file, config_paths_for_playbook_path, environment_name_for_config_path)
 
-import pytest
-
-from goodplay.docker_support import DockerRunner
-
-
-@pytest.fixture
-def without_docker_env_vars(monkeypatch):
-    monkeypatch.delenv('DOCKER_TLS_VERIFY', raising=False)
-    monkeypatch.delenv('DOCKER_HOST', raising=False)
-    monkeypatch.delenv('DOCKER_CERT_PATH', raising=False)
-    monkeypatch.delenv('DOCKER_MACHINE_NAME', raising=False)
+from goodplay_helpers import smart_create
 
 
-def test_client_negotiates_version(without_docker_env_vars, mocker):
-    client_mock = mocker.patch('docker.Client', autospec=True)
+def test_is_docker_compose_file_returns_false_for_non_docker_compose_prefix(tmpdir):
+    path = tmpdir.join('docker.yml')
+    path.ensure()
 
-    docker_runner = DockerRunner(ctx=None)
-    docker_runner.client
-
-    client_mock.assert_called_once_with(version='auto')
+    assert not is_docker_compose_file(path)
 
 
-def test_client_uses_docker_host_env_var(without_docker_env_vars, monkeypatch, mocker):
-    monkeypatch.setenv('DOCKER_HOST', 'tcp://192.168.10.2:2376')
+def test_is_docker_compose_file_returns_false_for_non_yml_suffix(tmpdir):
+    path = tmpdir.join('docker-compose.json')
+    path.ensure()
 
-    client_mock = mocker.patch('docker.Client', autospec=True)
-
-    docker_runner = DockerRunner(ctx=None)
-    docker_runner.client
-
-    _, _, kwargs = client_mock.mock_calls[0]
-    assert kwargs['base_url'] == 'tcp://192.168.10.2:2376'
+    assert not is_docker_compose_file(path)
 
 
-def test_client_does_not_validate_hostname(without_docker_env_vars, mocker):
-    mocker.patch('docker.Client', autospec=True)
-    kwargs_from_env_mock = mocker.patch('docker.utils.kwargs_from_env', autospec=True)
+def test_is_docker_compose_file_returns_false_for_directory(tmpdir):
+    path = tmpdir.join('docker-compose.yml')
+    path.ensure(dir=True)
 
-    docker_runner = DockerRunner(ctx=None)
-    docker_runner.client
-
-    kwargs_from_env_mock.assert_called_once_with(assert_hostname=False)
+    assert not is_docker_compose_file(path)
 
 
-def test_client_is_cached(mocker):
-    client_mock = mocker.patch('docker.Client', autospec=True)
+def test_is_docker_compose_file_returns_false_for_multidot_name(tmpdir):
+    path = tmpdir.join('docker-compose..yml')
+    path.ensure()
 
-    docker_runner = DockerRunner(ctx=None)
-    first_result = docker_runner.client
+    assert not is_docker_compose_file(path)
 
-    assert id(docker_runner.client) == id(first_result)
-    assert client_mock.call_count == 1
+
+def test_is_docker_compose_file_success(tmpdir):
+    path = tmpdir.join('docker-compose.yml')
+    path.ensure()
+
+    assert is_docker_compose_file(path)
+
+
+def test_environment_name_for_config_path_empty():
+    assert environment_name_for_config_path([]) is None
+
+
+def test_environment_name_for_config_path_docker_compose_yml_only():
+    assert environment_name_for_config_path(['docker-compose.yml']) == ''
+
+
+def test_environment_name_for_config_path_docker_compose_override_yml_only():
+    assert environment_name_for_config_path(['docker-compose.override.yml']) == ''
+
+
+def test_environment_name_for_config_path_docker_compose_yml_and_override():
+    docker_compose_file_group = ['docker-compose.yml', 'docker-compose.override.yml']
+    assert environment_name_for_config_path(docker_compose_file_group) == ''
+
+
+def test_environment_name_for_config_path_single_level():
+    docker_compose_file_group = ['docker-compose.yml', 'docker-compose.item1.yml']
+    assert environment_name_for_config_path(docker_compose_file_group) == 'item1'
+
+
+def test_environment_name_for_config_path_muliple_levels():
+    docker_compose_file_group = [
+        'docker-compose.yml',
+        'docker-compose.item1.override.yml',
+        'docker-compose.item1.item11.item111.override.yml'
+    ]
+    expected = 'item1.item11.item111'
+    assert environment_name_for_config_path(docker_compose_file_group) == expected
+
+
+def test_config_paths_for_playbook_path_empty(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+
+    assert config_paths_for_playbook_path(playbook_path) == []
+
+
+def test_config_paths_for_playbook_path_docker_compose_yml_only(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+
+    smart_create(tmpdir, '''
+    ## docker-compose.yml
+    ''')
+
+    expected = [['docker-compose.yml']]
+    assert config_paths_for_playbook_path(playbook_path) == expected
+
+
+def test_config_paths_for_playbook_path_docker_compose_override_yml_only(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+
+    smart_create(tmpdir, '''
+    ## docker-compose.override.yml
+    ''')
+
+    expected = [['docker-compose.override.yml']]
+    assert config_paths_for_playbook_path(playbook_path) == expected
+
+
+def test_config_paths_for_playbook_path_docker_compose_yml_and_override(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+
+    smart_create(tmpdir, '''
+    ## docker-compose.yml
+    ## docker-compose.override.yml
+    ''')
+
+    expected = [
+        ['docker-compose.yml', 'docker-compose.override.yml']
+    ]
+    assert config_paths_for_playbook_path(playbook_path) == expected
+
+
+def test_config_paths_for_playbook_path_single_level(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+
+    smart_create(tmpdir, '''
+    ## docker-compose.yml
+    ## docker-compose.item1.yml
+    ## docker-compose.item2.yml
+    ''')
+
+    expected = [
+        ['docker-compose.item1.yml'],
+        ['docker-compose.item2.yml']
+    ]
+    assert config_paths_for_playbook_path(playbook_path) == expected
+
+
+def test_config_paths_for_playbook_path_single_level_only_override(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+
+    smart_create(tmpdir, '''
+    ## docker-compose.yml
+    ## docker-compose.item1.override.yml
+    ''')
+
+    expected = [
+        ['docker-compose.yml', 'docker-compose.item1.override.yml']
+    ]
+    assert config_paths_for_playbook_path(playbook_path) == expected
+
+
+def test_config_paths_for_playbook_path_single_level_and_override(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+
+    smart_create(tmpdir, '''
+    ## docker-compose.yml
+    ## docker-compose.item1.yml
+    ## docker-compose.item1.override.yml
+    ''')
+
+    expected = [
+        ['docker-compose.item1.yml', 'docker-compose.item1.override.yml']
+    ]
+    assert config_paths_for_playbook_path(playbook_path) == expected
+
+
+def test_config_paths_for_playbook_path_multiple_levels(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+
+    smart_create(tmpdir, '''
+    ## docker-compose.yml
+    ## docker-compose.item1.item11.yml
+    ## docker-compose.item2.item21.yml
+    ''')
+
+    expected = [
+        ['docker-compose.item1.item11.yml'],
+        ['docker-compose.item2.item21.yml']
+    ]
+    assert config_paths_for_playbook_path(playbook_path) == expected
+
+
+def test_config_paths_for_playbook_path_multiple_levels_and_override(tmpdir):
+    playbook_path = tmpdir.join('test_playbook.yml')
+
+    smart_create(tmpdir, '''
+    ## docker-compose.yml
+    ## docker-compose.item1.override.yml
+    ## docker-compose.item1.item11.item111.override.yml
+    ## docker-compose.item2.item21.yml
+    ''')
+
+    expected = [
+        ['docker-compose.yml', 'docker-compose.item1.override.yml',
+         'docker-compose.item1.item11.item111.override.yml'],
+        ['docker-compose.item2.item21.yml']
+    ]
+    assert config_paths_for_playbook_path(playbook_path) == expected

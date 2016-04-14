@@ -26,7 +26,7 @@ class PlaybookRunner(object):
         env = self.ctx.playbook.env()
         additional_env = dict(
             PYTHONUNBUFFERED='1',
-            ANSIBLE_CALLBACK_PLUGINS=str(callback_plugin_path),
+            ANSIBLE_CALLBACK_PLUGINS=callback_plugin_path.strpath,
             ANSIBLE_CALLBACK_WHITELIST='goodplay',
         )
         env.update(additional_env)

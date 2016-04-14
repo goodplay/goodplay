@@ -55,15 +55,19 @@ and playbooks as well as running full integration tests for your software.
 Features
 --------
 
-* define your test environments as `Ansible inventories`_
+* define your test environments via `Docker Compose`_ and
+  `Ansible inventories`_
 * write your tests as `Ansible 2.x playbook tasks`_
 * resolve and auto-install Ansible role dependencies prior to test run
-* run your tests within Docker_ container(s) or on localhost
-* built as a pytest_ plugin, so you can run your goodplay tests together with your other tests
+* run your tests within Docker_ container(s), an already existing test
+  environment, or on localhost
+* built as a pytest_ plugin, so you can run your goodplay tests together
+  with your other tests
 
 .. _`Ansible 2.x playbook tasks`: https://docs.ansible.com/playbooks.html
 .. _`Ansible inventories`: https://docs.ansible.com/ansible/intro_inventory.html
 .. _Docker: https://www.docker.com/
+.. _`Docker Compose`: https://docs.docker.com/compose/
 .. _pytest: https://pytest.org/
 
 
