@@ -15,6 +15,7 @@ Major Changes
   entrypoints, shared volumes, and more)
 * support running any test playbook (not only Ansible role playbooks) against
   multiple environments
+* test tasks now run in check mode when supported by module
 * remove ``goodplay_image`` and ``goodplay_platform`` support from inventory
   files
 * remove ``.goodplay.yml`` support as it has only been used for defining

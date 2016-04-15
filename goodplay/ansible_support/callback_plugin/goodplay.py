@@ -1,9 +1,55 @@
 # -*- coding: utf-8 -*-
 
 import json
+import re
 
+import ansible.plugins
 from ansible.plugins.callback import CallbackBase
 
+
+# run test tasks in check mode when supported
+
+from ansible.playbook.play_context import PlayContext
+
+
+class ActionInfo(object):
+    def __init__(self):
+        self._supports_check_mode_re = re.compile(r'\bsupports_check_mode\s*=\s*True\b')
+        self._cache = {}
+
+    def supports_check_mode(self, action):
+        is_supported = self._cache.get(action, None)
+        not_found_in_cache = is_supported is None
+
+        if not_found_in_cache:
+            module_path = ansible.plugins.module_loader.find_plugin(action)
+
+            if module_path:
+                with open(module_path, 'rb') as module_file:
+                    module_file_content = module_file.read()
+                    is_supported = bool(self._supports_check_mode_re.search(module_file_content))
+                    self._cache[action] = is_supported
+
+        return is_supported
+
+ActionInfo = ActionInfo()
+
+
+original_set_task_and_variable_override = PlayContext.set_task_and_variable_override
+
+
+def goodplay_set_task_and_variable_override(self, task, *args, **kwargs):
+    new_info = original_set_task_and_variable_override(self, task, *args, **kwargs)
+
+    if 'test' in task.tags and ActionInfo.supports_check_mode(task.action):
+        new_info.check_mode = True
+
+    return new_info
+
+PlayContext.set_task_and_variable_override = goodplay_set_task_and_variable_override
+
+
+# goodplay callback
 
 class CallbackModule(CallbackBase):
     CALLBACK_VERSION = 2.0
