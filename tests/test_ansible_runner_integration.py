@@ -74,6 +74,33 @@ def test_passed_on_non_changed_task(testdir):
     result.assertoutcome(passed=1)
 
 
+def test_passed_multiple_on_previously_changed_task(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          changed_when: True
+          tags: test
+
+        - name: task2
+          ping:
+          tags: test
+
+        - name: task3
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=2, failed=1)
+
+
 def test_passed_on_previously_changed_non_test_task(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory
@@ -166,7 +193,7 @@ def test_passed_on_multiple_plays(testdir):
     result.assertoutcome(passed=2)
 
 
-def test_passed_with_gather_facts(testdir):
+def test_passed_with_gather_facts_enabled(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory
     127.0.0.1 ansible_connection=local
@@ -184,7 +211,7 @@ def test_passed_with_gather_facts(testdir):
     result.assertoutcome(passed=1)
 
 
-def test_passed_without_gather_facts(testdir):
+def test_passed_with_gather_facts_disabled(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory
     127.0.0.1 ansible_connection=local

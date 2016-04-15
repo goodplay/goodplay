@@ -49,3 +49,12 @@ according to the following rules in order:
      subsequent tests being ``skipped``.
 
    - If all test tasks of a playbook are ``skipped`` this results in a failure.
+
+
+Are test tasks free of side effects?
+------------------------------------
+
+It depends. Test tasks are run in *check mode* (and thus without side effects)
+when supported by a module. If *check mode* is not supported, a module is run
+in normal mode which can result in side effects (depending on a module's
+functionality).
