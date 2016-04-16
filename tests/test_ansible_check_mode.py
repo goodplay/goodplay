@@ -59,33 +59,6 @@ def test_lineinfile_task_tagged_with_test_runs_in_check_mode(testdir):
     assert testdir.tmpdir.join('HELLO').read() == 'WORLD\n'
 
 
-def test_task_with_always_run_and_tagged_with_test_runs_in_normal_mode(testdir):
-    smart_create(testdir.tmpdir, '''
-    ## inventory
-    127.0.0.1 ansible_connection=local
-
-    ## test_playbook.yml
-    - hosts: 127.0.0.1
-      gather_facts: no
-      tasks:
-        - file:
-            path: "{{ playbook_dir }}/README"
-            state: touch
-
-        - name: intentionally failing test
-          file:
-            path: "{{ playbook_dir }}/README"
-            state: absent
-          always_run: yes
-          tags: test
-    ''')
-
-    result = testdir.inline_run('-s')
-    result.assertoutcome(failed=1)
-
-    assert not testdir.tmpdir.join('README').check()
-
-
 def test_task_tagged_with_test_that_does_not_support_check_mode_runs_in_normal_mode(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory
