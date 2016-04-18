@@ -29,7 +29,6 @@ enable_logging_goodplay_info_to_stdout()
 
 
 def pytest_addoption(parser):
-    parser.addini('use_local_roles', default=False, help='default value for use_local_roles')
     parser.getgroup('goodplay').addoption(
         '--use-local-roles', dest='use_local_roles', action='store_true',
         help='prefer to use local roles instead of auto-installed requirements')
