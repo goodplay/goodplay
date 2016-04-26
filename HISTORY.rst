@@ -29,6 +29,7 @@ Minor Changes
 Other Improvements
 ~~~~~~~~~~~~~~~~~~
 
+* fresh goodplay logo
 * do not display traceback for goodplay failures
 
 
