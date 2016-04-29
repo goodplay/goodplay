@@ -23,7 +23,7 @@ setup(
     version=__import__('goodplay').__version__,
     description='goodplay enables you to test your deployments and '
                 'distributed software infrastructure by reusing your '
-                'existing knowledge of ansible.',
+                'existing knowledge of Ansible.',
     long_description=long_description,
 
     author='Benjamin Schwarze',

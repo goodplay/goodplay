@@ -48,8 +48,8 @@ def pytest_runtest_makereport(item, call):
 
 
 # - GoodplayPlaybookFile (pytest.File)
-#   - GoodplayEnvironment (pytest.Collector) -- manage docker
-#     - GoodplayPlaybook (pytest.Collector) -- manage ansible runner
+#   - GoodplayEnvironment (pytest.Collector) -- manage Docker
+#     - GoodplayPlaybook (pytest.Collector) -- manage Ansible runner
 #       - GoodplayTest (pytest.Item)
 
 

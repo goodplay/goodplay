@@ -45,14 +45,14 @@ Major Changes
 
 * goodplay now requires at least Docker 1.10.0
 * docker: make use of user-defined networks to isolate test environments
-* docker: hosts can now resolve each other thanks to docker's embedded DNS server
+* docker: hosts can now resolve each other thanks to Docker's embedded DNS server
 * support use of local Ansible roles (``--use-local-roles``) during test run
 
 Bug Fixes
 ~~~~~~~~~
 
 * add missing ``ansible_user`` inventory variable in tests as this is required
-  for latest docker connection plugin in Ansible
+  for latest Docker connection plugin in Ansible
 * fix junitxml support for ``pytest>=2.9.1``
 
 Other Improvements

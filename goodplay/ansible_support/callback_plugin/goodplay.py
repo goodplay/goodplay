@@ -65,7 +65,7 @@ class CallbackModule(CallbackBase):
 
         self.reset_per_host_outcomes()
 
-    # ansible playbook-specific callback methods
+    # Ansible playbook-specific callback methods
 
     def v2_playbook_on_task_start(self, task, is_conditional):
         # ensure task is available as attribute on instance
@@ -112,7 +112,7 @@ class CallbackModule(CallbackBase):
     def v2_playbook_on_stats(self, stats):
         self.check_and_handle_playbook_on_task_end()
 
-    # ansible runner-specific callback methods
+    # Ansible runner-specific callback methods
 
     def runner_on_failed(self, host, res, ignore_errors=False):
         if ignore_errors:
