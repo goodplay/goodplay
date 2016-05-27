@@ -10,7 +10,7 @@ env:
   global:
     - DOCKER_VERSION=1.10.0-0~trusty
   matrix:
-    - TOXENV=py27-ansible20
+    - TOXENV=py27-ansible21
     - TOXENV=py27-ansibledevel
     - TOXENV=docs
 
