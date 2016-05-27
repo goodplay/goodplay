@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 
 install_requires = [
-    'ansible>=2.0.0',
+    'ansible>=2.1',
     'cached-property>=1.3.0',
     'docker-compose>=1.7.0',
     'py>=1.4.31',
@@ -63,7 +63,10 @@ setup(
     },
     packages=find_packages(),
     package_data={
-        '': ['ansible_support/callback_plugin/goodplay.py'],
+        '': [
+            'ansible_support/callback_plugin/goodplay.py',
+            'ansible_support/connection_plugin/goodplaydocker.py',
+        ],
     },
     install_requires=install_requires,
     zip_safe=False,

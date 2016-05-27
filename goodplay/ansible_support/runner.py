@@ -22,12 +22,14 @@ class PlaybookRunner(object):
     def run_async(self):
         this_path = py.path.local(__file__)
         callback_plugin_path = this_path.dirpath('callback_plugin')
+        connection_plugin_path = this_path.dirpath('connection_plugin')
 
         env = self.ctx.playbook.env()
         additional_env = dict(
             PYTHONUNBUFFERED='1',
             ANSIBLE_CALLBACK_PLUGINS=callback_plugin_path.strpath,
             ANSIBLE_CALLBACK_WHITELIST='goodplay',
+            ANSIBLE_CONNECTION_PLUGINS=connection_plugin_path.strpath,
         )
         env.update(additional_env)
 
