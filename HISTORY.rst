@@ -14,6 +14,11 @@ Major Changes
   is not required in a Docker container anymore)
 * drop support for ``ansible==2.0.x``, now require ``ansible>=2.1.0``
 
+Bug Fixes
+~~~~~~~~~
+
+* fix issue with using local Ansible roles (``--use-local-roles``)
+
 
 0.6.0 (2016-04-28)
 ------------------
