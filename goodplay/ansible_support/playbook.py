@@ -84,7 +84,7 @@ class Playbook(object):
             roles_path.append(self.ctx.role_under_test_roles_path.strpath)
 
         if self.ctx.use_local_roles:
-            roles_path.append(ansible.constants.DEFAULT_ROLES_PATH)
+            roles_path.extend(ansible.constants.DEFAULT_ROLES_PATH)
 
         roles_path.append(self.ctx.installed_roles_path.strpath)
 

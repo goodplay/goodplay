@@ -623,7 +623,7 @@ def test_when_use_local_roles_is_enabled_ansible_path_takes_precedence_over_soft
         testdir, monkeypatch):
     monkeypatch.setattr(
         'ansible.constants.DEFAULT_ROLES_PATH',
-        str(testdir.tmpdir.join('local-role-base')))
+        [testdir.tmpdir.join('local-role-base').strpath])
 
     smart_create(testdir.tmpdir, '''
     ## external-role-base/role1soft.tar.gz
@@ -701,7 +701,7 @@ def test_when_use_local_roles_is_enabled_ansible_path_takes_precedence_over_role
         testdir, monkeypatch):
     monkeypatch.setattr(
         'ansible.constants.DEFAULT_ROLES_PATH',
-        str(testdir.tmpdir.join('local-role-base')))
+        [testdir.tmpdir.join('local-role-base').strpath])
 
     smart_create(testdir.tmpdir, '''
     ## external-role-base/role1.tar.gz
@@ -775,7 +775,7 @@ def test_when_use_local_roles_is_enabled_ansible_path_takes_precedence_over_role
 def test_when_use_local_roles_is_enabled_ansible_path_is_considered(testdir, monkeypatch):
     monkeypatch.setattr(
         'ansible.constants.DEFAULT_ROLES_PATH',
-        str(testdir.tmpdir.join('some', 'ansible', 'roles')))
+        [testdir.tmpdir.join('some', 'ansible', 'roles').strpath])
 
     smart_create(testdir.tmpdir, '''
     ## some/ansible/roles/role1/tasks/main.yml
