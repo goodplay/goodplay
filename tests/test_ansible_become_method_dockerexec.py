@@ -1,6 +1,7 @@
-from goodplay_helpers import smart_create
+from goodplay_helpers import skip_if_no_docker, smart_create
 
 
+@skip_if_no_docker
 def test_become_user_on_task_without_become_does_not_execute_as_become_user(testdir):
     smart_create(testdir.tmpdir, '''
     ## docker-compose.yml
@@ -58,6 +59,7 @@ def test_become_user_on_task_without_become_does_not_execute_as_become_user(test
     result.assertoutcome(passed=1)
 
 
+@skip_if_no_docker
 def test_become_with_become_user_on_play(testdir):
     smart_create(testdir.tmpdir, '''
     ## docker-compose.yml
@@ -116,6 +118,7 @@ def test_become_with_become_user_on_play(testdir):
     result.assertoutcome(passed=1)
 
 
+@skip_if_no_docker
 def test_become_with_become_user_on_task(testdir):
     smart_create(testdir.tmpdir, '''
     ## docker-compose.yml

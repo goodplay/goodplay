@@ -19,6 +19,11 @@ Bug Fixes
 
 * fix issue with using local Ansible roles (``--use-local-roles``)
 
+Internal Changes
+~~~~~~~~~~~~~~~~
+
+* skip Docker-related tests when Docker is not available
+
 
 0.6.0 (2016-04-28)
 ------------------
