@@ -6,6 +6,25 @@ from cStringIO import StringIO
 import tarfile
 import textwrap
 
+import docker
+import pytest
+import requests
+
+
+def is_docker_available():
+    docker_client = docker.Client.from_env()
+
+    try:
+        docker_client.version(api_version=False)
+        return True
+    except requests.exceptions.ConnectionError:
+        return False
+
+
+skip_if_no_docker = pytest.mark.skipif(
+    not is_docker_available(),
+    reason='docker is not available')
+
 
 def smart_create(base_path, smart_content):
     smart_content = textwrap.dedent(smart_content)

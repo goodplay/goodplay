@@ -2,11 +2,12 @@
 
 import pytest
 
-from goodplay_helpers import smart_create
+from goodplay_helpers import skip_if_no_docker, smart_create
 
 pytestmark = pytest.mark.integration
 
 
+@skip_if_no_docker
 def test_group_vars_directory_beside_inventory_file_is_incorporated(testdir):
     smart_create(testdir.tmpdir, '''
     ## docker-compose.yml
@@ -38,6 +39,7 @@ def test_group_vars_directory_beside_inventory_file_is_incorporated(testdir):
     result.assertoutcome(passed=1)
 
 
+@skip_if_no_docker
 def test_group_vars_directory_beside_inventory_directory_is_incorporated(testdir):
     smart_create(testdir.tmpdir, '''
     ## docker-compose.yml
@@ -69,6 +71,7 @@ def test_group_vars_directory_beside_inventory_directory_is_incorporated(testdir
     result.assertoutcome(passed=1)
 
 
+@skip_if_no_docker
 def test_host_vars_directory_beside_inventory_file_is_incorporated(testdir):
     smart_create(testdir.tmpdir, '''
     ## docker-compose.yml
@@ -100,6 +103,7 @@ def test_host_vars_directory_beside_inventory_file_is_incorporated(testdir):
     result.assertoutcome(passed=1)
 
 
+@skip_if_no_docker
 def test_host_vars_directory_beside_inventory_directory_is_incorporated(testdir):
     smart_create(testdir.tmpdir, '''
     ## docker-compose.yml
@@ -131,6 +135,7 @@ def test_host_vars_directory_beside_inventory_directory_is_incorporated(testdir)
     result.assertoutcome(passed=1)
 
 
+@skip_if_no_docker
 def test_role_with_multiple_environments(testdir):
     smart_create(testdir.tmpdir, '''
     ## local-role-base/role1/meta/main.yml
@@ -176,6 +181,7 @@ def test_role_with_multiple_environments(testdir):
     result.assertoutcome(passed=2)
 
 
+@skip_if_no_docker
 def test_hosts_without_domain_can_resolve_each_other(testdir):
     smart_create(testdir.tmpdir, '''
     ## docker-compose.yml
@@ -215,6 +221,7 @@ def test_hosts_without_domain_can_resolve_each_other(testdir):
     result.assertoutcome(passed=2)
 
 
+@skip_if_no_docker
 def test_hosts_with_domain_can_resolve_each_other(testdir):
     smart_create(testdir.tmpdir, '''
     ## docker-compose.yml
@@ -350,6 +357,7 @@ def test_hosts_with_domain_can_resolve_each_other(testdir):
     result.assertoutcome(passed=15)
 
 
+@skip_if_no_docker
 def test_hosts_can_resolve_google_com_domain(testdir):
     smart_create(testdir.tmpdir, '''
     ## docker-compose.yml
