@@ -773,9 +773,9 @@ def test_when_use_local_roles_is_enabled_ansible_path_takes_precedence_over_role
 
 
 def test_when_use_local_roles_is_enabled_ansible_path_is_considered(testdir, monkeypatch):
-    monkeypatch.setattr(
-        'ansible.constants.DEFAULT_ROLES_PATH',
-        [testdir.tmpdir.join('some', 'ansible', 'roles').strpath])
+    monkeypatch.setenv(
+        'ANSIBLE_ROLES_PATH',
+        testdir.tmpdir.join('some', 'ansible', 'roles').strpath)
 
     smart_create(testdir.tmpdir, '''
     ## some/ansible/roles/role1/tasks/main.yml
@@ -811,5 +811,7 @@ def test_when_use_local_roles_is_enabled_ansible_path_is_considered(testdir, mon
           tags: test
     ''')
 
-    result = testdir.inline_run('-s', '--use-local-roles')
-    result.assertoutcome(passed=1)
+    # explicitly run with environment variable and subprocess to ensure
+    # correct integration with Ansible
+    result = testdir.runpytest_subprocess('-s', '--use-local-roles')
+    result.assert_outcomes(passed=1)
