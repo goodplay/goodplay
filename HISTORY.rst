@@ -6,6 +6,16 @@ History
 0.8.0 (TBD - ACTIVE DEVELOPMENT)
 --------------------------------
 
+Major Changes
+~~~~~~~~~~~~~
+
+* provide Docker image ``goodplay/goodplay``
+
+Minor Changes
+~~~~~~~~~~~~~
+
+* mention GitLab CI support in the docs
+
 
 0.7.0 (2016-06-18)
 ------------------
