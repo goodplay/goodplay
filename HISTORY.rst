@@ -18,6 +18,8 @@ Bug Fixes
 ~~~~~~~~~
 
 * fix issue with using local Ansible roles (``--use-local-roles``)
+* fix wait_for test task that timeouts or otherwise fails resulting in
+  global fail
 
 Internal Changes
 ~~~~~~~~~~~~~~~~

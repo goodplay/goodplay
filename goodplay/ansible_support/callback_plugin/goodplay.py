@@ -41,8 +41,18 @@ original_set_task_and_variable_override = PlayContext.set_task_and_variable_over
 def goodplay_set_task_and_variable_override(self, task, *args, **kwargs):
     new_info = original_set_task_and_variable_override(self, task, *args, **kwargs)
 
-    if 'test' in task.tags and ActionInfo.supports_check_mode(task.action):
-        new_info.check_mode = True
+    if 'test' in task.tags:
+        # enable check mode if supported
+        if ActionInfo.supports_check_mode(task.action):
+            new_info.check_mode = True
+
+        # special task action handling
+        if task.action == 'wait_for':
+            # failing wait_for should not stop test execution, but should
+            # pop up as test task fail due to change
+            task.register = '_goodplay_wait_for_result'
+            task.changed_when = '{{ _goodplay_wait_for_result.failed }}'
+            task.failed_when = False
 
     return new_info
 
