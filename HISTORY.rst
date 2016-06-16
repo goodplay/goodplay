@@ -25,6 +25,8 @@ Internal Changes
 ~~~~~~~~~~~~~~~~
 
 * skip Docker-related tests when Docker is not available
+* run Travis CI tests against latest two Docker minor versions,
+  each with latest patch version
 
 
 0.6.0 (2016-04-28)
