@@ -78,3 +78,75 @@ def test_task_tagged_with_test_that_does_not_support_check_mode_runs_in_normal_m
     result.assertoutcome(passed=1)
 
     assert testdir.tmpdir.join('HELLO').check(file=True)
+
+
+def test_custom_module_runs_in_normal_mode_when_check_mode_not_supported(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## library/checkrunmode.py
+    from ansible.module_utils.basic import AnsibleModule
+
+    import os
+
+    def main():
+        module = AnsibleModule(
+            argument_spec = dict(),
+            supports_check_mode=False
+        )
+
+        module.exit_json(changed=False, run_in_check_mode=module.check_mode)
+
+    if __name__ == '__main__':
+        main()
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: assert custom module not run in check mode
+          checkrunmode:
+          register: result
+          failed_when: "{{ result.run_in_check_mode }}"
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=1)
+
+
+def test_custom_module_runs_in_check_mode_when_supported(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## library/checkrunmode.py
+    from ansible.module_utils.basic import AnsibleModule
+
+    import os
+
+    def main():
+        module = AnsibleModule(
+            argument_spec = dict(),
+            supports_check_mode=True
+        )
+
+        module.exit_json(changed=False, run_in_check_mode=module.check_mode)
+
+    if __name__ == '__main__':
+        main()
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: assert custom module run in check mode
+          checkrunmode:
+          register: result
+          failed_when: "{{ not result.run_in_check_mode }}"
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=1)
