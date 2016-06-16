@@ -362,6 +362,63 @@ def test_failed_on_wait_for_timeout(testdir):
     result.assertoutcome(failed=1)
 
 
+def test_wait_for_task_timeout_does_not_stop_test_run(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          wait_for:
+            port: 143
+            timeout: 1
+          tags: test
+
+        - name: task2
+          ping:
+          tags: test
+
+        - name: task3
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=2, failed=1)
+
+
+def test_wait_for_task_timeout_does_not_stop_test_run_with_multiple_hosts(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+    127.0.0.2 ansible_connection=local
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1:127.0.0.2
+      gather_facts: no
+      tasks:
+        - name: task1
+          wait_for:
+            port: 143
+            timeout: 1
+          tags: test
+
+        - name: task2
+          ping:
+          tags: test
+
+        - name: task3
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=2, failed=1)
+
+
 def test_failed_on_unreachable_host_on_gather_facts(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory
