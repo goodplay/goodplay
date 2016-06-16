@@ -27,6 +27,8 @@ Internal Changes
 * skip Docker-related tests when Docker is not available
 * run Travis CI tests against latest two Docker minor versions,
   each with latest patch version
+* add tests for automatic check mode usage when using a custom module
+  that supports check mode
 
 
 0.6.0 (2016-04-28)
