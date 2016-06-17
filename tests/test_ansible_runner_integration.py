@@ -342,6 +342,35 @@ def test_failed_on_failed_task(testdir):
     result.assertoutcome(failed=1)
 
 
+def test_passed_on_wait_for_success(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: create .pid file
+          file:
+            path: "{{ playbook_dir }}/.pid"
+            state: touch
+
+        - name: task1
+          wait_for:
+            path: "{{ playbook_dir }}/.pid"
+            timeout: 5
+          tags: test
+
+        - name: task2
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=2)
+
+
 def test_failed_on_wait_for_timeout(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory

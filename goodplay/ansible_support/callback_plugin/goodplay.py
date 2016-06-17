@@ -51,7 +51,8 @@ def goodplay_set_task_and_variable_override(self, task, *args, **kwargs):
             # failing wait_for should not stop test execution, but should
             # pop up as test task fail due to change
             task.register = '_goodplay_wait_for_result'
-            task.changed_when = '{{ _goodplay_wait_for_result.failed }}'
+            task.changed_when = \
+                '{{ _goodplay_wait_for_result.failed|default(_goodplay_wait_for_result.changed) }}'
             task.failed_when = False
 
     return new_info
