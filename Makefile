@@ -39,7 +39,7 @@ lint: check-tox
 
 publish:
 	python setup.py register
-	python setup.py sdist bdist_wheel upload
+	python setup.py sdist bdist_wheel upload --repository https://upload.pypi.io/legacy/
 
 test: check-tox
 	$(TOX)
