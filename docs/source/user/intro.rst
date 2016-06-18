@@ -79,7 +79,7 @@ But instead of being used for testing Ansible playbooks or roles, it provides
 pytest fixtures that allow you to execute Ansible modules from your
 Python-based tests.
 
-.. _pytest-ansible: https://pypi.python.org/pypi/pytest-ansible
+.. _`pytest-ansible`: https://pypi.python.org/pypi/pytest-ansible
 
 
 serverspec
