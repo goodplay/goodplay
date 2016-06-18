@@ -3,15 +3,16 @@
 History
 =======
 
-0.7.0 (TBD - ACTIVE DEVELOPMENT)
---------------------------------
+0.7.0 (2016-06-18)
+------------------
 
 Major Changes
 ~~~~~~~~~~~~~
 
 * support ``become_user`` with Docker's native user management when running
-  privilege escalation task against Docker Compose environment (thus sudo/su
-  is not required in a Docker container anymore)
+  privilege escalation task against Docker Compose environment thus ``sudo``
+  is not required in a Docker container anymore; this may change in a future
+  version once Ansible supports ``su`` with Docker connection plugin
 * drop support for ``ansible==2.0.x``, now require ``ansible>=2.1.0``
 
 Bug Fixes
