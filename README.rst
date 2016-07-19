@@ -56,8 +56,8 @@ Features
 * resolve and auto-install Ansible role dependencies prior to test run
 * run your tests within Docker_ container(s), an already existing test
   environment, or on localhost
-* built as a pytest_ plugin, so you can run your goodplay tests together
-  with your other tests
+* built as a pytest_ plugin to have a solid test runner foundation,
+  plus you can run your goodplay tests together with your other tests
 
 .. _`Ansible 2.x playbook tasks`: https://docs.ansible.com/playbooks.html
 .. _`Ansible inventories`: https://docs.ansible.com/ansible/intro_inventory.html
