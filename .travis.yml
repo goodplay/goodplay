@@ -10,14 +10,17 @@ env:
   matrix:
     - TOXENV=py27-ansible21 DOCKER_VERSION=1.10.3-0~trusty
     - TOXENV=py27-ansible21 DOCKER_VERSION=1.11.2-0~trusty
+    - TOXENV=py27-ansible21 DOCKER_VERSION=1.12.0-0~trusty
     - TOXENV=py27-ansibledevel DOCKER_VERSION=1.10.3-0~trusty
     - TOXENV=py27-ansibledevel DOCKER_VERSION=1.11.2-0~trusty
+    - TOXENV=py27-ansibledevel DOCKER_VERSION=1.12.0-0~trusty
     - TOXENV=docs DOCKER_VERSION=1.11.2-0~trusty
 
 matrix:
   allow_failures:
     - env: TOXENV=py27-ansibledevel DOCKER_VERSION=1.10.3-0~trusty
     - env: TOXENV=py27-ansibledevel DOCKER_VERSION=1.11.2-0~trusty
+    - env: TOXENV=py27-ansibledevel DOCKER_VERSION=1.12.0-0~trusty
 
 before_install:
   # ensure apt-get cache is up-to-date
