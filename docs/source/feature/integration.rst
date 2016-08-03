@@ -1,6 +1,28 @@
 Integrating with Third Parties
 ==============================
 
+GitLab CI
+---------
+
+`GitLab CI`_ is part of GitLab. You can use it for free on `GitLab.com`_.
+
+.. code-block:: yaml
+
+   ## .gitlab-ci.yml
+   image: goodplay/goodplay
+
+   services:
+     - docker:dind
+
+   test:
+     script:
+       - goodplay -v -s
+
+
+.. _`GitLab CI`: https://about.gitlab.com/gitlab-ci/
+.. _`GitLab.com`: https://gitlab.com/
+
+
 Travis CI
 ---------
 
