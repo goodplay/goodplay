@@ -10,7 +10,7 @@ install_requires = [
     'cached-property>=1.3.0',
     'docker-compose>=1.7.0',
     'py>=1.4.31',
-    'pytest>=2.9.1,<3',
+    'pytest>=2.9.1',
     'sarge>=0.1.4',
 ]
 
