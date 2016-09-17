@@ -21,7 +21,7 @@ def test_ansible_error_message_is_forwarded(testdir):
 
     assert result.getfailures()[0].__class__.__name__ == 'CollectReport'
 
-    assert 'Exception: ERROR! no action detected in task' \
+    assert 'ERROR! no action detected in task' \
         in str(result.getfailures()[0].longrepr)
 
 
