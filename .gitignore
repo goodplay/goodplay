@@ -9,4 +9,5 @@ dist/
 htmlcov/
 
 .coverage
+.coverage.*
 coverage.xml
