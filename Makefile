@@ -18,7 +18,7 @@ help:
 
 check-tox:
 ifeq ($(TOX),)
-	$(error tox (http://tox.readthedocs.org/) needs to be installed, e.g. install via "pip install tox")
+	$(error tox (https://tox.readthedocs.io/) needs to be installed, e.g. install via "pip install tox")
 endif
 
 clean:
