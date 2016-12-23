@@ -154,6 +154,9 @@ class GoodplayTest(GoodplayContextSupport, pytest.Item):
 
         self.task = task
 
+    def __repr__(self):
+        return "<GoodplayTest '{0}'>".format(self.name)
+
     @cached_property
     def playbook_runner(self):
         return self.parent.playbook_runner

@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 
 install_requires = [
-    'ansible>=2.1',
+    'ansible>=2.2',
     'cached-property>=1.3.0',
     'docker-compose>=1.7.0',
     'py>=1.4.31',
@@ -49,6 +49,7 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Software Development :: Quality Assurance',
         'Topic :: Software Development :: Testing',
     ],

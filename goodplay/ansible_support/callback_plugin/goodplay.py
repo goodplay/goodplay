@@ -14,7 +14,7 @@ from ansible.playbook.play_context import PlayContext
 
 class ActionInfo(object):
     def __init__(self):
-        self._supports_check_mode_re = re.compile(r'\bsupports_check_mode\s*=\s*True\b')
+        self._supports_check_mode_re = re.compile(b'\\bsupports_check_mode\\s*=\\s*True\\b')
         self._cache = {}
 
     def supports_check_mode(self, action):
