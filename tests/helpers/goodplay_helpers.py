@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 
-from cStringIO import StringIO
+import io
 import tarfile
 import textwrap
 
@@ -39,9 +39,10 @@ def smart_create(base_path, smart_content):
 
             with tarfile.open(str(path), 'w:gz') as tar:
                 for rel_tar_path, tar_content in smart_content_iter(content, path_prefix='#### '):
+                    tar_bytes_content = tar_content.encode('utf-8')
                     info = tarfile.TarInfo(rel_tar_path)
-                    info.size = len(tar_content)
-                    tar.addfile(info, StringIO(tar_content))
+                    info.size = len(tar_bytes_content)
+                    tar.addfile(info, io.BytesIO(tar_bytes_content))
         else:
             path.write(content, ensure=True)
 

@@ -5,7 +5,10 @@
 # management (as of version 2.1.0). The necessary changes have been
 # implemented in PR ansible/ansible#15556 but not accepted.
 
+import re
+
 import ansible.constants as C
+from ansible.errors import AnsibleError
 from ansible.playbook.play_context import PlayContext
 import ansible.plugins.connection.docker
 
@@ -48,3 +51,20 @@ class Connection(ansible.plugins.connection.docker.Connection):
         local_cmd += ['-i', self._play_context.remote_addr] + cmd
 
         return local_cmd
+
+    @staticmethod
+    def _sanitize_version(version):
+        return re.sub(b'[^0-9a-zA-Z\.]', b'', version)
+
+    def _get_docker_version(self):
+        cmd, cmd_output, err, returncode = self._old_docker_version()
+        if returncode == 0:
+            for line in cmd_output.split(b'\n'):
+                if line.startswith(b'Server version:'):  # old docker versions
+                    return self._sanitize_version(line.split()[2]).decode('utf-8')
+
+        cmd, cmd_output, err, returncode = self._new_docker_version()
+        if returncode:
+            raise AnsibleError('Docker version check (%s) failed: %s' % (cmd, err))
+
+        return self._sanitize_version(cmd_output).decode('utf-8')

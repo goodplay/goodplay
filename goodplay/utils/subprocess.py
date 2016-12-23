@@ -22,11 +22,11 @@ class Capture(sarge.Capture):
             line = self.readline()
             if not line:
                 continue
-            yield line
+            yield line.decode('utf-8')
 
         # ensure remaining buffered lines are consumed (original code)
         while True:
             line = self.readline()
             if not line:
                 break
-            yield line
+            yield line.decode('utf-8')

@@ -20,7 +20,7 @@ def test_goodplay_cli_args_are_forwarded_to_pytest(tmpdir):
 
     stdout = subprocess.check_output(
         ['goodplay', '--collect-only'], cwd=str(tmpdir))
-    expected = "<GoodplayTest 'task1'>"
+    expected = b"<GoodplayTest 'task1'>"
 
     assert expected in stdout
 
@@ -56,7 +56,7 @@ def test_goodplay_cli_recursively_collects_from_subdirectories(tmpdir):
 
     stdout = subprocess.check_output(
         ['goodplay', '--collect-only'], cwd=str(tmpdir))
-    expected = "<GoodplayTest 'task1'>"
+    expected = b"<GoodplayTest 'task1'>"
 
     assert expected in stdout
 

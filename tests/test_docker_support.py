@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from goodplay.docker_support import (
     is_docker_compose_file, config_paths_for_playbook_path, environment_name_for_config_path)
 

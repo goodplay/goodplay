@@ -98,8 +98,9 @@ class GoodplayContext(object):
     def compose_project_name(self, environment_name):
         node_id = '{:x}'.format(uuid.getnode())
         project_name_parts = ':'.join((node_id, self.playbook_path.strpath, environment_name))
+        project_hash = hashlib.sha1(project_name_parts.encode('utf-8')).hexdigest()[:8]
 
-        return 'goodplay{}'.format(hashlib.sha1(project_name_parts).hexdigest()[:8])
+        return 'goodplay{}'.format(project_hash)
 
     def release(self):
         for temp_path in reversed(self._temp_dir_paths):

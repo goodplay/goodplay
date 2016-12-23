@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from goodplay_helpers import skip_if_no_docker, smart_create
 
 

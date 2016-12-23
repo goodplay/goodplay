@@ -8,24 +8,22 @@ services:
 
 env:
   matrix:
-    - TOXENV=py27-ansible21 DOCKER_VERSION=1.11.2-0~trusty
-    - TOXENV=py27-ansible21 DOCKER_VERSION=1.12.3-0~trusty
-    - TOXENV=py27-ansible22 DOCKER_VERSION=1.11.2-0~trusty
-    - TOXENV=py27-ansible22 DOCKER_VERSION=1.12.3-0~trusty
-    - TOXENV=py27-ansibledevel DOCKER_VERSION=1.11.2-0~trusty
-    - TOXENV=py27-ansibledevel DOCKER_VERSION=1.12.3-0~trusty
-    - TOXENV=docs DOCKER_VERSION=1.12.3-0~trusty
+    - TOXENV=py27-ansible22
+    - TOXENV=py27-ansibledevel
+    - TOXENV=py35-ansible22
+    - TOXENV=py35-ansibledevel
+    - TOXENV=docs
 
 before_install:
   # ensure apt-get cache is up-to-date
   - sudo apt-get -qq update
 
-  # list docker-engine versions
+  # list available docker-engine versions
   - apt-cache madison docker-engine
 
   # upgrade docker-engine to specific version
   - export DEBIAN_FRONTEND=noninteractive
-  - sudo apt-get -qq -o Dpkg::Options::="--force-confnew" -y --force-yes install docker-engine=${DOCKER_VERSION}
+  - sudo apt-get -qq -o Dpkg::Options::="--force-confnew" -y --force-yes install docker-engine=1.12.5-0~ubuntu-trusty
   - docker version
 
 install:
