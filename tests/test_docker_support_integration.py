@@ -334,13 +334,6 @@ def test_hosts_with_domain_can_resolve_each_other(testdir):
           changed_when: False
           tags: test
 
-        - name: assert host2 cannot be resolved on host1.domain2.tld
-          raw: ping -c 1 host2
-          register: ping_result
-          changed_when: False
-          failed_when: "ping_result.rc != 1"
-          tags: test
-
         # host1.domain2.tld assertions
         - name: assert host1.domain2.tld can be resolved on host1.domain2.tld
           raw: ping -c 1 host1.domain2.tld
@@ -354,7 +347,7 @@ def test_hosts_with_domain_can_resolve_each_other(testdir):
     ''')
 
     result = testdir.inline_run('-s')
-    result.assertoutcome(passed=15)
+    result.assertoutcome(passed=14)
 
 
 @skip_if_no_docker
