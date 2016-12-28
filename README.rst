@@ -1,10 +1,12 @@
 goodplay
 ========
 
-|gitter| |build-status| |version| |docs| |license| |code-climate| |code-coverage| |dependencies-status|
+|version| |docs-stable| |supported-python-versions| |license| |gitter|
 
 goodplay is an Apache2-licensed test framework for testing Ansible 2.x roles
 and playbooks as well as running full integration tests for your software.
+
+|build-status| |docs-latest| |code-climate| |code-coverage| |dependencies-status|
 
 .. |build-status| image:: https://img.shields.io/travis/goodplay/goodplay/master.svg
     :alt: Build Status
@@ -26,10 +28,15 @@ and playbooks as well as running full integration tests for your software.
     :scale: 100%
     :target: https://requires.io/github/goodplay/goodplay/requirements/
 
-.. |docs| image:: https://img.shields.io/badge/docs-latest-brightgreen.svg
+.. |docs-latest| image:: https://img.shields.io/badge/docs-latest-brightgreen.svg
     :alt: Documentation
     :scale: 100%
-    :target: https://docs.goodplay.io/
+    :target: https://docs.goodplay.io/en/latest/
+
+.. |docs-stable| image:: https://img.shields.io/badge/docs-stable-brightgreen.svg
+    :alt: Documentation
+    :scale: 100%
+    :target: https://docs.goodplay.io/en/stable/
 
 .. |gitter| image:: https://badges.gitter.im/goodplay/goodplay.svg
     :alt: Join the chat at https://gitter.im/goodplay/goodplay
@@ -40,6 +47,11 @@ and playbooks as well as running full integration tests for your software.
     :alt: License
     :scale: 100%
     :target: https://github.com/goodplay/goodplay/blob/master/LICENSE
+
+.. |supported-python-versions| image:: https://img.shields.io/pypi/pyversions/goodplay.svg
+    :alt: Supported Python Versions
+    :scale: 100%
+    :target: https://pypi.python.org/pypi/goodplay
 
 .. |version| image:: https://img.shields.io/pypi/v/goodplay.svg
     :alt: Version
@@ -85,22 +97,6 @@ Installing goodplay is simple with pip_, just run this in your terminal:
     $ pip install goodplay
 
 .. _pip: https://pip.readthedocs.org/
-
-
-Documentation
--------------
-
-Documentation is available at https://docs.goodplay.io/.
-
-
-Roadmap
--------
-
-- better error messages, without the clutter
-- support to keep test environment running for debugging purposes
-- support full-fledged virtual machine within a Docker container (see `RancherVM`_)
-
-.. _`RancherVM`: https://github.com/rancher/vm
 
 
 Contributing

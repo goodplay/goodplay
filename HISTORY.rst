@@ -9,7 +9,10 @@ History
 Major Changes
 ~~~~~~~~~~~~~
 
+* add support for Python 3.5, now effectively supporting Python 2.7 and 3.5
 * provide Docker image ``goodplay/goodplay``
+* drop support for ``ansible==2.1.x``, now require ``ansible>=2.2.0``
+* drop support for Docker 1.10.x and 1.11.x, now require Docker 1.12.x
 
 Minor Changes
 ~~~~~~~~~~~~~
