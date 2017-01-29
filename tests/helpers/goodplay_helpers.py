@@ -12,7 +12,7 @@ import requests
 
 
 def is_docker_available():
-    docker_client = docker.Client.from_env()
+    docker_client = docker.from_env()
 
     try:
         docker_client.version(api_version=False)
