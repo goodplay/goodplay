@@ -14,6 +14,11 @@ env:
     - TOXENV=py35-ansibledevel
     - TOXENV=docs
 
+matrix:
+  allow_failures:
+    - env: TOXENV=py27-ansibledevel
+    - env: TOXENV=py35-ansibledevel
+
 before_install:
   # ensure apt-get cache is up-to-date
   - sudo apt-get -qq update
