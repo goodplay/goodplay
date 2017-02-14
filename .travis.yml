@@ -12,16 +12,25 @@ env:
     - TOXENV=py27-ansibledevel
     - TOXENV=py35-ansible22
     - TOXENV=py35-ansibledevel
+    - TOXENV=py36-ansible22
+    - TOXENV=py36-ansibledevel
     - TOXENV=docs
 
 matrix:
   allow_failures:
     - env: TOXENV=py27-ansibledevel
     - env: TOXENV=py35-ansibledevel
+    - env: TOXENV=py36-ansibledevel
 
 before_install:
+  # third-party repo with non-official python versions
+  - sudo add-apt-repository -y ppa:fkrull/deadsnakes
+
   # ensure apt-get cache is up-to-date
   - sudo apt-get -qq update
+
+  # install python 3.6
+  - sudo apt-get -qq -y install python3.6 python3.6-dev
 
   # list available docker-engine versions
   - apt-cache madison docker-engine
