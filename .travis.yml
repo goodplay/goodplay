@@ -9,14 +9,22 @@ services:
 env:
   matrix:
     - TOXENV=py27-ansible22
+    - TOXENV=py27-ansible23
+    - TOXENV=py27-ansible24
     - TOXENV=py27-ansibledevel
     - TOXENV=py36-ansible22
+    - TOXENV=py36-ansible23
+    - TOXENV=py36-ansible24
     - TOXENV=py36-ansibledevel
     - TOXENV=docs
 
 matrix:
   allow_failures:
+    - env: TOXENV=py27-ansible23
+    - env: TOXENV=py27-ansible24
     - env: TOXENV=py27-ansibledevel
+    - env: TOXENV=py36-ansible23
+    - env: TOXENV=py36-ansible24
     - env: TOXENV=py36-ansibledevel
 
 before_install:
