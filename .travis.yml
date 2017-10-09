@@ -1,6 +1,5 @@
 sudo: required
 dist: trusty
-group: deprecated-2017Q2
 
 language: python
 
@@ -11,8 +10,6 @@ env:
   matrix:
     - TOXENV=py27-ansible22
     - TOXENV=py27-ansibledevel
-    - TOXENV=py35-ansible22
-    - TOXENV=py35-ansibledevel
     - TOXENV=py36-ansible22
     - TOXENV=py36-ansibledevel
     - TOXENV=docs
@@ -20,7 +17,6 @@ env:
 matrix:
   allow_failures:
     - env: TOXENV=py27-ansibledevel
-    - env: TOXENV=py35-ansibledevel
     - env: TOXENV=py36-ansibledevel
 
 before_install:
@@ -33,12 +29,10 @@ before_install:
   # install python 3.6
   - sudo apt-get -qq -y install python3.6 python3.6-dev
 
-  # list available docker-engine versions
-  - apt-cache madison docker-engine
+  # list available docker-ce versions
+  - apt-cache madison docker-ce
 
-  # upgrade docker-engine to specific version
-  - export DEBIAN_FRONTEND=noninteractive
-  - sudo apt-get -qq -o Dpkg::Options::="--force-confnew" -y --force-yes install docker-engine=1.12.5-0~ubuntu-trusty
+  # print active docker version
   - docker version
 
 install:
