@@ -121,7 +121,10 @@ class DockerRunner(object):
             inventory_lines.append(inventory_line)
         inventory_content = '\n'.join(inventory_lines)
 
-        self.ctx.extended_inventory_path.join('goodplay').write(inventory_content)
+        # choose name 'inventory_goodplay' as it comes after 'inventory' when compared,
+        # alphanumerical, otherwise Ansible 2.3 does not merge in the ansible_connection
+        # information correctly and thus tries to use an SSH connection
+        self.ctx.extended_inventory_path.join('inventory_goodplay').write(inventory_content)
 
     def teardown(self):
         if self.environment_name is None:
