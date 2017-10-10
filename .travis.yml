@@ -20,10 +20,8 @@ env:
 
 matrix:
   allow_failures:
-    - env: TOXENV=py27-ansible23
     - env: TOXENV=py27-ansible24
     - env: TOXENV=py27-ansibledevel
-    - env: TOXENV=py36-ansible23
     - env: TOXENV=py36-ansible24
     - env: TOXENV=py36-ansibledevel
 
