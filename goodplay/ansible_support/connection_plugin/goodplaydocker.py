@@ -5,25 +5,32 @@
 # management (as of version 2.1.0). The necessary changes have been
 # implemented in PR ansible/ansible#15556 but not accepted.
 
+# Make coding more python3-ish
+from __future__ import (absolute_import, division, print_function)
+
 import re
 
+from ansible import __version__ as ansible_version
 import ansible.constants as C
 from ansible.errors import AnsibleError
 from ansible.playbook.play_context import PlayContext
 import ansible.plugins.connection.docker
 
 
-# monkeypatch PlayContext.make_become_cmd to support become_method dockerexec
-original_make_become_cmd = PlayContext.make_become_cmd
+def monkeypatch_play_context():
+    original_make_become_cmd = PlayContext.make_become_cmd
+
+    def make_become_cmd_with_dockerexec(self, cmd, executable=None):
+        if self.become and self.become_method == 'dockerexec':
+            self.prompt = None
+            return cmd
+
+        return original_make_become_cmd(self, cmd, executable)
+
+    PlayContext.make_become_cmd = make_become_cmd_with_dockerexec
 
 
-def make_become_cmd_with_dockerexec(self, cmd, executable=None):
-    if self.become and self.become_method == 'dockerexec':
-        self.prompt = None
-        return cmd
-
-    return original_make_become_cmd(self, cmd, executable)
-PlayContext.make_become_cmd = make_become_cmd_with_dockerexec
+monkeypatch_play_context()
 
 
 class Connection(ansible.plugins.connection.docker.Connection):
@@ -52,6 +59,9 @@ class Connection(ansible.plugins.connection.docker.Connection):
 
         return local_cmd
 
+
+# Ansible 2.2 specific fixes
+if ansible_version.startswith('2.2.'):
     @staticmethod
     def _sanitize_version(version):
         return re.sub(b'[^0-9a-zA-Z\.]', b'', version)
@@ -68,3 +78,6 @@ class Connection(ansible.plugins.connection.docker.Connection):
             raise AnsibleError('Docker version check (%s) failed: %s' % (cmd, err))
 
         return self._sanitize_version(cmd_output).decode('utf-8')
+
+    Connection._sanitize_version = _sanitize_version
+    Connection._get_docker_version = _get_docker_version

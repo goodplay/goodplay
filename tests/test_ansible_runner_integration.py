@@ -422,11 +422,11 @@ def test_wait_for_task_timeout_does_not_stop_test_run(testdir):
 def test_wait_for_task_timeout_does_not_stop_test_run_with_multiple_hosts(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory
-    127.0.0.1 ansible_connection=local
-    127.0.0.2 ansible_connection=local
+    localhost1 ansible_connection=local
+    localhost2 ansible_connection=local
 
     ## test_playbook.yml
-    - hosts: 127.0.0.1:127.0.0.2
+    - hosts: localhost1:localhost2
       gather_facts: no
       tasks:
         - name: task1
