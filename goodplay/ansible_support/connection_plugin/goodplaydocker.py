@@ -5,26 +5,32 @@
 # management (as of version 2.1.0). The necessary changes have been
 # implemented in PR ansible/ansible#15556 but not accepted.
 
+# Make coding more python3-ish
+from __future__ import (absolute_import, division, print_function)
+
 import re
 
+from ansible import __version__ as ansible_version
 import ansible.constants as C
 from ansible.errors import AnsibleError
 from ansible.playbook.play_context import PlayContext
 import ansible.plugins.connection.docker
-import ansible.release
 
 
-# monkeypatch PlayContext.make_become_cmd to support become_method dockerexec
-original_make_become_cmd = PlayContext.make_become_cmd
+def monkeypatch_play_context():
+    original_make_become_cmd = PlayContext.make_become_cmd
+
+    def make_become_cmd_with_dockerexec(self, cmd, executable=None):
+        if self.become and self.become_method == 'dockerexec':
+            self.prompt = None
+            return cmd
+
+        return original_make_become_cmd(self, cmd, executable)
+
+    PlayContext.make_become_cmd = make_become_cmd_with_dockerexec
 
 
-def make_become_cmd_with_dockerexec(self, cmd, executable=None):
-    if self.become and self.become_method == 'dockerexec':
-        self.prompt = None
-        return cmd
-
-    return original_make_become_cmd(self, cmd, executable)
-PlayContext.make_become_cmd = make_become_cmd_with_dockerexec
+monkeypatch_play_context()
 
 
 class Connection(ansible.plugins.connection.docker.Connection):
@@ -55,26 +61,23 @@ class Connection(ansible.plugins.connection.docker.Connection):
 
 
 # Ansible 2.2 specific fixes
+if ansible_version.startswith('2.2.'):
+    @staticmethod
+    def _sanitize_version(version):
+        return re.sub(b'[^0-9a-zA-Z\.]', b'', version)
 
-@staticmethod
-def ansible22_sanitize_version(version):
-    return re.sub(b'[^0-9a-zA-Z\.]', b'', version)
+    def _get_docker_version(self):
+        cmd, cmd_output, err, returncode = self._old_docker_version()
+        if returncode == 0:
+            for line in cmd_output.split(b'\n'):
+                if line.startswith(b'Server version:'):  # old docker versions
+                    return self._sanitize_version(line.split()[2]).decode('utf-8')
 
+        cmd, cmd_output, err, returncode = self._new_docker_version()
+        if returncode:
+            raise AnsibleError('Docker version check (%s) failed: %s' % (cmd, err))
 
-def ansible22_get_docker_version(self):
-    cmd, cmd_output, err, returncode = self._old_docker_version()
-    if returncode == 0:
-        for line in cmd_output.split(b'\n'):
-            if line.startswith(b'Server version:'):  # old docker versions
-                return self._sanitize_version(line.split()[2]).decode('utf-8')
+        return self._sanitize_version(cmd_output).decode('utf-8')
 
-    cmd, cmd_output, err, returncode = self._new_docker_version()
-    if returncode:
-        raise AnsibleError('Docker version check (%s) failed: %s' % (cmd, err))
-
-    return self._sanitize_version(cmd_output).decode('utf-8')
-
-
-if ansible.release.__version__.startswith('2.2.'):
-    Connection._sanitize_version = ansible22_sanitize_version
-    Connection._get_docker_version = ansible22_get_docker_version
+    Connection._sanitize_version = _sanitize_version
+    Connection._get_docker_version = _get_docker_version

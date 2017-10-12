@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# Make coding more python3-ish
+from __future__ import (absolute_import, division, print_function)
+
 from cached_property import cached_property
 from compose.cli.command import get_project
 
@@ -42,7 +45,7 @@ def config_path_for_environment_name(playbook_path, environment_name):
             return config_path
 
 
-def config_paths_for_playbook_path(playbook_path):
+def config_paths_for_playbook_path(playbook_path):  # noqa: R701
     base_path = playbook_path.dirpath()
 
     # get relative config names sorted descending by len

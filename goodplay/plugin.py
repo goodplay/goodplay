@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# Make coding more python3-ish
+from __future__ import (absolute_import, division, print_function)
+
 import logging
 import sys
 
@@ -24,6 +27,7 @@ def enable_logging_goodplay_info_to_stdout():
     goodplay_logger = logging.getLogger('goodplay')
     goodplay_logger.addHandler(goodplay_stdout_handler)
     goodplay_logger.setLevel(logging.DEBUG)
+
 
 enable_logging_goodplay_info_to_stdout()
 

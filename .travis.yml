@@ -18,13 +18,6 @@ env:
     - TOXENV=py36-ansibledevel
     - TOXENV=docs
 
-matrix:
-  allow_failures:
-    - env: TOXENV=py27-ansible24
-    - env: TOXENV=py27-ansibledevel
-    - env: TOXENV=py36-ansible24
-    - env: TOXENV=py36-ansibledevel
-
 before_install:
   # third-party repo with non-official python versions
   - sudo add-apt-repository -y ppa:fkrull/deadsnakes

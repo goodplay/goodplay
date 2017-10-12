@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# Make coding more python3-ish
+from __future__ import (absolute_import, division, print_function)
+
 import pytest
 
 from goodplay.ansible_support import is_test_playbook_file
