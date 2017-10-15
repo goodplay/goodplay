@@ -3,8 +3,8 @@
 History
 =======
 
-0.8.0 (TBD - ACTIVE DEVELOPMENT)
---------------------------------
+0.8.0 (2017-10-15)
+------------------
 
 Major Changes
 ~~~~~~~~~~~~~
@@ -12,12 +12,18 @@ Major Changes
 * add support for Ansible 2.2, 2.3, and 2.4, drop support for Ansible 2.1
 * add support for Docker 1.12 and greater, drop support for Docker 1.11 and below
 * add support for Python 3.6, now effectively supporting Python 2.7 and 3.6
+* update to pytest 3
 * provide Docker image ``goodplay/goodplay``
 
 Minor Changes
 ~~~~~~~~~~~~~
 
 * mention GitLab CI support in the docs
+
+Internal Changes
+~~~~~~~~~~~~~~~~
+
+* improve Python-Ansible combinations that are tested on Travis CI
 
 
 0.7.0 (2016-06-18)
