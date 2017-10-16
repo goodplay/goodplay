@@ -16,4 +16,4 @@ RUN apk add --no-cache \
     sshpass \
     wget
 
-RUN pip install 'ansible>=2.1,<2.2' goodplay
+RUN pip install goodplay
