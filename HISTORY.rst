@@ -3,8 +3,16 @@
 History
 =======
 
-0.9.0 (TBD - ACTIVE DEVELOPMENT)
---------------------------------
+0.8.1 (2017-12-19)
+------------------
+
+Minor Changes
+~~~~~~~~~~~~~
+
+* require ``docker-compose>=1.18.0`` due to a method signature change
+* when using docker-compose.yml files in tests with referenced Dockerfiles,
+  a build is triggered before bringing up the containers (always attempting
+  to pull the latest base image)
 
 
 0.8.0 (2017-10-15)
