@@ -111,6 +111,9 @@ class DockerRunner(object):
         if self.environment_name is None:
             return
 
+        # ensure image builds are up-to-date
+        self.project.build(pull=True)
+
         self.project.up()
 
         inventory_lines = []
