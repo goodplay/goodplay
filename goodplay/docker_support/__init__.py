@@ -112,7 +112,8 @@ class DockerRunner(object):
             return
 
         # ensure image builds are up-to-date
-        self.project.build(pull=True)
+        # do not pull as image might only be available locally
+        self.project.build(pull=False)
 
         self.project.up()
 

@@ -3,8 +3,15 @@
 History
 =======
 
-0.9.0 (TBD - ACTIVE DEVELOPMENT)
---------------------------------
+0.9.0 (2017-12-25)
+------------------
+
+Minor Changes
+~~~~~~~~~~~~~
+
+* when using docker-compose.yml files in tests with referenced Dockerfiles,
+  a build is triggered before bringing up the containers (NOT attempting to
+  pull the latest base image as image might be only available locally)
 
 
 0.8.1 (2017-12-19)
