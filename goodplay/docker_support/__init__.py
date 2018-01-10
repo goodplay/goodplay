@@ -5,6 +5,8 @@ from __future__ import (absolute_import, division, print_function)
 
 from cached_property import cached_property
 from compose.cli.command import get_project
+from compose.service import BuildError
+from pytest import fail
 
 
 def is_docker_compose_file(path):
@@ -111,9 +113,13 @@ class DockerRunner(object):
         if self.environment_name is None:
             return
 
-        # ensure image builds are up-to-date
-        # do not pull as image might only be available locally
-        self.project.build(pull=False)
+        try:
+            # ensure image builds are up-to-date
+            # do not pull as image might only be available locally
+            self.project.build(pull=False)
+        except BuildError as err:
+            fail("building service '{0}' failed with reason '{1}'".format(
+                err.service.name, err.reason))
 
         self.project.up()
 

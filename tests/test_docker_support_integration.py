@@ -375,3 +375,36 @@ def test_hosts_can_resolve_google_com_domain(testdir):
 
     result = testdir.inline_run('-s')
     result.assertoutcome(passed=1)
+
+
+@skip_if_no_docker
+def test_docker_build_error_results_in_fail_with_message(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## image/Dockerfile
+    FROM "https://unknownregistry/busybox:latest"
+
+    ## docker-compose.yml
+    version: "2"
+    services:
+      guesthost:
+        build:
+          context: "./image"
+        tty: True
+
+    ## inventory
+    guesthost ansible_user=root
+
+    ## test_playbook.yml
+    - hosts: guesthost
+      gather_facts: no
+      tasks:
+        - name: task1
+          ping:
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(failed=1)
+
+    assert "Failed: building service 'guesthost' failed with reason 'invalid reference format'" \
+        in str(result.getfailures()[0].longrepr)
