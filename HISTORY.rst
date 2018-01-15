@@ -3,8 +3,14 @@
 History
 =======
 
-0.10.0 (TBD - ACTIVE DEVELOPMENT)
----------------------------------
+0.9.1 (2018-01-15)
+------------------
+
+Minor Changes
+~~~~~~~~~~~~~
+
+* report appropriate build error message when building from docker-compose
+* fix warning "Module already imported so cannot be rewritten: goodplay"
 
 
 0.9.0 (2017-12-25)
