@@ -16,7 +16,7 @@ def test_nodeid_goodplay_playbook_file(tmpdir):
     playbook_path = tmpdir.join('test_playbook.yml')
 
     config = AttrDict(rootdir=tmpdir)
-    session = AttrDict(non='empty')
+    session = AttrDict(non='empty', config=config)
 
     node = GoodplayPlaybookFile(ctx=None, fspath=playbook_path, config=config, session=session)
     assert node.nodeid == 'test_playbook.yml'

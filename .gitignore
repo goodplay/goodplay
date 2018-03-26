@@ -2,6 +2,7 @@
 *.py[co]
 
 .cache/
+.pytest_cache/
 .tox/
 __pytest__/
 build/
@@ -11,3 +12,4 @@ htmlcov/
 .coverage
 .coverage.*
 coverage.xml
+.DS_Store
