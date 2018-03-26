@@ -103,16 +103,17 @@ class GoodplayPlaybookFile(pytest.File):
 # environment can be unspecific
 class GoodplayEnvironment(GoodplayContextSupport, pytest.Collector):
     def __init__(self, environment_name, parent=None, config=None, session=None):
-        super(GoodplayEnvironment, self).__init__(environment_name, parent, config, session)
+        if environment_name:
+            # let the super class calculate the node id
+            nodeid = None
+        else:
+            nodeid = parent.nodeid
+
+        super(GoodplayEnvironment, self).__init__(
+            environment_name, parent, config, session, nodeid=nodeid)
         self.environment_name = environment_name
 
         self.docker_runner = None
-
-    def _makeid(self):
-        if self.environment_name:
-            return super(GoodplayEnvironment, self)._makeid()
-
-        return self.parent.nodeid
 
     def collect(self):
         yield GoodplayPlaybook(self.parent.name, self, self.config, self.session)
@@ -129,12 +130,9 @@ class GoodplayEnvironment(GoodplayContextSupport, pytest.Collector):
 # environment specific playbook preparations
 class GoodplayPlaybook(GoodplayContextSupport, pytest.Collector):
     def __init__(self, name, parent=None, config=None, session=None):
-        super(GoodplayPlaybook, self).__init__(name, parent, config, session)
+        super(GoodplayPlaybook, self).__init__(name, parent, config, session, nodeid=parent.nodeid)
 
         self.playbook_runner = None
-
-    def _makeid(self):
-        return self.parent.nodeid
 
     def collect(self):
         for task in self.ctx.playbook.test_tasks:
