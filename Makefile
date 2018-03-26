@@ -25,8 +25,7 @@ clean:
 	rm -rf .cache .coverage .coverage.* .tox build dist docs/build *.egg-info htmlcov coverage.xml
 
 dist:
-	python setup.py sdist
-	python setup.py bdist_wheel
+	python setup.py sdist bdist_wheel
 
 docs: check-tox
 	$(TOX) -e docs
@@ -37,9 +36,8 @@ docswatch: check-tox
 lint: check-tox
 	$(TOX) -e lint
 
-publish:
-	python setup.py register
-	python setup.py sdist bdist_wheel upload --repository https://upload.pypi.io/legacy/
+publish: clean dist
+	twine upload dist/*
 
 test: check-tox
 	$(TOX)
