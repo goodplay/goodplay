@@ -9,6 +9,7 @@ History
 Major Changes
 ~~~~~~~~~~~~~
 
+* add support for Ansible 2.5, drop support for Ansible 2.2
 * require ``pytest>=3.5.0`` due to a change in their nodeid calculation
 
 

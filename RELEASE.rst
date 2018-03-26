@@ -6,7 +6,8 @@ executed by maintainers of goodplay.
 
 #. Ensure you are on ``master`` branch.
 
-#. Update version number in ``goodplay/__init__.py``.
+#. Update version number in ``goodplay/__init__.py`` and
+   ``docs/source/conf.py``.
    Keep in mind that this needs to follow `Semantic Versioning`_.
 
 #. Update changelog in ``HISTORY.rst``.

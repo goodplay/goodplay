@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 
 install_requires = [
-    'ansible>=2.2',
+    'ansible>=2.3',
     'cached-property>=1.3.1',
     'docker-compose>=1.18.0',
     'py>=1.4.34',
