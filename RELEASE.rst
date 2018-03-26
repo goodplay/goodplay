@@ -17,6 +17,7 @@ executed by maintainers of goodplay.
    .. code-block:: bash
 
       $ git add goodplay/__init__.py
+      $ git add docs/source/conf.py
       $ git add HISTORY.rst
       $ git commit -m 'bump version to X.Y.Z'
 
