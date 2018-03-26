@@ -6,6 +6,11 @@ History
 0.10.0 (TBD - ACTIVE DEVELOPMENT)
 ---------------------------------
 
+Major Changes
+~~~~~~~~~~~~~
+
+* require ``pytest>=3.5.0`` due to a change in their nodeid calculation
+
 
 0.9.1 (2018-01-15)
 ------------------
