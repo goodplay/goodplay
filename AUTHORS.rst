@@ -11,6 +11,7 @@ Contributors
 ------------
 
 * Eric Van Steenbergen <vs.eric@gmail.com>
+* Sebastian May <me@bstr.eu>
 
 
 Credits
