@@ -2,7 +2,10 @@ Command-Line Options
 ====================
 
 Additionally to the default ``py.test`` command-line options, goodplay
-provides the following options for ``goodplay`` and ``py.test`` executables.
+provides the following options for ``goodplay`` and ``py.test`` executables,
+which can be seen by passing ``--help``::
+
+    goodplay --help
 
 
 ``--use-local-roles``
@@ -28,3 +31,11 @@ When running with ``--use-local-roles`` switch, please ensure you have either
 in your ``ansible.cfg``.
 
 .. _`Ansible roles path`: http://docs.ansible.com/ansible/intro_configuration.html#roles-path
+
+Debugging output
+----------------
+
+As mentioned in the beginning, goodplay supports ``py.test`` command-line options.
+To see the details output of all Ansible tasks you can pass ``-v`` and ``-s`` to goodplay::
+
+    goodplay -v -s
