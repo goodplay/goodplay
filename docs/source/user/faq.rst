@@ -58,3 +58,15 @@ It depends. Test tasks are run in *check mode* (and thus without side effects)
 when supported by a module. If *check mode* is not supported, a module is run
 in normal mode which can result in side effects (depending on a module's
 functionality).
+
+My shell/command test always fails. Why?
+----------------------------------------
+
+Since Ansible cannot know when a shell command has changed something, the shell/command task always sets `changed` to `true`.
+This conflicts with goodplays assumption, that a task fails if it changed something.
+To circumvent this, you need to tell Ansible that the shell command did not change using `changed_when`, for example::
+
+  - name: "check java version"
+     shell: java -version 2>&1 | grep -q '1.8.0_122'
+     changed_when: False
+     tags: test
