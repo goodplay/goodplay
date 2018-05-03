@@ -371,6 +371,68 @@ def test_passed_on_wait_for_success(testdir):
     result.assertoutcome(passed=2)
 
 
+def test_passed_on_include_playbook(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## playbook_to_include.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: create .pid file
+          file:
+            path: "{{ playbook_dir }}/.pid"
+            state: touch
+
+    ## test_playbook.yml
+    - include: playbook_to_include.yml
+
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          wait_for:
+            path: "{{ playbook_dir }}/.pid"
+            timeout: 5
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=1)
+
+
+def test_passed_on_import_playbook(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## playbook_to_import.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: create .pid file
+          file:
+            path: "{{ playbook_dir }}/.pid"
+            state: touch
+
+    ## test_playbook.yml
+    - import_playbook: playbook_to_import.yml
+
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: task1
+          wait_for:
+            path: "{{ playbook_dir }}/.pid"
+            timeout: 5
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=1)
+
+
 def test_failed_on_wait_for_timeout(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory

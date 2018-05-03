@@ -31,4 +31,6 @@ def is_playbook_content(content):
     return isinstance(content, list) \
         and len(content) \
         and isinstance(content[0], dict) \
-        and (content[0].get('hosts') or content[0].get('include'))
+        and (content[0].get('hosts')
+             or content[0].get('include')
+             or content[0].get('import_playbook'))

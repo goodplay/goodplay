@@ -32,10 +32,12 @@ def valid_test_playbook():
     params=[
         '- hosts: default',
         '- include: abc',
+        '- import_playbook: otherplaybook.yml',
     ],
     ids=[
         'hosts',
         'include',
+        'import_playbook',
     ]
 )
 def valid_test_playbook_content(request):
