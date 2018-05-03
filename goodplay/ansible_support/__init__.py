@@ -28,9 +28,9 @@ def is_playbook_file(path):
 
 
 def is_playbook_content(content):
+    known_playbook_attributes = ('hosts', 'include', 'import_playbook')
+
     return isinstance(content, list) \
         and len(content) \
         and isinstance(content[0], dict) \
-        and (content[0].get('hosts')
-             or content[0].get('include')
-             or content[0].get('import_playbook'))
+        and any(content[0].get(x) for x in known_playbook_attributes)
