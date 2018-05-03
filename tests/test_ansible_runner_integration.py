@@ -403,6 +403,8 @@ def test_passed_on_include_playbook(testdir):
 
 
 def test_passed_on_import_playbook(testdir):
+    pytest.importorskip('ansible.release', minversion='2.4')
+
     smart_create(testdir.tmpdir, '''
     ## inventory
     127.0.0.1 ansible_connection=local
