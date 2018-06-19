@@ -9,9 +9,10 @@ install_requires = [
     'ansible>=2.3',
     'cached-property>=1.3.1',
     'docker-compose>=1.18.0',
+    'idna==2.6',  # pin temporary due to dep docker-py -> requests -> idna<2.7
     'py>=1.4.34',
     'pytest>=3.5.0',
-    'sarge>=0.1.4',
+    'sarge==0.1.5',
 ]
 
 readme_path = os.path.join(os.path.dirname(__file__), 'README.rst')
