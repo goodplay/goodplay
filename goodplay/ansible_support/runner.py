@@ -39,7 +39,7 @@ class PlaybookRunner(object):
         self.process = run(
             'ansible-playbook -vvv -i {0} {1}',
             self.ctx.extended_inventory_path, self.ctx.playbook_path,
-            env=env, async=True)
+            env=env, async_=True)
 
         # wait for subprocess to be responsive
         self.process.wait_events()
