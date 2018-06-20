@@ -1,7 +1,7 @@
 ansible==2.5.5
 cached-property==1.4.3
 docker-compose==1.21.2
-idna==2.6
+idna==2.7
 py==1.5.3
 pytest==3.6.1
 sarge==0.1.5
