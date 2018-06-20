@@ -3,8 +3,13 @@
 History
 =======
 
-0.11.0 (TBD - ACTIVE DEVELOPMENT)
----------------------------------
+0.11.0 (2018-06-20)
+-------------------
+
+Minor Changes
+~~~~~~~~~~~~~
+
+* update dependencies to newer versions
 
 
 0.10.0 (2018-03-26)
