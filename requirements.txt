@@ -1,4 +1,4 @@
-ansible==2.5.5
+ansible==2.6.2
 cached-property==1.4.3
 docker-compose==1.21.2
 idna==2.6
