@@ -23,6 +23,10 @@ class ActionInfo(object):
         self._supports_check_mode_re = re.compile(b'\\bsupports_check_mode\\s*=\\s*True\\b')
         self._cache = {}
 
+    def should_run_in_check_mode(self, action):
+        return action not in ('command', 'shell') \
+            and self.supports_check_mode(action)
+
     def supports_check_mode(self, action):
         is_supported = self._cache.get(action, None)
         not_found_in_cache = is_supported is None
@@ -50,7 +54,7 @@ def monkeypatch_play_context():
 
         if 'test' in task.tags:
             # enable check mode if supported
-            if ActionInfo.supports_check_mode(task.action):
+            if ActionInfo.should_run_in_check_mode(task.action):
                 new_info.check_mode = True
 
             # special task action handling
