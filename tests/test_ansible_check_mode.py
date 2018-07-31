@@ -59,7 +59,7 @@ def test_lineinfile_task_tagged_with_test_runs_in_check_mode(testdir):
     assert testdir.tmpdir.join('HELLO').read() == 'WORLD\n'
 
 
-def test_task_tagged_with_test_that_does_not_support_check_mode_runs_in_normal_mode(testdir):
+def test_command_task_tagged_with_test_runs_in_normal_mode(testdir):
     smart_create(testdir.tmpdir, '''
     ## inventory
     127.0.0.1 ansible_connection=local
@@ -70,6 +70,27 @@ def test_task_tagged_with_test_that_does_not_support_check_mode_runs_in_normal_m
       tasks:
         - name: intentional test with side effect
           command: touch "{{ playbook_dir }}/HELLO"
+          changed_when: False
+          tags: test
+    ''')
+
+    result = testdir.inline_run('-s')
+    result.assertoutcome(passed=1)
+
+    assert testdir.tmpdir.join('HELLO').check(file=True)
+
+
+def test_shell_task_tagged_with_test_runs_in_normal_mode(testdir):
+    smart_create(testdir.tmpdir, '''
+    ## inventory
+    127.0.0.1 ansible_connection=local
+
+    ## test_playbook.yml
+    - hosts: 127.0.0.1
+      gather_facts: no
+      tasks:
+        - name: intentional test with side effect
+          shell: touch "{{ playbook_dir }}/HELLO"
           changed_when: False
           tags: test
     ''')
