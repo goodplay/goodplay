@@ -125,7 +125,7 @@ class DockerRunner(object):
 
         inventory_lines = []
         for service in self.project.services:
-            container_name = service.get_container_name(service.name, 1)
+            container_name = service.get_container().name
             inventory_line = ' '.join((
                 service.name,
                 'ansible_connection="goodplaydocker"',
