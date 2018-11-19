@@ -16,4 +16,5 @@ RUN apk add --no-cache \
     sshpass \
     wget
 
-RUN pip install goodplay
+RUN pip install --upgrade pip && \
+    pip install goodplay
