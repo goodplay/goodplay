@@ -14,16 +14,17 @@ services:
 
 env:
   matrix:
-    - TOXENV=py27-ansible24
     - TOXENV=py27-ansible25
     - TOXENV=py27-ansible26
+    - TOXENV=py27-ansible27
     - TOXENV=py27-ansibledevel
-    - TOXENV=py36-ansible24
     - TOXENV=py36-ansible25
     - TOXENV=py36-ansible26
+    - TOXENV=py36-ansible27
     - TOXENV=py36-ansibledevel
     - TOXENV=py37-ansible25
     - TOXENV=py37-ansible26
+    - TOXENV=py37-ansible27
     - TOXENV=py37-ansibledevel
     - TOXENV=docs
 

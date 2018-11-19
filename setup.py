@@ -6,10 +6,9 @@ from setuptools import setup, find_packages
 
 
 install_requires = [
-    'ansible>=2.4',
+    'ansible>=2.5',
     'cached-property>=1.3.1',
-    'docker-compose>=1.18.0',
-    'idna==2.6',  # pin temporary due to dep docker-py -> requests -> idna<2.7
+    'docker-compose>=1.22.0',
     'py>=1.4.34',
     'pytest>=3.5.0',
     'sarge>=0.1.5',

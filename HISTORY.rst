@@ -3,14 +3,20 @@
 History
 =======
 
-0.12.0 (TBD - ACTIVE DEVELOPMENT)
----------------------------------
+0.12.0 (2018-11-19)
+-------------------
 
 Major Changes
 ~~~~~~~~~~~~~
 
-* add support for Ansible 2.6, drop support for Ansible 2.3
+* add support for Ansible 2.6 and 2.7, drop support for Ansible 2.3 and 2.4
 * add support for Python 3.7
+
+Minor Changes
+~~~~~~~~~~~~~
+
+* fix docker-compose integration after method signature change in ``docker-compose==1.23.0``
+* update dependencies to newer versions
 
 
 0.11.0 (2018-06-20)

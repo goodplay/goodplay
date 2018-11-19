@@ -48,7 +48,7 @@ and playbooks as well as running full integration tests for your software.
     :scale: 100%
     :target: https://github.com/goodplay/goodplay/blob/master/LICENSE
 
-.. |supported-ansible-versions| image:: https://img.shields.io/badge/ansible-2.4,%202.5,%202.6-blue.svg
+.. |supported-ansible-versions| image:: https://img.shields.io/badge/ansible-2.5%20|%202.6%20|%202.7-blue.svg
     :alt: Supported Ansible Versions
     :scale: 100%
     :target: https://docs.ansible.com/
