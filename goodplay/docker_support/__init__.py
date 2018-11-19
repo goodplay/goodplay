@@ -125,7 +125,7 @@ class DockerRunner(object):
 
         inventory_lines = []
         for service in self.project.services:
-            container_name = service.get_container_name(service.name, 1)
+            container_name = service.get_container().name
             inventory_line = ' '.join((
                 service.name,
                 'ansible_connection="goodplaydocker"',
@@ -136,7 +136,7 @@ class DockerRunner(object):
         inventory_content = '\n'.join(inventory_lines)
 
         # choose name 'inventory_goodplay' as it comes after 'inventory' when compared,
-        # alphanumerical, otherwise Ansible 2.3 does not merge in the ansible_connection
+        # alphanumerical, otherwise Ansible does not merge in the ansible_connection
         # information correctly and thus tries to use an SSH connection
         self.ctx.extended_inventory_path.join('inventory_goodplay').write(inventory_content)
 

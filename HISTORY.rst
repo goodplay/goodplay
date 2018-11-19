@@ -3,8 +3,23 @@
 History
 =======
 
-0.11.0 (TBD - ACTIVE DEVELOPMENT)
+0.12.0 (TBD - ACTIVE DEVELOPMENT)
 ---------------------------------
+
+Major Changes
+~~~~~~~~~~~~~
+
+* add support for Ansible 2.6, drop support for Ansible 2.3
+* add support for Python 3.7
+
+
+0.11.0 (2018-06-20)
+-------------------
+
+Minor Changes
+~~~~~~~~~~~~~
+
+* update dependencies to newer versions
 
 
 0.10.0 (2018-03-26)

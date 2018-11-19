@@ -6,13 +6,13 @@ from setuptools import setup, find_packages
 
 
 install_requires = [
-    'ansible>=2.3',
+    'ansible>=2.4',
     'cached-property>=1.3.1',
     'docker-compose>=1.18.0',
     'idna==2.6',  # pin temporary due to dep docker-py -> requests -> idna<2.7
     'py>=1.4.34',
     'pytest>=3.5.0',
-    'sarge==0.1.5',
+    'sarge>=0.1.5',
 ]
 
 readme_path = os.path.join(os.path.dirname(__file__), 'README.rst')
@@ -51,6 +51,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Quality Assurance',
         'Topic :: Software Development :: Testing',
     ],
