@@ -3,5 +3,5 @@ cached-property==1.5.1
 docker-compose==1.23.1
 idna==2.7
 py==1.7.0
-pytest==4.0.0
+pytest==7.3.1
 sarge==0.1.5.post0
